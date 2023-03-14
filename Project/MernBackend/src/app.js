@@ -21,6 +21,11 @@ app.get("/", (req, res) => {
     res.render("index")
 });
 
+app.get("/login", (req, res) => {
+    //res.send("Hello and welcome to my page")
+    res.render("login")
+});
+
 app.listen(port, () => {
     console.log(`Command is running at port no ${port}`);
 })

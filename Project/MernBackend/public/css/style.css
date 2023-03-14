@@ -131,3 +131,64 @@
     cursor: pointer;
     width: fit-content;
 }
+
+/* login form */
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #04AA6D;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+  
+button:hover {
+    opacity: 0.8;
+}
+
+form {
+    border: 3px solid #f1f1f1;
+    justify-content: flex-start;
+    padding: 80px 50px;
+}
+
+.loginform{
+    margin: inherit;
+    padding: 10px;
+    float: left;
+    width: 50%;
+}
+
+.loginform{
+    padding: 16px;
+    background-color: black;
+    color: bisque;
+}
+
+.rightpart{
+    display: flex;
+    justify-content: flex-end;
+    float:right;
+    padding: 10px;
+    border: 2px solid black;
+    border-top-left-radius: 600px;
+    background-color: black;
+    width:40%;
+} 
+
+.rightpart img{
+    width: 100%;
+    padding: 10px;
+    border-radius: 50%;
+}
