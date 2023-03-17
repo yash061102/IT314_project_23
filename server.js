@@ -161,14 +161,14 @@ const CourseAssignment = mongoose.model("CourseAssignment", courseAssignmentSche
 const CourseEnrollment = mongoose.model("CourseEnrollment", courseEnrollmentSchema);
 
 app.get('/', (req, res) => {
-    res.render('/index.ejs');
+    res.render('index.ejs');
 })
 
-app.get('/adminHome', (req, res) => {
+app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
     res.render('adminHome.ejs');
 });
 
-app.get('/viewCourse', (req, res) => {
+app.get('/viewCourse', checkAuthenticatedAdmin, (req, res) => {
 
     Course.find({})
         .then((course) => {
@@ -179,7 +179,7 @@ app.get('/viewCourse', (req, res) => {
         });
 });
 
-app.post('/viewCourse', (req, res) => {
+app.post('/viewCourse', checkAuthenticatedAdmin, (req, res) => {
     if (req.body.delete) {
         Course.deleteOne({ _id: req.body.delete })
             .then(() => {
@@ -208,7 +208,7 @@ app.post('/viewCourse', (req, res) => {
     }
 })
 
-app.post('/updateCourse', (req, res) => {
+app.post('/updateCourse', checkAuthenticatedAdmin, (req, res) => {
     Course.updateOne({ _id: req.body.btn }, { name: req.body.name, credits: req.body.credits, code: req.body.code, description: req.body.description })
         .then(() => {
             Course.find({})
@@ -224,7 +224,7 @@ app.post('/updateCourse', (req, res) => {
         });
 })
 
-app.get('/viewDegree', (req, res) => {
+app.get('/viewDegree', checkAuthenticatedAdmin, (req, res) => {
 
     Degree.find({})
         .then((degree) => {
@@ -235,7 +235,7 @@ app.get('/viewDegree', (req, res) => {
         });
 });
 
-app.post('/viewDegree', (req, res) => {
+app.post('/viewDegree', checkAuthenticatedAdmin, (req, res) => {
     if (req.body.delete) {
         Degree.deleteOne({ _id: req.body.delete })
             .then(() => {
@@ -264,7 +264,7 @@ app.post('/viewDegree', (req, res) => {
     }
 })
 
-app.post('/updateDegree', (req, res) => {
+app.post('/updateDegree', checkAuthenticatedAdmin, (req, res) => {
     Degree.updateOne({ _id: req.body.btn }, { name: req.body.name })
         .then(() => {
             Degree.find({})
@@ -281,7 +281,7 @@ app.post('/updateDegree', (req, res) => {
 })
 
 
-app.get('/viewBranch', (req, res) => {
+app.get('/viewBranch', checkAuthenticatedAdmin, (req, res) => {
 
     Branch.find({})
         .then((branch) => {
@@ -292,7 +292,7 @@ app.get('/viewBranch', (req, res) => {
         });
 });
 
-app.post('/viewBranch', (req, res) => {
+app.post('/viewBranch', checkAuthenticatedAdmin, (req, res) => {
     if (req.body.delete) {
         Branch.deleteOne({ _id: req.body.delete })
             .then(() => {
@@ -321,7 +321,7 @@ app.post('/viewBranch', (req, res) => {
     }
 })
 
-app.post('/updateBranch', (req, res) => {
+app.post('/updateBranch', checkAuthenticatedAdmin, (req, res) => {
     Branch.updateOne({ _id: req.body.btn }, { name: req.body.name })
         .then(() => {
             Branch.find({})
@@ -337,7 +337,7 @@ app.post('/updateBranch', (req, res) => {
         });
 })
 
-app.get('/viewProgram', (req, res) => {
+app.get('/viewProgram', checkAuthenticatedAdmin, (req, res) => {
 
     Program.find({})
         .populate(['degreeOffered', 'branchOffered', 'coursesOffered'])
@@ -350,7 +350,7 @@ app.get('/viewProgram', (req, res) => {
         });
 });
 
-app.post('/viewProgram', (req, res) => {
+app.post('/viewProgram', checkAuthenticatedAdmin, (req, res) => {
     if (req.body.delete) {
         Program.deleteOne({ '_id': req.body.delete })
             .then(() => {
@@ -379,7 +379,7 @@ app.post('/viewProgram', (req, res) => {
     }
 })
 
-app.get('/viewSemester', (req, res) => {
+app.get('/viewSemester', checkAuthenticatedAdmin, (req, res) => {
 
     Semester.find({})
         .sort({ dateCreated: -1 })
@@ -391,7 +391,7 @@ app.get('/viewSemester', (req, res) => {
         });
 });
 
-app.post('/viewSemester', (req, res) => {
+app.post('/viewSemester', checkAuthenticatedAdmin, (req, res) => {
     if (req.body.delete) {
 
         Semester.findOne({ '_id': req.body.delete })
@@ -422,11 +422,11 @@ app.post('/viewSemester', (req, res) => {
 })
 
 
-app.get('/addCourse', (req, res) => {
+app.get('/addCourse', checkAuthenticatedAdmin, (req, res) => {
     res.render('addCourse.ejs');
 });
 
-app.post('/addCourse', (req, res) => {
+app.post('/addCourse', checkAuthenticatedAdmin, (req, res) => {
 
     const newCourse = new Course({
         name: req.body.name,
@@ -439,11 +439,11 @@ app.post('/addCourse', (req, res) => {
     res.redirect('/viewCourse');
 });
 
-app.get('/addDegree', (req, res) => {
+app.get('/addDegree', checkAuthenticatedAdmin, (req, res) => {
     res.render('addDegree.ejs');
 });
 
-app.post('/addDegree', (req, res) => {
+app.post('/addDegree',checkAuthenticatedAdmin, (req, res) => {
 
     const newDegree = new Degree({
         name: req.body.name
@@ -453,11 +453,11 @@ app.post('/addDegree', (req, res) => {
     res.redirect('/viewDegree');
 });
 
-app.get('/addBranch', (req, res) => {
+app.get('/addBranch', checkAuthenticatedAdmin, (req, res) => {
     res.render('addBranch.ejs');
 });
 
-app.post('/addBranch', (req, res) => {
+app.post('/addBranch', checkAuthenticatedAdmin, (req, res) => {
 
     const newBranch = new Branch({
         name: req.body.name
@@ -467,7 +467,7 @@ app.post('/addBranch', (req, res) => {
     res.redirect('/viewBranch');
 });
 
-app.get('/addProgram', (req, res) => {
+app.get('/addProgram', checkAuthenticatedAdmin, (req, res) => {
     Degree.find({})
         .then((degree) => {
             Branch.find({})
@@ -489,7 +489,7 @@ app.get('/addProgram', (req, res) => {
         });
 })
 
-app.post('/addProgram', (req, res) => {
+app.post('/addProgram', checkAuthenticatedAdmin, (req, res) => {
 
     Degree.findById(req.body.degree)
         .then((degree) => {
@@ -521,7 +521,7 @@ app.post('/addProgram', (req, res) => {
         });
 })
 
-app.get('/addSemester', (req, res) => {
+app.get('/addSemester', checkAuthenticatedAdmin, (req, res) => {
 
     Program.find({})
         .populate(['degreeOffered', 'branchOffered', 'coursesOffered'])
@@ -534,7 +534,7 @@ app.get('/addSemester', (req, res) => {
         });
 });
 
-app.post('/addSemester', (req, res) => {
+app.post('/addSemester', checkAuthenticatedAdmin, (req, res) => {
 
     const newSemester = new Semester({
         name: req.body.name,
@@ -570,7 +570,7 @@ app.post('/addSemester', (req, res) => {
 
 })
 
-app.post('/assignCourse', (req, res) => {
+app.post('/assignCourse', checkAuthenticatedAdmin, (req, res) => {
 
     for (var i = 0; i < req.body.courseAssigned.length; i++) {
 
@@ -612,7 +612,7 @@ app.post('/assignCourse', (req, res) => {
     res.redirect('/generate-pdf');
 })
 
-app.get('/generate-pdf', (req, res) => {
+app.get('/generate-pdf', checkAuthenticatedAdmin, (req, res) => {
 
     const doc = new PDFDocument();
     const writeStream = fs.createWriteStream('example.pdf');
@@ -713,11 +713,11 @@ app.get('/generate-pdf', (req, res) => {
 
 });
 
-app.get('/addStudent', (req, res) => {
+app.get('/addStudent', checkAuthenticatedAdmin, (req, res) => {
     res.render('addStudent.ejs');
 })
 
-app.post('/addStudent', (req, res) => {
+app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 
     function generateP() {
         var pass = '';
@@ -789,11 +789,11 @@ app.post('/addStudent', (req, res) => {
         })
 })
 
-app.get('/addInstructor', (req, res) => {
+app.get('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
     res.render('addInstructor.ejs');
 })
 
-app.post('/addInstructor', (req, res) => {
+app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
 
     function generateP() {
         var pass = '';
@@ -854,6 +854,43 @@ app.post('/addInstructor', (req, res) => {
                         });
 
                         res.redirect('/addInstructor');
+
+                    })
+                    .catch(err => {
+                        console.log('Error:', err);
+                    })
+            }
+        })
+        .catch(err => {
+            console.log('Error:', err);
+        })
+})
+
+app.get('/addAdmin', (req, res) => {
+    res.render('addAdmin.ejs');
+})
+
+app.post('/addAdmin', checkAuthenticatedAdmin, (req, res) => {
+
+    Admin.findOne({ email: req.body.email })
+        .then((admin) => {
+
+            if (admin != null) {
+                res.redirect('/adminHome');
+            }
+
+            else {
+                bcrypt.hash(req.body.password, saltRounds)
+                    .then((hashedPassword) => {
+
+                        const newAdmin = new Admin({
+                            email: req.body.email,
+                            password: hashedPassword
+                        });
+
+                        newAdmin.save();
+
+                        res.redirect('/addAdmin');
 
                     })
                     .catch(err => {
@@ -1001,6 +1038,28 @@ app.post('/instructorDetails', checkAuthenticatedInstructor, (req, res) => {
                 console.log(err);
             });
     }
+
+})
+
+app.get('/adminLogin', checkNotAuthenticatedAdmin, (req, res) => {
+    res.render('adminLogin.ejs')
+})
+
+app.post('/adminLogin', passportInstructor.authenticate('admin', {
+    successRedirect: '/adminHome',
+    failureRedirect: '/adminLogin',
+    failureFlash: true
+}))
+
+app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
+
+    Admin.findOne({ '_id': req.user })
+        .then((admin) => {
+            res.render('adminHome.ejs', { admin });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 
 })
 
