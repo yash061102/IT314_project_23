@@ -15,6 +15,8 @@ const PDFDocument = require('pdfkit');
 const { Table } = require('pdfkit-table');
 const fs = require('fs');
 const { type } = require("os");
+const nodemailer = require('nodemailer');
+const EmailTemplate = require('email-templates').EmailTemplate;
 
 const passportStudent = require('passport');
 const passportInstructor = require('passport');
@@ -107,10 +109,12 @@ const studentSchema = new mongoose.Schema({
     studentID: String,
     mobileNO: String,
     email: String,
+    myemail: String,
     password: String,
     dob: Date,
     gender: String,
-    programRegistered: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
+    parentEmail: String,
+    programRegistered: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' }
 });
 
 const adminSchema = new mongoose.Schema({
@@ -119,9 +123,13 @@ const adminSchema = new mongoose.Schema({
 });
 
 const instructorSchema = new mongoose.Schema({
-    name: String
-    // email: String,
-    // password: String
+    fullname: String,
+    email: String,
+    myemail: String,
+    mobileNO: String,
+    dob: Date,
+    gender: String,
+    password: String
 })
 
 const courseAssignmentSchema = new mongoose.Schema({
@@ -374,7 +382,7 @@ app.post('/viewProgram', (req, res) => {
 app.get('/viewSemester', (req, res) => {
 
     Semester.find({})
-        .sort({dateCreated:-1})
+        .sort({ dateCreated: -1 })
         .then((semester) => {
             res.render('viewSemester.ejs', { semester });
         })
@@ -386,12 +394,12 @@ app.get('/viewSemester', (req, res) => {
 app.post('/viewSemester', (req, res) => {
     if (req.body.delete) {
 
-        Semester.findOne({'_id': req.body.delete})
+        Semester.findOne({ '_id': req.body.delete })
             .then((semester) => {
-                CourseAssignment.deleteMany({semesterAssigned:semester})
+                CourseAssignment.deleteMany({ semesterAssigned: semester })
                     .then(() => {
-                        Semester.deleteOne({'_id': req.body.delete})
-                            .then(()=>{
+                        Semester.deleteOne({ '_id': req.body.delete })
+                            .then(() => {
                                 res.render('viewSemester.ejs', { semester });
                             })
                             .catch((err) => {
@@ -408,7 +416,7 @@ app.post('/viewSemester', (req, res) => {
     }
 
     else {
-        
+
 
     }
 })
@@ -649,19 +657,11 @@ app.get('/generate-pdf', (req, res) => {
                         .text(semester[0].name, { align: 'center' })
                         .moveDown();
 
-                    for (var i=0; i<semesterAssignments.length; i++)
-                    {
+                    for (var i = 0; i < semesterAssignments.length; i++) {
                         doc.fontSize(10)
-                        .text(`${semesterAssignments[i].programAssigned.degreeOffered.name} ${semesterAssignments[i].programAssigned.branchOffered.name} - ${semesterAssignments[i].courseAssigned.name} : ${semesterAssignments[i].instructorAssigned.name}`, { align: 'center' })
-                        .moveDown();
+                            .text(`${semesterAssignments[i].programAssigned.degreeOffered.name} ${semesterAssignments[i].programAssigned.branchOffered.name} - ${semesterAssignments[i].courseAssigned.name} : ${semesterAssignments[i].instructorAssigned.name}`, { align: 'center' })
+                            .moveDown();
                     }
-                    // const tableHeaders = ['Sr No.', 'Program', 'Course', 'Instructor'];
-                    // const tableRows = semesterAssignments.map(x => ["a", "b", "c", "d"]);
-                    // const table = new Table();
-                    // table.addBody([tableHeaders, ...tableRows]);
-                    // doc.addTable(table);
-
-                    doc.end();
                 })
                 .catch(err => {
                     console.error(err);
@@ -712,6 +712,360 @@ app.get('/generate-pdf', (req, res) => {
 
 
 });
+
+app.get('/addStudent', (req, res) => {
+    res.render('addStudent.ejs');
+})
+
+app.post('/addStudent', (req, res) => {
+
+    function generateP() {
+        var pass = '';
+        var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+            'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+
+        for (let i = 1; i <= 10; i++) {
+            var char = Math.floor(Math.random()
+                * str.length + 1);
+
+            pass += str.charAt(char)
+        }
+
+        return pass;
+    }
+
+    Student.findOne({ email: req.body.email })
+        .then((student) => {
+
+            if (student != null) {
+                res.redirect('/adminHome');
+            }
+
+            else {
+                const randomPass = generateP();
+                bcrypt.hash(randomPass, saltRounds)
+                    .then((hashedPassword) => {
+
+                        const newStudent = new Student({
+                            email: req.body.email,
+                            password: hashedPassword
+                        });
+
+                        newStudent.save();
+
+                        var transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: 'devarshnagrecha58@gmail.com',
+                                pass: process.env.GMAILPASSWORD
+                            }
+                        });
+
+                        var mailOptions = {
+                            from: 'devarshnagrecha58@gmail.com',
+                            to: req.body.email,
+                            subject: 'Student Information System',
+                            text: `Your account has been created! Your password is ${randomPass}`
+                        };
+
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                console.log('Email sent: ' + info.response);
+                            }
+                        });
+
+                        res.redirect('/addStudent');
+
+                    })
+                    .catch(err => {
+                        console.log('Error:', err);
+                    })
+            }
+        })
+        .catch(err => {
+            console.log('Error:', err);
+        })
+})
+
+app.get('/addInstructor', (req, res) => {
+    res.render('addInstructor.ejs');
+})
+
+app.post('/addInstructor', (req, res) => {
+
+    function generateP() {
+        var pass = '';
+        var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+            'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+
+        for (let i = 1; i <= 10; i++) {
+            var char = Math.floor(Math.random()
+                * str.length + 1);
+
+            pass += str.charAt(char)
+        }
+
+        return pass;
+    }
+
+    Instructor.findOne({ email: req.body.email })
+        .then((instructor) => {
+
+            if (instructor != null) {
+                res.redirect('/adminHome');
+            }
+
+            else {
+                const randomPass = generateP();
+                bcrypt.hash(randomPass, saltRounds)
+                    .then((hashedPassword) => {
+
+                        const newInstructor = new Instructor({
+                            email: req.body.email,
+                            fullname: req.body.fullname,
+                            password: hashedPassword
+                        });
+
+                        newInstructor.save();
+
+                        var transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: 'devarshnagrecha58@gmail.com',
+                                pass: process.env.GMAILPASSWORD
+                            }
+                        });
+
+                        var mailOptions = {
+                            from: 'devarshnagrecha58@gmail.com',
+                            to: req.body.email,
+                            subject: 'Student Information System',
+                            text: `Your account has been created! Your password is ${randomPass}`
+                        };
+
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                console.log('Email sent: ' + info.response);
+                            }
+                        });
+
+                        res.redirect('/addInstructor');
+
+                    })
+                    .catch(err => {
+                        console.log('Error:', err);
+                    })
+            }
+        })
+        .catch(err => {
+            console.log('Error:', err);
+        })
+})
+
+app.get('/studentLogin', checkNotAuthenticatedStudent, (req, res) => {
+    res.render('studentLogin.ejs')
+})
+
+app.post('/studentLogin', passportStudent.authenticate('student', {
+    successRedirect: '/studentHome',
+    failureRedirect: '/studentLogin',
+    failureFlash: true
+}))
+
+app.get('/studentHome', checkAuthenticatedStudent, (req, res) => {
+
+    Student.findOne({ id: req.user })
+        .then((student) => {
+            if (student.firstname == null) {
+                // Student logging for the first time
+                Program.find({})
+                    .populate(['degreeOffered', 'branchOffered', 'coursesOffered'])
+                    .exec()
+                    .then((program) => {
+                        res.render('studentDetails.ejs', { program, student });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+
+            else {
+                Student.findOne({ id: req.user })
+                    .then((student) => {
+                        res.render('studentHome.ejs', { student });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+})
+
+app.post('/studentDetails', checkAuthenticatedStudent, (req, res) => {
+
+    if (req.body.password != req.body.repassword) {
+        // passwords do not match
+        res.redirect('/studentDetails');
+    }
+
+    else {
+        bcrypt.hash(req.body.password, saltRounds)
+            .then((hashedPassword) => {
+                Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, studentID: req.body.sid, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword })
+                    .then(() => {
+
+                        Student.findOne({ id: req.user })
+                            .then((student) => {
+                                res.render('studentHome.ejs', { student });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+})
+
+app.get('/instructorLogin', checkNotAuthenticatedInstructor, (req, res) => {
+    res.render('instructorLogin.ejs')
+})
+
+app.post('/instructorLogin', passportInstructor.authenticate('instructor', {
+    successRedirect: '/instructorHome',
+    failureRedirect: '/instructorLogin',
+    failureFlash: true
+}))
+
+app.get('/instructorHome', checkAuthenticatedInstructor, (req, res) => {
+
+    Instructor.findOne({ '_id': req.user })
+        .then((instructor) => {
+            if (instructor.dob == null) {
+                console.log(instructor);
+                res.render('instructorDetails.ejs', { instructor });
+            }
+
+            else {
+                res.render('instructorHome.ejs', { instructor });
+
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
+})
+
+app.post('/instructorDetails', checkAuthenticatedInstructor, (req, res) => {
+
+    if (req.body.password != req.body.repassword) {
+        // passwords do not match
+        res.redirect('/instructorDetails');
+    }
+
+    else {
+        bcrypt.hash(req.body.password, saltRounds)
+            .then((hashedPassword) => {
+                Instructor.updateOne({ '_id': req.user }, { dob: req.body.dob, myemail: req.body.myemail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword })
+                    .then(() => {
+
+                        Instructor.findOne({ id: req.user })
+                            .then((instructor) => {
+                                res.render('instructorHome.ejs', { instructor });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+})
+
+app.delete('/logoutStudent', (req, res) => {
+    req.logOut(req.user, err => {
+        if (err) return next(err);
+        res.redirect('/studentLogin');
+    })
+})
+
+app.delete('/logoutInstructor', (req, res) => {
+    req.logOut(req.user, err => {
+        if (err) return next(err);
+        res.redirect('/instructorLogin');
+    })
+})
+
+app.delete('/logoutAdmin', (req, res) => {
+    req.logOut(req.user, err => {
+        if (err) return next(err);
+        res.redirect('/adminLogin');
+    })
+})
+
+function checkAuthenticatedStudent(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect('/studentLogin')
+}
+
+function checkNotAuthenticatedStudent(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/studentHome')
+    }
+    next()
+}
+
+function checkAuthenticatedInstructor(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect('/instructorLogin')
+}
+
+function checkNotAuthenticatedInstructor(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/instructorHome')
+    }
+    next()
+}
+
+function checkAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect('/adminLogin')
+}
+
+function checkNotAuthenticatedAdmin(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/adminHome')
+    }
+    next()
+}
 
 app.listen(3000, function () {
     console.log("Server started on port 3000");
