@@ -140,9 +140,10 @@ const courseAssignmentSchema = new mongoose.Schema({
 })
 
 const courseEnrollmentSchema = new mongoose.Schema({
-    courseAssigned: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
-    instructorAssigned: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-    semesterAssigned: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' }
+    courseEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+    studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+    semesterEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
+    grade: Number
 })
 
 
@@ -443,7 +444,7 @@ app.get('/addDegree', checkAuthenticatedAdmin, (req, res) => {
     res.render('addDegree.ejs');
 });
 
-app.post('/addDegree',checkAuthenticatedAdmin, (req, res) => {
+app.post('/addDegree', checkAuthenticatedAdmin, (req, res) => {
 
     const newDegree = new Degree({
         name: req.body.name
@@ -659,9 +660,11 @@ app.get('/generate-pdf', checkAuthenticatedAdmin, (req, res) => {
 
                     for (var i = 0; i < semesterAssignments.length; i++) {
                         doc.fontSize(10)
-                            .text(`${semesterAssignments[i].programAssigned.degreeOffered.name} ${semesterAssignments[i].programAssigned.branchOffered.name} - ${semesterAssignments[i].courseAssigned.name} : ${semesterAssignments[i].instructorAssigned.name}`, { align: 'center' })
+                            .text(`${semesterAssignments[i].programAssigned.degreeOffered.name} ${semesterAssignments[i].programAssigned.branchOffered.name} - ${semesterAssignments[i].courseAssigned.name} : ${semesterAssignments[i].instructorAssigned.fullname}`, { align: 'center' })
                             .moveDown();
                     }
+
+                    doc.end();
                 })
                 .catch(err => {
                     console.error(err);
@@ -772,6 +775,7 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
                             if (error) {
                                 console.log(error);
                             } else {
+                                console.log(req.user + "\n" + req.body.email);
                                 console.log('Email sent: ' + info.response);
                             }
                         });
@@ -915,7 +919,7 @@ app.post('/studentLogin', passportStudent.authenticate('student', {
 
 app.get('/studentHome', checkAuthenticatedStudent, (req, res) => {
 
-    Student.findOne({ id: req.user })
+    Student.findOne({ '_id': req.user })
         .then((student) => {
             if (student.firstname == null) {
                 // Student logging for the first time
@@ -923,6 +927,7 @@ app.get('/studentHome', checkAuthenticatedStudent, (req, res) => {
                     .populate(['degreeOffered', 'branchOffered', 'coursesOffered'])
                     .exec()
                     .then((program) => {
+                        console.log(student + " " + req.user);
                         res.render('studentDetails.ejs', { program, student });
                     })
                     .catch((err) => {
@@ -931,7 +936,7 @@ app.get('/studentHome', checkAuthenticatedStudent, (req, res) => {
             }
 
             else {
-                Student.findOne({ id: req.user })
+                Student.findOne({ '_id': req.user })
                     .then((student) => {
                         res.render('studentHome.ejs', { student });
                     })
@@ -958,7 +963,7 @@ app.post('/studentDetails', checkAuthenticatedStudent, (req, res) => {
                 Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, studentID: req.body.sid, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword })
                     .then(() => {
 
-                        Student.findOne({ id: req.user })
+                        Student.findOne({ '_id': req.user })
                             .then((student) => {
                                 res.render('studentHome.ejs', { student });
                             })
@@ -1021,7 +1026,7 @@ app.post('/instructorDetails', checkAuthenticatedInstructor, (req, res) => {
                 Instructor.updateOne({ '_id': req.user }, { dob: req.body.dob, myemail: req.body.myemail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword })
                     .then(() => {
 
-                        Instructor.findOne({ id: req.user })
+                        Instructor.findOne({ '_id': req.user })
                             .then((instructor) => {
                                 res.render('instructorHome.ejs', { instructor });
                             })
@@ -1061,6 +1066,118 @@ app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
             console.log(err);
         });
 
+})
+
+app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
+
+    Semester.find()
+        .sort({ dateCreated: -1 })
+        .limit(1)
+        .populate({
+            path: 'programsOffered',
+            populate: [
+                { path: 'degreeOffered', model: Degree },
+                { path: 'branchOffered', model: Branch },
+                { path: 'coursesOffered', model: Course }
+            ]
+        })
+        .exec()
+        .then((semester) => {
+            Student.findOne({ '_id': req.user })
+                .populate('programRegistered')
+                .exec()
+                .then((student) => {
+                    CourseEnrollment.find({ studentEnrolled: student, semesterEnrolled: semester })
+                        .then((courseEnrollments) => {
+                            if (courseEnrollments.length!=0) {
+                                res.redirect('/studentHome');
+                            }
+
+                            else {
+                                CourseAssignment.find({ semesterAssigned: semester, programAssigned: student.programRegistered })
+                                    .populate([
+                                        {
+                                            path: 'programAssigned',
+                                            populate: [
+                                                { path: 'degreeOffered', model: Degree },
+                                                { path: 'branchOffered', model: Branch }
+                                            ]
+                                        },
+                                        {
+                                            path: 'instructorAssigned'
+                                        },
+                                        {
+                                            path: 'courseAssigned'
+                                        },
+                                        {
+                                            path: 'semesterAssigned'
+                                        }
+                                    ])
+                                    .exec()
+                                    .then((semesterAssignments) => {
+
+                                        //console.log(semesterAssignments);
+                                        res.render('semesterRegistration.ejs', { semesterAssignments })
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                    });
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
+app.post('/semesterRegistration', (req, res) => {
+
+    if (req.body.register.length > 6) {
+        res.redirect('/semesterRegistration');
+    }
+
+    else {
+
+        console.log(req.body.register);
+        for (var i = 0; i < 6; i++) {
+
+            const x = req.body.register[i]
+            Student.findById(req.user)
+                .then((student) => {
+                    Course.findById(x)
+                        .then((course) => {
+                            Semester.findById(req.body.sem)
+                                .then((semester) => {
+
+                                    const newCourseEnrollment = new CourseEnrollment({
+                                        semesterEnrolled: semester,
+                                        studentEnrolled: student,
+                                        courseEnrolled: course
+                                    })
+                                    //console.log(newCourseEnrollment);
+                                    newCourseEnrollment.save();
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+        res.redirect('/studentHome');
+    }
 })
 
 app.delete('/logoutStudent', (req, res) => {

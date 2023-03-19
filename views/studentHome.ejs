@@ -7,7 +7,11 @@
     <title>Document</title>
 </head>
 <body>
-    <h1> <%= student.firstname %></h1>
+    <h1> Welcome back, <%= student.firstname %></h1>
+    <button onclick="window.location.href = '/viewStudentDetails'"> View Student Details</button>
+    <button onclick="window.location.href = '/updateStudentDetails'"> Update Student Details</button>
+    <button onclick="window.location.href = '/semesterRegistration'"> Semester Registration</button> </button>
+    <button onclick="window.location.href = '/semesterResults'"> Semester Results </button>
     <form action="/logoutStudent?_method=DELETE" method="POST">
         <button type="submit">Log Out</button>
     </form>

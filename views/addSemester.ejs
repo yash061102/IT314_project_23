@@ -22,16 +22,18 @@
             </tr>
             <% for (var i=0; i <program.length; i++) { %>
                 <tr>
-                    <td> <%= i+1 %> </td>
+                    <td>
+                        <%= i+1 %>
+                    </td>
                     <td>
                         <%= program[i].degreeOffered.name %>
-                        
-                        <%= program[i].branchOffered.name %>
+
+                            <%= program[i].branchOffered.name %>
                     </td>
-                    <td> <input type="checkbox" id="" name="program" value="<%= program[i].id %>"><span
+                    <td> <input type="checkbox" name="program" value="<%= program[i].id %>"><span
                             class="checkmark"></span></td>
                 </tr>
-            <% } %>
+                <% } %>
         </table>
         <button type="submit">Next</button>
     </form>

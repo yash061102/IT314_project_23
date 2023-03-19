@@ -20,13 +20,7 @@
 
             <% for (var i=0; i <populatedSemester.programsOffered.length; i++) { %>
                 <h3>
-                    <%= i+1 %>
-                </h3>
-                <h3>
-                    <%= populatedSemester.programsOffered[i].degreeOffered.name %>
-                </h3>
-                <h3>
-                    <%= populatedSemester.programsOffered[i].branchOffered.name %>
+                    <%= i+1 %> <%= populatedSemester.programsOffered[i].degreeOffered.name %> <%= populatedSemester.programsOffered[i].branchOffered.name %>
                 </h3>
                 <table>
                     <tr>
@@ -62,7 +56,7 @@
                                         <% var z=instructor[k].id; %>
 
                                         <option value="<%= w + " " + x + " " + y + " " + z %>">
-                                            <%= instructor[k].name %>
+                                            <%= instructor[k].fullname %>
                                         </option>
                                     <% } %>
 
