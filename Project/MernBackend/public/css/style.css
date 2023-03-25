@@ -1,202 +1,10 @@
-/* * {
-    margin: 0;
-    padding: 0;
-}
-
-#myVideo {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-}
-
-.logo {
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo img {
-    width: 40%;
-    border: 3px solid white;
-    border-radius: 10px;
-}
-
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: sticky;
-    top: 0;
-    cursor: pointer;
-    background-color: black;
-}
-
-.nav-list {
-    width: 50%;
-    align-items: center;
-    display: flex;
-}
-
-.nav-list li {
-    list-style: none;
-    padding: 26px 30px;
-}
-
-.nav-link{
-    text-decoration: none;
-    color: white;
-    font-size: 19px;
-}
-
-.nav-list li a {
-    text-decoration: none;
-    color: white;
-    font-size: 19px;
-}
-
-.nav-list li a:hover {
-    text-decoration: none;
-    color: violet;
-}
-
-.rightNav {
-    width: 50%;
-    text-align: right;
-    padding: 13px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.right-nav-list {
-    display: flex;
-}
-
-.right-nav-list li {
-    list-style: none;
-    padding: 26px 30px;
-}
-
-.right-nav-list li a {
-    text-decoration: none;
-    color: white;
-    font-size: 19px;
-}
-
-.right-nav-list li a:hover {
-    text-decoration: none;
-    color: violet;
-}
-
-.rightNav-search {
-    padding: 25px 0px;
-    font-size: 20px;
-    border-radius: 9px;
-}
-
-.content {
-    text-align: center;
-}
-
-.content h1 {
-    font-size: 80px;
-    color: white;
-    font-weight: 500;
-    margin: 50px;
-}
-
-.content p {
-    font-size: 20px;
-    color: white;
-    margin: 50px;
-}
-
-.btn {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 16px 36px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 18px;
-    cursor: pointer;
-    width: fit-content;
-} */
-
-/* login form */
-
-/* input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #04AA6D;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
-  
-button:hover {
-    opacity: 0.8;
-}
-
-form {
-    border: 3px solid #f1f1f1;
-    justify-content: flex-start;
-    padding: 80px 50px;
-}
-
-.loginform{
-    margin: inherit;
-    padding: 10px;
-    float: left;
-    width: 50%;
-}
-
-.loginform{
-    padding: 16px;
-    background-color: black;
-    color: bisque;
-}
-
-.rightpart{
-    display: flex;
-    justify-content: flex-end;
-    float:right;
-    padding: 10px;
-    border: 2px solid black;
-    border-top-left-radius: 600px;
-    background-color: black;
-    width:40%;
-} 
-
-.rightpart img{
-    width: 100%;
-    padding: 10px;
-    border-radius: 50%;
-} */
-
 *{
     margin: 0;
     padding: 0;
-    /* background-image: url("background.avif"); */
-}
-html{
+    overflow-x: hidden;
     scroll-behavior: smooth;
 }
 .table-responsive-lg{
-    /* padding: 50px;
-    margin: 100px; */
     background: url("/img/table_image.jpg");
     text-align: center;
 }
@@ -214,12 +22,6 @@ html{
     height: 45mm;
     width: 35mm;
 }
-
-/* 
-* {
-    margin: 0;
-    padding: 0;
-} */
 
 #myVideo {
     position: absolute;
@@ -253,7 +55,6 @@ html{
 
 .nav-list {
     width: 70%;
-    /*background-color: black;*/
     align-items: center;
     display: flex;
 }
@@ -272,7 +73,7 @@ html{
 .nav-list li a {
     text-decoration: none;
     color: white;
-    font-size: 19px;
+    font-size: 21px;
 }
 
 .nav-list li a:hover {
@@ -282,7 +83,6 @@ html{
 
 .rightNav {
     width: 30%;
-    /*background-color: red;*/
     text-align: right;
     padding: 13px;
     display: flex;
@@ -312,29 +112,25 @@ html{
 .rightNav-search {
     padding: 25px 0px;
     font-size: 20px;
-    /* border: 1px solid gray; */
     border-radius: 9px;
 }
 
 .content {
     text-align: center;
-    /* line-height: 120px;
-    margin: 20px;
-    height: 75vh; */
 }
 
 .content h1 {
-    /* text-align: center; */
-    font-size: 75px;
-    color: white;
+    font-size: 55px;
+    color:white;
     font-weight: 500;
     margin: 50px;
 }
 
 .content p {
     font-size: 20px;
-    color: white;
-    margin: 50px;
+    color:rgba(255, 255, 255, 0.671);
+    margin: 20px;
+    padding: 40px;
 }
 
 .btn {
@@ -348,67 +144,6 @@ html{
     font-size: 18px;
     cursor: pointer;
     width: fit-content;
-}
-
-/* login form */
-
-input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #04AA6D;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
-  
-button:hover {
-    opacity: 0.8;
-}
-
-form {
-    border: 3px solid #f1f1f1;
-    justify-content: flex-start;
-    padding: 80px 50px;
-}
-
-.loginform{
-    margin: inherit;
-    padding: 10px;
-    float: left;
-    width: 50%;
-}
-
-.loginform{
-    padding: 16px;
-    background-color: black;
-    color: bisque;
-}
-
-.rightpart{
-    display: flex;
-    justify-content: flex-end;
-    float:right;
-    padding: 10px;
-    border: 2px solid black;
-    border-top-left-radius: 600px;
-    background-color: black;
-    width:40%;
-} 
-
-.rightpart img{
-    width: 100%;
-    padding: 10px;
-    border-radius: 50%;
 }
 
 /* responsive */
@@ -428,8 +163,8 @@ form {
     margin: 3px 3px;
 }
 .firstSection{
-    background-image: url(/img/black-background-08-vecteezy.png);
-    height: 100vh;
+    background-image: url("/img/black-background-08-vecteezy.png");
+    height: 84.5vh;
 }
 
 @media only screen and (max-width: 1000px){
@@ -439,7 +174,7 @@ form {
     .navbar{
         flex-direction: column;
         transition: all 0.7s ease-out;
-        height: 478px;
+        height: 325px;
     }
     .rightNav{
         text-align: center;
@@ -450,14 +185,14 @@ form {
         display: block;
     }
     .nav-height-resp{
-        height: 53px;
+        height: 60px;
     }
     .visibility-class-resp{
         opacity: 0;
     }
     .firstSection{
-        width: 100%;
-        height: 100%;
+        width: fit-content;
+        height: fit-content;
         margin: 0px;
         padding: 0px;
         overflow-x: hidden;
