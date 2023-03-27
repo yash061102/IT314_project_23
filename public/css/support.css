@@ -1,0 +1,120 @@
+@import url(http://fonts.googleapis.com/css?family=Allura);
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+
+[class*="entypo-"]:before {
+  font-family: "entypo", sans-serif;
+}
+body{
+  background-color: #ececec;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10%;
+  padding-top: 300px;
+  margin: 0 auto;
+}
+.ribbon {
+  float: left;
+  appearance: none;
+  border-radius: 20px 20px 0px 0px;
+  transition: all (0.2s ease);
+  cursor: pointer;
+  border: none;
+  background: blue;
+  width: 200px;
+  height: 125px;
+  position: relative;
+  color: white;
+  padding: 5px;
+  margin-right: -20px;
+  /* -webkit-filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.5));
+  -moz-filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.5));
+  -ms-filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.5));
+  -o-filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.5)); */
+}
+.ribbon span {
+  line-height: 20px;
+  font-size: 5em;
+}
+.ribbon:hover {
+  margin-top: 20px;
+  color: white;
+}
+.ribbon::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 50px solid white;
+  border-right: 100px solid transparent;
+}
+.ribbon::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 50px solid white;
+  border-left: 100px solid transparent;
+}
+
+.facebook {
+  margin-top: 10px;
+  background: grey;
+  color: darken(grey, 20%);
+  box-shadow:black;
+}
+
+.facebook::after {
+  border-top-color: grey;
+}
+.facebook::before {
+  border-top-color: grey;
+}
+.googleplus {
+  transform: scale(1.2) perspective(1px);
+  z-index: 999;
+  background: grey;
+  color: darken(grey, 20%);
+}
+
+.googleplus::after {
+  border-top-color: grey;
+}
+.googleplus::before {
+  border-top-color: grey;
+}
+
+.googleplus:hover {
+    transform: scale(1.4) perspective(1px);
+}
+.facebook:hover {
+    transform: scale(1.2) perspective(1px);
+}
+.twitter:hover {
+    transform: scale(1.2) perspective(1px);
+}
+.twitter {
+  margin-top: 10px;
+  background: grey;
+  color: darken(grey, 20%);
+}
+.twitter::after {
+  border-top-color: grey;
+}
+.twitter::before {
+  border-top-color: grey;
+}
+
+@media (max-width: 768px) {
+    .container {
+        display: grid;
+        justify-content: space-evenly;
+      }
+}

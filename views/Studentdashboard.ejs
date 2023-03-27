@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <!-- Boxiocns CDN Link -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="sidebar close">
+      <div class="logo-details">
+        <span class="logo_name"
+          ><img src="../images/Logo1.png" width="150px" alt=""
+        /></span>
+      </div>
+      <ul class="nav-links">
+        <li>
+          <a href="#">
+            <i class="fa fa-house"></i>
+            <span class="link_name">Home</span>
+          </a>
+          <ul class="sub-menu blank">
+            <li><a class="link_name" href="#">Account</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="iocn-link">
+            <a href="#">
+              <i class="fa fa-user"></i>
+              <span class="link_name">Account</span>
+            </a>
+            <i class="bx bxs-chevron-down arrow"></i>
+          </div>
+          <ul class="sub-menu">
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Change Password</a></li>
+            <li><a href="#">Logout</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="iocn-link">
+            <a href="#">
+              <i class="fa fa-pen-to-square"></i>
+              <span class="link_name">Registration</span>
+            </a>
+            <!-- <i class='bx bxs-chevron-down arrow' ></i> -->
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" href="#">Registration</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-square-poll-vertical"></i>
+            <span class="link_name">Result</span>
+          </a>
+          <ul class="sub-menu blank">
+            <li><a class="link_name" href="#">Result</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-clipboard-user" color="white"></i>
+            <span class="link_name">Attendance</span>
+          </a>
+          <ul class="sub-menu blank">
+            <li><a class="link_name" href="#">Attendance</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="iocn-link">
+            <a href="#">
+              <i class="fa fa-file-invoice-dollar"></i>
+              <span class="link_name">Fees</span>
+            </a>
+            <!-- <i class='bx bxs-chevron-down arrow' ></i> -->
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" href="#">Fees</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-box"></i>
+            <span class="link_name">Complaint box</span>
+          </a>
+          <ul class="sub-menu blank">
+            <li><a class="link_name" href="#">Complaint box</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="profile-details">
+            <div class="profile-content">
+              <img src="../images/student.png" alt="profileImg" />
+            </div>
+            <div class="name-job">
+              <div class="profile_name">Vyom Patel</div>
+              <div class="job">202001216</div>
+            </div>
+            <i class="bx bx-log-out"></i>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <section class="home-section">
+      <div class="home-content">
+        <i class="bx bx-menu"></i>
+      </div>
+    </section>
+
+    <script>
+          let arrow = document.querySelectorAll(".arrow");
+      for (var i = 0; i < arrow.length; i++) {
+        arrow[i].addEventListener("click", (e)=>{
+       let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+       arrowParent.classList.toggle("showMenu");
+        });
+      }
+
+      let sidebar = document.querySelector(".sidebar");
+      let sidebarBtn = document.querySelector(".bx-menu");
+      console.log(sidebarBtn);
+      sidebarBtn.addEventListener("click", ()=>{
+        sidebar.classList.toggle("close");
+      });
+    </script>
+  </body>
+</html>
