@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h3>Semester : <%= courseAssignment[0].semesterAssigned.name %></h3>
+
+    <form action="/gradeAssign" method="post">
+        <table>
+            <tr>
+                <th>Program</th>
+                <th>Course Code</th>
+                <th>Course Name</th>
+                <th>Assign grades</th>
+            </tr>
+            <% if (courseAssignment.length==0) { %>
+                <tr>
+                    <td colspan="4">
+                        No courses found
+                    </td>
+                </tr>
+                <% } else { %>
+                    <% for (var i=0; i <courseAssignment.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= courseAssignment[i].programAssigned.degreeOffered.name %>  <%= courseAssignment[i].programAssigned.branchOffered.name %>
+                            </td>
+                            <td>
+                                <%= courseAssignment[i].courseAssigned.code %>
+                            </td>
+                            <td>
+                                <%= courseAssignment[i].courseAssigned.name %>
+                            </td>
+                            <td>
+                                <button type='submit' name="x" value="<%= courseAssignment[0].semesterAssigned.id + " " + courseAssignment[i].courseAssigned.id + " " + courseAssignment[i].programAssigned.id%>">Grades</button>
+                            </td>
+                        </tr>
+                        <% } %>
+                    <% } %>
+        </table>
+    </form>
+</body>
+</html>

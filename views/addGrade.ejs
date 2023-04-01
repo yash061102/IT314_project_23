@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h3>Course Name: <%= gradeStudents[0].courseEnrolled.name %></h3>
+    <h3>Course Code: <%= gradeStudents[0].courseEnrolled.code %></h3>
+    <h3>Course Credits: <%= gradeStudents[0].courseEnrolled.credit %></h3>
+
+    <form action="/addGrade" method="post">
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Grade</th>
+            </tr>
+            <% if (gradeStudents.length==0) { %>
+                <tr>
+                    <td colspan="3">
+                        No courses found
+                    </td>
+                </tr>
+                <% } else { %>
+                    <% for (var i=0; i <gradeStudents.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= gradeStudents[i].studentEnrolled.studentID %>
+                            </td>
+                            <td>
+                                <%= gradeStudents[i].studentEnrolled.firstname %> <%= gradeStudents[i].studentEnrolled.middlename %> <%= gradeStudents[i].studentEnrolled.lastname %>
+                            </td>
+                            <td>
+                                <input type="number" name="grades" id="" max="10" min="0" step="1" placeholder="Enter grade">
+                            </td>
+                        </tr>
+                        <% } %>
+                    <% } %>
+        </table>
+    </form>
+</body>
+</html>

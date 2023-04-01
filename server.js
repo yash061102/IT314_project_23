@@ -143,7 +143,14 @@ const courseEnrollmentSchema = new mongoose.Schema({
     courseEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
     studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     semesterEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
-    grade: Number
+    grade: Number,
+    attendance: Number
+})
+
+const feeStatusSchema = new mongoose.Schema({
+    semester: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
+    studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+    status: Boolean
 })
 
 
@@ -757,7 +764,9 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
                         newStudent.save();
 
                         var transporter = nodemailer.createTransport({
-                            service: 'gmail',
+                            host: 'smtp.gmail.com',
+                            port: 465,
+                            secure: true,
                             auth: {
                                 user: 'devarshnagrecha58@gmail.com',
                                 pass: process.env.GMAILPASSWORD
@@ -1089,7 +1098,7 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                 .then((student) => {
                     CourseEnrollment.find({ studentEnrolled: student, semesterEnrolled: semester })
                         .then((courseEnrollments) => {
-                            if (courseEnrollments.length!=0) {
+                            if (courseEnrollments.length != 0) {
                                 res.redirect('/studentHome');
                             }
 
@@ -1137,7 +1146,7 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
         });
 })
 
-app.post('/semesterRegistration', (req, res) => {
+app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
     if (req.body.register.length > 6) {
         res.redirect('/semesterRegistration');
@@ -1145,7 +1154,7 @@ app.post('/semesterRegistration', (req, res) => {
 
     else {
 
-        console.log(req.body.register);
+        //console.log(req.body.register);
         for (var i = 0; i < 6; i++) {
 
             const x = req.body.register[i]
@@ -1178,6 +1187,125 @@ app.post('/semesterRegistration', (req, res) => {
         }
         res.redirect('/studentHome');
     }
+})
+
+app.get('/semesterResults', checkAuthenticatedStudent, (req, res) => {
+
+    CourseEnrollment.find({ 'studentEnrolled': req.user })
+        .distinct('semesterEnrolled')
+        .then((enrollment) => {
+            Semester.find()
+                .where('_id')
+                .in(enrollment)
+                .sort({ dateCreated: -1 })
+                .then((semester) => {
+                    res.render('semesterResults.ejs', { semester })
+                    //console.log(semester);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+})
+
+app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
+    const tuple = req.body.x.split(" ");
+    console.log(tuple);
+    CourseEnrollment.find({ 'studentEnrolled': req.user, 'semesterEnrolled': tuple[0] })
+        .populate(['courseEnrolled', 'semesterEnrolled', 'studentEnrolled'])
+        .exec()
+        .then((result) => {
+            console.log(result);
+            res.render('gradeCard.ejs', { result, tuple })
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
+app.get('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
+
+    CourseAssignment.find({ 'instructorAssigned': req.user })
+        .distinct('semesterAssigned')
+        .then((assignment) => {
+            Semester.find()
+                .where('_id')
+                .in(assignment)
+                .sort({ dateCreated: -1 })
+                .then((semester) => {
+                    res.render('instructorSemester.ejs', { semester })
+                    //console.log(semester);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
+app.post('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
+
+    CourseAssignment.find({ 'instructorAssigned': req.user, 'semesterAssigned': req.body.x })
+        .populate([
+            {
+                path: 'programAssigned',
+                populate: [
+                    { path: 'degreeOffered', model: Degree },
+                    { path: 'branchOffered', model: Branch }
+                ]
+            },
+            {
+                path: 'courseAssigned'
+            },
+            {
+                path: 'semesterAssigned'
+            }
+        ])
+        .exec()
+        .then((courseAssignment) => {
+            res.render('gradeSemester.ejs', { courseAssignment })
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    // CourseAssignment.aggregate([
+    //     { $match: { instructorAssigned: req.user, semesterAssigned: req.body.x } },
+    //     { $group: { _id: '$programAssigned', count: { $sum: 1 } } },
+    //     { $lookup: { from: 'courses', localField: '_id', foreignField: 'courseAssigned', as: 'courses', 
+    //                 from: 'semesters', localField: '_id', foreignField: 'semesterAssigned', as: 'semesters',
+    //                 from: 'programs', localField: '_id', foreignField: 'programAssigned', as: 'programs'
+    //     } },
+    //     { $lookup: { from: 'degrees', localField: 'programs._id', foreignField: 'program', as: 'programs.degrees', from: 'branches', localField: 'programs._id', foreignField: 'program', as: 'programs.branches' } }
+    // ])
+    // .then((ans) => {
+    //     console.log(ans);
+    // })
+})
+
+app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
+
+    //console.log(req.body.x);
+    const tuple = req.body.x.split(" ");
+    Student.find({ 'programRegistered': tuple[2] })
+        .then((students) => {
+            CourseEnrollment.find({ 'semesterEnrolled': tuple[0], 'courseEnrolled': tuple[1], 'studentEnrolled': {$in: students} })
+                .populate('studentEnrolled', 'courseEnrolled')
+                .exec()
+                .then((gradeStudents)=>{
+                    console.log(gradeStudents);
+                    res.render('addGrade.ejs', {gradeStudents});
+                })
+        })
+        .catch(err => {
+            console.error(err);
+        });
 })
 
 app.delete('/logoutStudent', (req, res) => {

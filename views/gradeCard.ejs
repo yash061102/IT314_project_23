@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h3>
+        <%= result[0].semesterEnrolled.name %>
+    </h3>
+    <h3>Name: <%= result[0].studentEnrolled.firstname %>
+            <%= result[0].studentEnrolled.middlename %>
+                <%= result[0].studentEnrolled.lastname %>
+    </h3>
+    <h3>Semester number: <%= tuple[1] %>
+    </h3>
+    <br>
+    <form action="/semesterRegistration" method="post">
+        <table>
+            <tr>
+                <th>SR No</th>
+                <th>Course Code</th>
+                <th>Course Name</th>
+                <th>Course Credits</th>
+                <th>Grade</th>
+            </tr>
+            <% var spi=0,count =0 %>
+                <% for (var i=0; i <result.length; i++) { %>
+                    <tr>
+                        <td>
+                            <%= i+1 %>
+                        </td>
+                        <td>
+                            <%= result[i].courseEnrolled.code %>
+                        </td>
+                        <td>
+                            <%= result[i].courseEnrolled.name %>
+                        </td>
+                        <td>
+                            <%= result[i].courseEnrolled.credits %>
+                        </td>
+                        <td>
+                            <% if (result[i].courseEnrolled.grade) { %>
+                                <%= result[i].grade %>
+                                <% spi += result[i].grade %>
+                                <% count++ %>
+                            <% } else { %>
+                                -
+                            <% } %>
+                            
+                        </td>
+                    </tr>
+                    <% } %>
+
+        </table>
+
+        <% if (count==6) { %>
+            <% spi = spi/6.0 %>
+            <h4>SPI: <%= spi %></h4>
+            <button>Download</button>
+        <% } else { %>
+            <h4>SPI: Not declared</h4>
+            <button disabled="disabled">Download</button>
+        <% } %>
+        
+
+    </form>
+</body>
+
+</html>

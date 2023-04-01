@@ -11,17 +11,17 @@
 
 <body>
 
-    <form action="/semesterResults" method="post">
+    <form action="/instructorSemester" method="post">
         <table>
             <tr>
                 <th>Semester Number</th>
                 <th>Semester Name</th>
-                <th>Result</th>
+                <th>Details</th>
             </tr>
             <% if (semester.length==0) { %>
                 <tr>
                     <td colspan="3">
-                        No registrations found
+                        No courses assigned
                     </td>
                 </tr>
                 <% } else { %>
@@ -34,7 +34,7 @@
                                 <%= semester[i].name %>
                             </td>
                             <td>
-                                <button type='submit' name="x" value="<%= semester[i].id + " " + i+1 %>">Result</button>
+                                <button type='submit' name="x" value="<%= semester[i].id %>">view</button>
                             </td>
                         </tr>
                         <% } %>
