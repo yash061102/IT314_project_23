@@ -10,9 +10,11 @@
 <body>
     <h3>Course Name: <%= gradeStudents[0].courseEnrolled.name %></h3>
     <h3>Course Code: <%= gradeStudents[0].courseEnrolled.code %></h3>
-    <h3>Course Credits: <%= gradeStudents[0].courseEnrolled.credit %></h3>
+    <h3>Course Credits: <%= gradeStudents[0].courseEnrolled.credits %></h3>
 
     <form action="/addGrade" method="post">
+        <input type="hidden" name="course" value="<%=gradeStudents[0].courseEnrolled.id %>">
+        <input type="hidden" name="semester" value="<%=gradeStudents[0].semesterEnrolled.id %>">
         <table>
             <tr>
                 <th>Student ID</th>
@@ -35,12 +37,14 @@
                                 <%= gradeStudents[i].studentEnrolled.firstname %> <%= gradeStudents[i].studentEnrolled.middlename %> <%= gradeStudents[i].studentEnrolled.lastname %>
                             </td>
                             <td>
-                                <input type="number" name="grades" id="" max="10" min="0" step="1" placeholder="Enter grade">
+                                <input type="number" name="grades" max="10" min="0" step="1" value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
+                                <input type="hidden" name="student" value="<%= gradeStudents[i].studentEnrolled.id %>">
                             </td>
                         </tr>
                         <% } %>
                     <% } %>
         </table>
+        <button type="submit">Submit</button>
     </form>
 </body>
 </html>

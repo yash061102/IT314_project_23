@@ -173,7 +173,13 @@ app.get('/', (req, res) => {
 })
 
 app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
-    res.render('adminHome.ejs');
+
+    Admin.findOne({'_id': req.user})
+        .then((user) => {
+            console.log(req);
+            res.render('adminHome.ejs', {user});
+        })
+    
 });
 
 app.get('/viewCourse', checkAuthenticatedAdmin, (req, res) => {
@@ -1214,7 +1220,7 @@ app.get('/semesterResults', checkAuthenticatedStudent, (req, res) => {
 
 app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
     const tuple = req.body.x.split(" ");
-    console.log(tuple);
+    //console.log(tuple);
     CourseEnrollment.find({ 'studentEnrolled': req.user, 'semesterEnrolled': tuple[0] })
         .populate(['courseEnrolled', 'semesterEnrolled', 'studentEnrolled'])
         .exec()
@@ -1296,18 +1302,38 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
     Student.find({ 'programRegistered': tuple[2] })
         .then((students) => {
             CourseEnrollment.find({ 'semesterEnrolled': tuple[0], 'courseEnrolled': tuple[1], 'studentEnrolled': {$in: students} })
-                .populate('studentEnrolled', 'courseEnrolled')
+                .populate(['courseEnrolled','studentEnrolled','semesterEnrolled'])
                 .exec()
                 .then((gradeStudents)=>{
+
                     console.log(gradeStudents);
                     res.render('addGrade.ejs', {gradeStudents});
                 })
+                .catch(err => {
+                    console.error(err);
+                });
         })
         .catch(err => {
             console.error(err);
         });
 })
 
+app.post('/addGrade', (req, res) => {
+
+    console.log(req.body);
+    for (var i=0; i<req.body.grades.length; i++) 
+    {
+        CourseEnrollment.updateOne({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { grade: req.body.grades[i] })
+        .then(() => {
+            res.redirect('/instructorHome');
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+
+    }
+    
+})
 app.delete('/logoutStudent', (req, res) => {
     req.logOut(req.user, err => {
         if (err) return next(err);
