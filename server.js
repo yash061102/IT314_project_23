@@ -174,12 +174,12 @@ app.get('/', (req, res) => {
 
 app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
 
-    Admin.findOne({'_id': req.user})
+    Admin.findOne({ '_id': req.user })
         .then((user) => {
             console.log(req);
-            res.render('adminHome.ejs', {user});
+            res.render('adminHome.ejs', { user });
         })
-    
+
 });
 
 app.get('/viewCourse', checkAuthenticatedAdmin, (req, res) => {
@@ -1225,12 +1225,58 @@ app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
         .populate(['courseEnrolled', 'semesterEnrolled', 'studentEnrolled'])
         .exec()
         .then((result) => {
-            console.log(result);
+            //console.log(result);
             res.render('gradeCard.ejs', { result, tuple })
         })
         .catch(err => {
             console.error(err);
         });
+})
+
+app.post('/gradeCard', checkAuthenticatedStudent, (req, res) => {
+
+    //console.log(req.body);
+    const tuple = req.body.result.split(" ");
+    const doc = new PDFDocument();
+    const writeStream = fs.createWriteStream('result.pdf');
+    doc.pipe(res);
+
+    
+    CourseEnrollment.find({ 'studentEnrolled': tuple[1], 'semesterEnrolled': tuple[0] })
+        .populate(['studentEnrolled', 'semesterEnrolled', 'courseEnrolled'])
+        .exec()
+        .then((grades) => {
+
+            doc.fontSize(15)
+                .text(`Student ID : ${grades[0].studentEnrolled.studentID}`, { align: 'center' })
+                .moveDown()
+                .text(`Full name : ${grades[0].studentEnrolled.firstname} ${grades[0].studentEnrolled.middlename} ${grades[0].studentEnrolled.lastname}`, { align: 'center' })
+                .moveDown()
+                .text(`Semester number: ${tuple[2]}`, { align: 'center' })
+                .moveDown()
+                .text(`Semester name: ${grades[0].semesterEnrolled.name}`, { align: 'center' })
+                .moveDown()
+
+            var spi = 0;
+            for (var i = 0; i < grades.length; i++) {
+                spi += grades[i].grade;
+                doc.fontSize(10)
+                    .text(`${i + 1} - ${grades[i].courseEnrolled.code} - ${grades[i].courseEnrolled.name} - ${grades[i].courseEnrolled.credits} - ${grades[i].grade}`, { align: 'center' })
+                    .moveDown();
+            }
+            spi /= 6;
+            spi = Math.round(spi * 100) / 100;
+            doc.fontSize(10)
+                .text(`SPI : ${spi}`, { align: 'center' })
+
+            doc.end();
+
+
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    
 })
 
 app.get('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
@@ -1301,13 +1347,13 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
     const tuple = req.body.x.split(" ");
     Student.find({ 'programRegistered': tuple[2] })
         .then((students) => {
-            CourseEnrollment.find({ 'semesterEnrolled': tuple[0], 'courseEnrolled': tuple[1], 'studentEnrolled': {$in: students} })
-                .populate(['courseEnrolled','studentEnrolled','semesterEnrolled'])
+            CourseEnrollment.find({ 'semesterEnrolled': tuple[0], 'courseEnrolled': tuple[1], 'studentEnrolled': { $in: students } })
+                .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
                 .exec()
-                .then((gradeStudents)=>{
+                .then((gradeStudents) => {
 
                     console.log(gradeStudents);
-                    res.render('addGrade.ejs', {gradeStudents});
+                    res.render('addGrade.ejs', { gradeStudents });
                 })
                 .catch(err => {
                     console.error(err);
@@ -1321,18 +1367,17 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
 app.post('/addGrade', (req, res) => {
 
     console.log(req.body);
-    for (var i=0; i<req.body.grades.length; i++) 
-    {
+    for (var i = 0; i < req.body.grades.length; i++) {
         CourseEnrollment.updateOne({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { grade: req.body.grades[i] })
-        .then(() => {
-            res.redirect('/instructorHome');
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+            .then(() => {
+                res.redirect('/instructorHome');
+            })
+            .catch((err) => {
+                console.error(err);
+            });
 
     }
-    
+
 })
 app.delete('/logoutStudent', (req, res) => {
     req.logOut(req.user, err => {
