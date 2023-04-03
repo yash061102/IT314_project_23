@@ -5,8 +5,20 @@
     scroll-behavior: smooth;
 }
 .table-responsive-lg{
-    background: url("/img/table_image.jpg");
+    /* background: url("/img/table_image.jpg"); */
     text-align: center;
+    padding-left: 290px;
+    padding-right: 150px;
+    margin: 30px;
+}
+
+tr:nth-child(even){
+    background-color:rgb(190,190,190);
+}
+
+.table{
+    /* background: url("/img/table_image.jpg"); */
+    border: solid;
 }
 
 .thead-dark{
@@ -196,5 +208,9 @@
         margin: 0px;
         padding: 0px;
         overflow-x: hidden;
+    }
+    .table-responsive-lg{
+        margin: 0;
+        padding: 10px;
     }
 }

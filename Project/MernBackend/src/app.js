@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 
 // app.get("/login", (req, res) => {
 //     //res.send("Hello and welcome to my page")
-//     res.render("login")
+//     res.render("tables")
 // });
 
 // app.get("/tables", (req, res) => {
