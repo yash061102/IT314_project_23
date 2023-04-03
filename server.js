@@ -176,7 +176,6 @@ app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
 
     Admin.findOne({ '_id': req.user })
         .then((user) => {
-            console.log(req);
             res.render('adminHome.ejs', { user });
         })
 
@@ -1241,7 +1240,7 @@ app.post('/gradeCard', checkAuthenticatedStudent, (req, res) => {
     const writeStream = fs.createWriteStream('result.pdf');
     doc.pipe(res);
 
-    
+
     CourseEnrollment.find({ 'studentEnrolled': tuple[1], 'semesterEnrolled': tuple[0] })
         .populate(['studentEnrolled', 'semesterEnrolled', 'courseEnrolled'])
         .exec()
@@ -1276,7 +1275,7 @@ app.post('/gradeCard', checkAuthenticatedStudent, (req, res) => {
         .catch(err => {
             console.error(err);
         });
-    
+
 })
 
 app.get('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
@@ -1352,7 +1351,7 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
                 .exec()
                 .then((gradeStudents) => {
 
-                    console.log(gradeStudents);
+                    //console.log(gradeStudents);
                     res.render('addGrade.ejs', { gradeStudents });
                 })
                 .catch(err => {
@@ -1368,8 +1367,38 @@ app.post('/addGrade', (req, res) => {
 
     console.log(req.body);
     for (var i = 0; i < req.body.grades.length; i++) {
-        CourseEnrollment.updateOne({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { grade: req.body.grades[i] })
-            .then(() => {
+        CourseEnrollment.findOneAndUpdate({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { grade: req.body.grades[i] }, { new: true })
+            .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
+            .exec()
+            .then((ans) => {
+
+                var transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: 'devarshnagrecha58@gmail.com',
+                        pass: process.env.GMAILPASSWORD
+                    }
+                });
+
+
+                var mailOptions = {
+                    from: 'devarshnagrecha58@gmail.com',
+                    to: ans.studentEnrolled.email,
+                    subject: 'Student Information System',
+                    text: `${ans.semesterEnrolled.name} semester grades updated for the course ${ans.courseEnrolled.name}. Recieved grade: ${ans.grade}`
+                };
+
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log(req.user + "\n" + req.body.email);
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
+
                 res.redirect('/instructorHome');
             })
             .catch((err) => {

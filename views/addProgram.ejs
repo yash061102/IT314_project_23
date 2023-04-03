@@ -17,6 +17,8 @@
 <body>
     <%- include('adminNavbar') %>
         <div class="main-body-top">
+            <button onclick="windows.location.href='/viewDegree'">View degrees</button>
+            <button onclick="windows.location.href='/viewBranch'">View branches</button>
             <form action="/addProgram" method="post">
                 <select name="degree" id="degree" required>
                     <option value="select" selected>Select</option>
