@@ -5,75 +5,88 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <title>Grade Card</title>
 </head>
 
 <body>
-    <form action="/gradeCard" method="post">
-        <h3>
-            <%= result[0].semesterEnrolled.name %>
-        </h3>
-        <h3>Name: <%= result[0].studentEnrolled.firstname %>
-                <%= result[0].studentEnrolled.middlename %>
-                    <%= result[0].studentEnrolled.lastname %>
-        </h3>
-        <h3>Semester number: <%= tuple[1] %>
-        </h3>
-        <br>
-        <table>
-            <tr>
-                <th>SR No</th>
-                <th>Course Code</th>
-                <th>Course Name</th>
-                <th>Course Credits</th>
-                <th>Grade</th>
-            </tr>
-            <% var spi=0,count=0 %>
-                <% for (var i=0; i <result.length; i++) { %>
+    <%- include('studentNavbar') %>
+        <div class="main-body-top">
+            <form action="/gradeCard" method="post">
+                <h3>
+                    <%= result[0].semesterEnrolled.name %>
+                </h3>
+                <h3>
+                    Semester number: <%= tuple[1] %>
+                </h3>
+                <h3>Name: <%= result[0].studentEnrolled.firstname %>
+                        <%= result[0].studentEnrolled.middlename %>
+                            <%= result[0].studentEnrolled.lastname %>
+                </h3>
+                <h3>Student ID: <%= result[0].studentEnrolled.studentID %>
+                </h3>
+
+                <br>
+                <table>
                     <tr>
-                        <td>
-                            <%= i+1 %>
-                        </td>
-                        <td>
-                            <%= result[i].courseEnrolled.code %>
-                        </td>
-                        <td>
-                            <%= result[i].courseEnrolled.name %>
-                        </td>
-                        <td>
-                            <%= result[i].courseEnrolled.credits %>
-                        </td>
-                        <td>
-                            <% if (result[i].grade) { %>
-                                <%= result[i].grade %>
-                                    <% spi +=result[i].grade %>
-                                        <% count++ %>
-                                            <% } else { %>
-                                                -
-                                                <% } %>
-
-                        </td>
+                        <th>SR No</th>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Course Credits</th>
+                        <th>Grade</th>
                     </tr>
-                    <% } %>
+                    <% var spi=0,count=0 %>
+                        <% for (var i=0; i <result.length; i++) { %>
+                            <tr>
+                                <td>
+                                    <%= i+1 %>
+                                </td>
+                                <td>
+                                    <%= result[i].courseEnrolled.code %>
+                                </td>
+                                <td>
+                                    <%= result[i].courseEnrolled.name %>
+                                </td>
+                                <td>
+                                    <%= result[i].courseEnrolled.credits %>
+                                </td>
+                                <td>
+                                    <% if (result[i].grade) { %>
+                                        <%= result[i].grade %>
+                                            <% spi +=result[i].grade %>
+                                                <% count++ %>
+                                                    <% } else { %>
+                                                        -
+                                                        <% } %>
 
-        </table>
+                                </td>
+                            </tr>
+                            <% } %>
 
-        <% if (count==6) { %>
-            <% spi /=6 %>
-                <% spi=Math.round(spi * 100) / 100 %>
-                    <h4>SPI: <%= spi %>
-                    </h4>
+                </table>
 
-
-                    <% } else { %>
-                        <h4>SPI: Not declared</h4>
-
-                        <% } %>
-
+                <% if (count==6) { %>
+                    <% spi /=6 %>
+                        <% spi=Math.round(spi * 100) / 100 %>
+                            <h4>SPI: <%= spi %>
+                            </h4>
                             <button type="submit" name="result"
                                 value="<%= result[0].semesterEnrolled.id + " " + result[0].studentEnrolled.id + " " + tuple[1]%>">Download</button>
-    </form>
+
+                            <% } else { %>
+                                <h4>SPI: Not declared</h4>
+                                <button disabled type="submit" name="result"
+                                    value="<%= result[0].semesterEnrolled.id + " " + result[0].studentEnrolled.id + " " + tuple[1]%>">Download</button>
+                                <% } %>
+
+            </form>
+        </div>
+
 
 </body>
 

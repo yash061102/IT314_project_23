@@ -5,42 +5,50 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <title>Semester Results</title>
 </head>
 
 <body>
-
-    <form action="/semesterResults" method="post">
-        <table>
-            <tr>
-                <th>Semester Number</th>
-                <th>Semester Name</th>
-                <th>Result</th>
-            </tr>
-            <% if (semester.length==0) { %>
+    <%- include('studentNavbar') %>
+    <div class="main-body-top">
+        <form action="/semesterResults" method="post">
+            <table>
                 <tr>
-                    <td colspan="3">
-                        No registrations found
-                    </td>
+                    <th>Semester Number</th>
+                    <th>Semester Name</th>
+                    <th>Result</th>
                 </tr>
-                <% } else { %>
-                    <% for (var i=0; i <semester.length; i++) { %>
-                        <tr>
-                            <td>
-                                Semester <%= i+1 %>
-                            </td>
-                            <td>
-                                <%= semester[i].name %>
-                            </td>
-                            <td>
-                                <button type='submit' name="x" value="<%= semester[i].id + " " + i+1 %>">Result</button>
-                            </td>
-                        </tr>
+                <% if (semester.length==0) { %>
+                    <tr>
+                        <td colspan="3">
+                            No registrations found
+                        </td>
+                    </tr>
+                    <% } else { %>
+                        <% for (var i=1; i <=semester.length; i++) { %>
+                            <tr>
+                                <td>
+                                    Semester <%= i %>
+                                </td>
+                                <td>
+                                    <%= semester[i-1].name %>
+                                </td>
+                                <td>
+                                    <button type='submit' name="x" value="<%= semester[i-1].id + " " + i %>">Result</button>
+                                </td>
+                            </tr>
+                            <% } %>
                         <% } %>
-                    <% } %>
-        </table>
-    </form>
+            </table>
+        </form>
+    </div>
+    
 </body>
 
 </html>

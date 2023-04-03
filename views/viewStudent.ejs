@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Student dashboard</title>
+</head>
+<body>
+    <%- include('studentNavbar') %>
+    <!-- main body section -->
+    <div class="main-body-top">
+        <h3>Personal Details</h3>
+        <br>
+        <h6> <b>Full name : </b> <%= student.firstname + " " + student.middlename + " " + student.lastname%> </h6>
+        <% var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
+        <h6> <b>Date of Birth : </b> <%= student.dob.toLocaleDateString("en-US", options) %> </h6>
+        <h6> <b>Gender : </b> <%= student.gender %> </h6>
+        <h6> <b>Mobile Number : </b> <%= student.mobileNO %> </h6>
+        <h6> <b>Personal Email : </b> <%= student.myemail %> </h6>
+        <h6> <b>Parent Email : </b> <%= student.parentEmail %> </h6>
+        <br>
+        <br>
+        <h3>Academic Details</h3>
+        <br>
+        <h6> <b>Student ID : </b> <%= student.studentID %> </h6>
+        <h6> <b>College Email</b> <%= student.email %> </h6>
+        <h6> <b>Program : </b> <%= student.programRegistered.degreeOffered.name + " " +  student.programRegistered.branchOffered.name%> </h6>
+        <h6> <b>Current Semester : </b> <%= x %> </h6>
+        <br>
+    </div>
+</body>
+</html>

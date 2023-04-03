@@ -605,6 +605,7 @@ app.post('/assignCourse', checkAuthenticatedAdmin, (req, res) => {
                                         });
 
                                         newCourseAssignment.save();
+                                        // res.redirect('/generate-pdf');
                                     })
                                     .catch(err => {
                                         console.error(err);
@@ -677,6 +678,7 @@ app.get('/generate-pdf', checkAuthenticatedAdmin, (req, res) => {
                     }
 
                     doc.end();
+
                 })
                 .catch(err => {
                     console.error(err);
@@ -685,6 +687,8 @@ app.get('/generate-pdf', checkAuthenticatedAdmin, (req, res) => {
         .catch(err => {
             console.error(err);
         });
+        // doc.end();
+
     // fetch data from the database
 
     // doc.fontSize(20)
@@ -1202,7 +1206,7 @@ app.get('/semesterResults', checkAuthenticatedStudent, (req, res) => {
             Semester.find()
                 .where('_id')
                 .in(enrollment)
-                .sort({ dateCreated: -1 })
+                .sort({ dateCreated: 1 })
                 .then((semester) => {
                     res.render('semesterResults.ejs', { semester })
                     //console.log(semester);
@@ -1224,7 +1228,6 @@ app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
         .populate(['courseEnrolled', 'semesterEnrolled', 'studentEnrolled'])
         .exec()
         .then((result) => {
-            //console.log(result);
             res.render('gradeCard.ejs', { result, tuple })
         })
         .catch(err => {
@@ -1276,6 +1279,45 @@ app.post('/gradeCard', checkAuthenticatedStudent, (req, res) => {
             console.error(err);
         });
 
+})
+
+app.get('/viewStudent', checkAuthenticatedStudent, (req, res) => {
+    Student.findOne({ '_id': req.user })
+        .populate([
+            {
+                path: 'programRegistered',
+                populate: [
+                    { path: 'degreeOffered', model: Degree },
+                    { path: 'branchOffered', model: Branch }
+                ]
+            }
+        ])
+        .exec()
+        .then((student) => {
+
+            CourseEnrollment.find({'studentEnrolled':req.user})
+                .distinct('semesterEnrolled')
+                .then((curr_sem) => {
+
+                    var x = curr_sem.length;
+                    res.render('viewStudent.ejs', { student, x });
+                })
+            
+        })
+})
+
+app.get('/updateStudent', checkAuthenticatedStudent, (req, res) => {
+    Student.findOne({ '_id': req.user })
+        .then((student) => {
+            res.render('updateStudent.ejs', { student }); 
+        })
+})
+
+app.post('/updateStudent', checkAuthenticatedStudent, (req, res) => {
+    Student.updateOne({ '_id': req.user }, {firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, mobileNO: req.body.mobileNO, myemail: req.body.myemail, parentEmail: req.body.parentEmail, dob:req.body.dob, gender: req.body.gender})
+        .then((student) => {
+            res.redirect('/studentHome');
+        })
 })
 
 app.get('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
