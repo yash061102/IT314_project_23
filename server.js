@@ -1111,7 +1111,7 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
 
                                 const message = 'Latest semester already registered!';
-                                res.send(`<script>alert('${message}'); window.location.href='/'</script>`);
+                                res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
 
                             }
 
