@@ -11,73 +11,72 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/table.css" />
     <title>Add admin</title>
 </head>
 
 <body>
     <%- include('adminNavbar') %>
-        <div class="main-body-top">
-            <h3>Programs</h3>
-            <form action="/viewProgram" method="post">
-                <table>
-                    <tr>
-                        <th>SR No</th>
-                        <th>Degree</th>
-                        <th>Branch</th>
-                        <th>Courses</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                    <% if (program.length==0) {%>
-                        <tr>
-                            <td colspan="6">
-                                No programs found
-                            </td>
-                        </tr>
-                        <% } %>
-                            <% for (var i=0; i <program.length; i++) { %>
-                                <tr>
-                                    <td>
-                                        <%= i+1 %>
-                                    </td>
-                                    <td>
-                                        <%= program[i].degreeOffered.name %>
-                                    </td>
-                                    <td>
-                                        <%= program[i].branchOffered.name %>
-                                    </td>
-
-                                    <td>
-
-                                        <% for (var j=0; j <program[i].coursesOffered.length; j++) { %>
-
-                                            <%= j+1 %>)
-                                                <%= program[i].coursesOffered[j].name %>
-
-                                                    <% if (j!=program[i].coursesOffered.length-1) {%>
-                                                        <hr>
-                                                        <% } %>
-
-                                                            <% } %>
-
-                                    </td>
-
-                                    <td>
-                                        <button type='submit' name="edit" value="<%= program[i].id %>"><i
-                                                class='far fa-edit'></i></button>
-                                    </td>
-                                    <td>
-                                        <button type='submit' name="delete" value="<%= program[i].id %>"
-                                            class="delete-btn"><i class='far fa-trash-alt'></i></button>
-                                    </td>
-                                </tr>
-                                <% } %>
-                </table>
-            </form>
-
-            <br>
-            <button onclick="window.location.href = '/addProgram'"> Add Program </button>
+        <div class="header">
+            <h2>Programme Details</h2>
         </div>
+
+        <section class="home-section">
+            <div class="table-container">
+                <form action="/viewProgram" method="post">
+                    <ul class="table-responsive-lg">
+                        <li class="thead-dark">
+                            <div class="col col-1">SR No</div>
+                            <div class="col col-2">Degree</div>
+                            <div class="col col-3">Branch</div>
+                            <div class="col col-4">Courses</div>
+                            <div class="col col-5">Edit</div>
+                            <div class="col col-6">Delete</div>
+                        </li>
+
+                        <% for (var i=0; i <program.length; i++) { %>
+
+                            <li class="table-row">
+                                <div class="col col-1" data-label="#">
+                                    <%= i+1 %>
+                                </div>
+                                <div class="col col-2" data-label="Student ID">
+                                    <%= program[i].degreeOffered.name %>
+                                </div>
+                                <div class="col col-3" data-label="Name">
+                                    <%= program[i].branchOffered.name %>
+                                </div>
+                                <div class="col col-4" data-label="Batch">
+                                    <% for (var j=0; j <program[i].coursesOffered.length; j++) { %>
+
+                                        <%= j+1 %>)
+                                            <%= program[i].coursesOffered[j].name %>
+
+                                                <% if (j!=program[i].coursesOffered.length-1) {%>
+                                                    <br>
+                                                    <% } %>
+
+                                                        <% } %>
+                                </div>
+                                <div class="col col-5" data-label="Branch">
+                                    <button type='submit' name="edit" value="<%= program[i].id %>"><i
+                                            class='far fa-edit'></i></button>
+                                </div>
+                                <div class="col col-6" data-label="Branch">
+                                    <button type='submit' name="delete" value="<%= program[i].id %>"
+                                        class="delete-btn"><i class='far fa-trash-alt'></i></button>
+                                </div>
+                            </li>
+                            <% } %>
+                    </ul>
+                </form>
+
+
+                <br>
+                <button onclick="window.location.href = '/addProgram'"> Add Program </button>
+
+            </div>
+        </section>
 
 
         <script src="https://kit.fontawesome.com/2bdd553bc7.js" crossorigin="anonymous"></script>

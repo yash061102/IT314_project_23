@@ -198,7 +198,7 @@ app.post('/viewCourse', checkAuthenticatedAdmin, (req, res) => {
             .then(() => {
                 Course.find({})
                     .then((course) => {
-                        res.render('viewCourse.ejs', { course });
+                        res.redirect('/adminHome');
                     })
                     .catch((err) => {
                         console.error(err);
@@ -311,7 +311,7 @@ app.post('/viewBranch', checkAuthenticatedAdmin, (req, res) => {
             .then(() => {
                 Branch.find({})
                     .then((branch) => {
-                        res.render('viewBranch.ejs', { branch });
+                        res.redirect('/viewBranch');
                     })
                     .catch((err) => {
                         console.error(err);
@@ -413,7 +413,7 @@ app.post('/viewSemester', checkAuthenticatedAdmin, (req, res) => {
                     .then(() => {
                         Semester.deleteOne({ '_id': req.body.delete })
                             .then(() => {
-                                res.render('viewSemester.ejs', { semester });
+                                res.redirect('/adminHome');
                             })
                             .catch((err) => {
                                 console.error(err);
@@ -449,7 +449,7 @@ app.post('/addCourse', checkAuthenticatedAdmin, (req, res) => {
     });
 
     newCourse.save();
-    res.redirect('/viewCourse');
+    res.redirect('/adminHome');
 });
 
 app.get('/addDegree', checkAuthenticatedAdmin, (req, res) => {
@@ -519,7 +519,7 @@ app.post('/addProgram', checkAuthenticatedAdmin, (req, res) => {
 
                             newProgram.save();
                             console.log(newProgram);
-                            res.redirect('/viewProgram');
+                            res.redirect('/adminHome');
                         })
                         .catch((err) => {
                             console.error(err);
@@ -1417,7 +1417,7 @@ app.post('/addGrade', (req, res) => {
             .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
             .exec()
             .then((ans) => {
-
+                console.log(ans);
                 var transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 465,

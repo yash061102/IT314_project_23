@@ -11,44 +11,45 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/table.css" />
     <title>Semester Results</title>
 </head>
 
 <body>
     <%- include('studentNavbar') %>
-    <div class="main-body-top">
-        <form action="/semesterResults" method="post">
-            <table>
-                <tr>
-                    <th>Semester Number</th>
-                    <th>Semester Name</th>
-                    <th>Result</th>
-                </tr>
-                <% if (semester.length==0) { %>
-                    <tr>
-                        <td colspan="3">
-                            No registrations found
-                        </td>
-                    </tr>
-                    <% } else { %>
-                        <% for (var i=1; i <=semester.length; i++) { %>
-                            <tr>
-                                <td>
-                                    Semester <%= i %>
-                                </td>
-                                <td>
-                                    <%= semester[i-1].name %>
-                                </td>
-                                <td>
-                                    <button type='submit' name="x" value="<%= semester[i-1].id + " " + i %>">Result</button>
-                                </td>
-                            </tr>
-                            <% } %>
-                        <% } %>
-            </table>
-        </form>
+    <div class="header">
+        <h2>Semester Results</h2>
     </div>
-    
+        <section class="home-section">
+            <div class="table-container">
+                <form action="/semesterResults" method="post">
+                    <ul class="table-responsive-lg">
+                        <li class="thead-dark">
+                            <div class="col col-1">Semester Number</div>
+                            <div class="col col-2">Semester Name</div>
+                            <div class="col col-3">Result</div>
+                        </li>
+
+                        <% for (var i=1; i <=semester.length; i++) { %>
+
+                            <li class="table-row">
+                                <div class="col col-1" data-label="#">
+                                    Semester <%= i %>
+                                </div>
+                                <div class="col col-2" data-label="Student ID">
+                                    <%= semester[i-1].name %>
+                                </div>
+                                <div class="col col-3" data-label="Name">
+                                    <button type='submit' name="x"
+                                        value="<%= semester[i-1].id + " " + i %>">Result</button>
+                                </div>
+                            </li>
+                            <% } %>
+                    </ul>
+                </form>
+            </div>
+        </section>
+
 </body>
 
 </html>

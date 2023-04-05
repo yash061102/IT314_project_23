@@ -11,52 +11,52 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Degrees</title>
+    <link rel="stylesheet" href="/css/table.css" />
+    <title>View Degrees</title>
 </head>
 
 <body>
     <%- include('adminNavbar') %>
-        <h3>Degrees</h3>
-        <div class="main-body-top">
-            <form action="/viewDegree" method="post">
-                <table>
-                    <tr>
-                        <th>SR No</th>
-                        <th>Name</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                    <% if (degree.length==0) {%>
-                        <tr>
-                            <td colspan="4">
-                                No degree found
-                            </td>
-                        </tr>
-                        <% } %>
-                            <% for (var i=0; i <degree.length; i++) { %>
-                                <tr>
-                                    <td>
-                                        <%= i+1 %>
-                                    </td>
-                                    <td>
-                                        <%= degree[i].name %>
-                                    </td>
-                                    <td>
-                                        <button type='submit' name="edit" value="<%= degree[i].id %>"><i
-                                                class='far fa-edit'></i></button>
-                                    </td>
-                                    <td>
-                                        <button type='submit' name="delete" value="<%= degree[i].id %>"
-                                            class="delete-btn"><i class='far fa-trash-alt'></i></button>
-                                    </td>
-                                </tr>
-                                <% } %>
-                </table>
-            </form>
-
-            <br>
-            <button onclick="window.location.href = '/addDegree'"> Add degree </button>
+        <div class="header">
+            <h2>Degree Details</h2>
         </div>
+        <section class="home-section">
+            <div class="table-container">
+                <form action="/viewDegree" method="post">
+                    <ul class="table-responsive-lg">
+                        <li class="thead-dark">
+                            <div class="col col-1">SR No</div>
+                            <div class="col col-2">Name</div>
+                            <div class="col col-5">Edit</div>
+                            <div class="col col-6">Delete</div>
+                        </li>
+
+                        <% for (var i=0; i <degree.length; i++) { %>
+
+                            <li class="table-row">
+                                <div class="col col-1" data-label="#">
+                                    <%= i+1 %>
+                                </div>
+                                <div class="col col-2" data-label="Student ID">
+                                    <%= degree[i].name %>
+                                </div>
+                                <div class="col col-5" data-label="Name">
+                                    <button type='submit' name="edit" value="<%= degree[i].id %>"><i
+                                            class='far fa-edit'></i></button>
+                                </div>
+                                <div class="col col-6" data-label="Batch">
+                                    <button type='submit' name="delete" value="<%= degree[i].id %>"
+                                        class="delete-btn"><i class='far fa-trash-alt'></i></button>
+                                </div>
+                            </li>
+                            <% } %>
+                    </ul>
+                </form>
+
+                <button onclick="window.location.href = '/addDegree'"> Add degree </button>
+
+            </div>
+        </section>
 
 
         <script src="https://kit.fontawesome.com/2bdd553bc7.js" crossorigin="anonymous"></script>

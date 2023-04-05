@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,28 +13,52 @@
     <link rel="stylesheet" href="/css/style.css">
     <title>Student dashboard</title>
 </head>
+
 <body>
     <%- include('studentNavbar') %>
-    <!-- main body section -->
-    <div class="main-body-top">
-        <h3>Personal Details</h3>
-        <br>
-        <h6> <b>Full name : </b> <%= student.firstname + " " + student.middlename + " " + student.lastname%> </h6>
-        <% var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; %> 
-        <h6> <b>Date of Birth : </b> <%= student.dob.toLocaleDateString("en-US", options) %> </h6>
-        <h6> <b>Gender : </b> <%= student.gender %> </h6>
-        <h6> <b>Mobile Number : </b> <%= student.mobileNO %> </h6>
-        <h6> <b>Personal Email : </b> <%= student.myemail %> </h6>
-        <h6> <b>Parent Email : </b> <%= student.parentEmail %> </h6>
-        <br>
-        <br>
-        <h3>Academic Details</h3>
-        <br>
-        <h6> <b>Student ID : </b> <%= student.studentID %> </h6>
-        <h6> <b>College Email</b> <%= student.email %> </h6>
-        <h6> <b>Program : </b> <%= student.programRegistered.degreeOffered.name + " " +  student.programRegistered.branchOffered.name%> </h6>
-        <h6> <b>Current Semester : </b> <%= x %> </h6>
-        <br>
-    </div>
+        <!-- main body section -->
+        <div class="header">
+            <h2>Personal Details</h2>
+        </div>
+        <div class="sub-header">
+            <h5> <b>Full name : </b>
+                <%= student.firstname + " " + student.middlename + " " + student.lastname%>
+            </h5>
+            <% var options={ weekday: 'long' , year: 'numeric' , month: 'long' , day: 'numeric' }; %>
+                <h5> <b>Date of Birth : </b>
+                    <%= student.dob.toLocaleDateString("en-US", options) %>
+                </h5>
+                <h5> <b>Gender : </b>
+                    <%= student.gender %>
+                </h5>
+                <h5> <b>Mobile Number : </b>
+                    <%= student.mobileNO %>
+                </h5>
+                <h5> <b>Personal Email : </b>
+                    <%= student.myemail %>
+                </h5>
+                <h5> <b>Parent Email : </b>
+                    <%= student.parentEmail %>
+                </h5>
+        </div>
+        <div class="header">
+            <h2>Academic Details</h2>
+        </div>
+        <div class="sub-header">
+            <br>
+            <h5> <b>Student ID : </b>
+                <%= student.studentID %>
+            </h5>
+            <h5> <b>College Email</b>
+                <%= student.email %>
+            </h5>
+            <h5> <b>Program : </b>
+                <%= student.programRegistered.degreeOffered.name + " " + student.programRegistered.branchOffered.name%>
+            </h5>
+            <h5> <b>Current Semester : </b>
+                <%= x %>
+            </h5>
+        </div>
 </body>
+
 </html>

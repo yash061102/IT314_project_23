@@ -2,11 +2,18 @@
 
 html { overflow-y: scroll; }
 
-hr{
-    color: whitesmoke
+.header h2,h1{
+    font-family: 'Spartan', sans-serif;
+    margin-left: 29%;
+    margin-top: 5%;
+    margin-bottom: 3%;
 }
-.table-container {
-    height: 100%;
+.sub-header h3,h5,p, button{
+    margin-left: 29%;
+    margin-bottom: 0.5%;
+}
+/* hr{
+    color: whitesmoke
 }
 
 .my-table {
@@ -51,7 +58,7 @@ th {
     margin-left: auto;
     margin-right: auto;
     top: 40%;
-}
+} */
 
 /* Google Fonts Import Link */
 @import url('https://fonts.googleapis.com/css2?family=Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap');
@@ -62,8 +69,7 @@ th {
 }
 
 body {
-    overflow: hidden;
-    background-color: rgb(226, 247, 247);
+    background-color: #ececec;
 }
 
 /* sidebar */
@@ -322,7 +328,7 @@ body {
 
 .home-section {
     position: relative;
-    background: #E4E9F7;
+    background: #ececec;
     height: 100vh;
     left: 260px;
     width: calc(100% - 260px);
