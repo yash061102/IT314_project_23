@@ -11,42 +11,54 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Add Semester</title>
+    <link rel="stylesheet" href="/css/table.css" />
+    <title>Add semester</title>
 </head>
 
 <body>
     <%- include('adminNavbar') %>
-    <div class="main-body-top">
-        <form action="/addSemester" method="post">
-            <h3>Step - 1</h3>
-            <input type="text" placeholder="Name" name="name">
-            <br>
-            <table>
-                <tr>
-                    <th>SR No</th>
-                    <th>Program</th>
-                    <th>Select</th>
-                </tr>
-                <% for (var i=0; i <program.length; i++) { %>
-                    <tr>
-                        <td>
-                            <%= i+1 %>
-                        </td>
-                        <td>
-                            <%= program[i].degreeOffered.name %>
-    
-                                <%= program[i].branchOffered.name %>
-                        </td>
-                        <td> <input type="checkbox" name="program" value="<%= program[i].id %>"><span
-                                class="checkmark"></span></td>
-                    </tr>
-                    <% } %>
-            </table>
-            <button type="submit">Next</button>
-        </form>
-    </div>
-    
+        <!-- main body section -->
+        <div class="header">
+            <h2>Add Semester</h2>
+        </div>
+        <div class="sub-header">
+            <h5> 
+                Step - 1
+            </h5>
+        </div>
+        <section class="home-section">
+            <div class="table-container">
+                <form action="/addSemester" method="post">
+                    <input type="text" placeholder="Name" name="name">
+                    <ul class="table-responsive-lg">
+                        <li class="thead-dark">
+                            <div class="col col-1">SR No</div>
+                            <div class="col col-2">Program</div>
+                            <div class="col col-3">Select</div>
+                        </li>
 
+                        <% for (var i=0; i <program.length; i++) { %>
+
+                            <li class="table-row">
+                                <div class="col col-1" data-label="#">
+                                    <%= i+1 %>
+                                </div>
+                                <div class="col col-2" data-label="Student ID">
+                                    <%= program[i].degreeOffered.name %>
+
+                                        <%= program[i].branchOffered.name %>
+                                </div>
+                                <div class="col col-3" data-label="Name">
+                                    <input type="checkbox" name="program" value="<%= program[i].id %>"><span
+                                        class="checkmark"></span>
+                                </div>
+                            </li>
+                            <% } %>
+                    </ul>
+                    <button type="submit">Next</button>
+                </form>
+            </div>
+        </section>
 </body>
 
 </html>
