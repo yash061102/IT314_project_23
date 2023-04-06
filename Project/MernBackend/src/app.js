@@ -21,10 +21,10 @@ app.get("/", (req, res) => {
     res.render("index")
 });
 
-// app.get("/login", (req, res) => {
-//     //res.send("Hello and welcome to my page")
-//     res.render("tables")
-// });
+app.get("/login", (req, res) => {
+    //res.send("Hello and welcome to my page")
+    res.render("tables")
+});
 
 // app.get("/tables", (req, res) => {
 //     //res.send("Hello and welcome to my page")

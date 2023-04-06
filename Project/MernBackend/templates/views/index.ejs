@@ -5,49 +5,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@100;200;300;400;600;700&family=Rubik+Moonrocks&family=Titan+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/style.css">
     <title> Student Information System </title>
 </head>
 
 <body>
-    <!-- <video autoplay muted loop plays-inline id="myVideo">
-        <source src="/video/side_video.mp4" type="video/mp4">
-    </video> -->
-    <%- include("../partials/navbar.ejs") %>
+    <section>
+        <nav>
+            <a href:="index.html"><img src="/img/logo1-1.png" alt=""></a>
+        <div class="nav-links" id="navLink">
+            <ul>
+                <li><a href="/" class="active">HOME</a></li>
+                <li><a href="/support">SUPPORT</a></li>
+            </ul>
+        </div>
+       </nav>
+    </section>
+
     <section class="firstSection">
         <div class="content">
             <h1>Welcome To Student Information System!</h1>
-            <p>Education is the cornerstone of personal and societal development, providing individuals with the tools
-                and
-                knowledge they need to succeed in their personal and professional lives. It encompasses not only formal
-                schooling, but also includes informal learning experiences such as learning from family, peers, and the
-                broader community. Education equips individuals with the necessary skills to think critically, problem
-                solve, communicate effectively, and make informed decisions. It also promotes social and cultural
-                awareness,
-                helping individuals to understand and appreciate diverse perspectives and traditions. Through education,
-                individuals can develop their full potential and contribute meaningfully to society, creating a brighter
-                and
-                more equitable future for all.</p>
-            <button class="btn btn-sm" style="margin-bottom: 30px;"><a class="nav-link" href="/login"> Login</a>
+            <button class="btn btn-sm"><a href="/login"> Login </a>
             </button>
         </div>
-        <footer class="footer" id="contact" style="color:white; padding: 60px;">
-            <p class="contact">Helpline Number: +265 8887774</p>
-        </footer>
     </section>
-    <!-- <script src="js/resp.js"></script> -->
-    <script>
-        burger = document.querySelector('.burger')
-        navbar = document.querySelector('.navbar')
-        navList = document.querySelector('.nav-list')
-        rightNav = document.querySelector('.rightNav')
 
-        burger.addEventListener('click', () => {
-            rightNav.classList.toggle('visibility-class-resp');
-            navList.classList.toggle('visibility-class-resp');
-            navbar.classList.toggle('nav-height-resp');
-        })
-    </script>
+    <footer class="footer" id="contact">
+        <p class="contact">Helpline Number: +265 8887774</p>
+    </footer>
 </body>
 
 </html>
