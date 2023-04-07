@@ -17,60 +17,68 @@
 
 <body>
     <%- include('studentNavbar') %>
-    <div class="header">
-        <h2>Semester Registration</h2>
-    </div>
-    <div class="sub-header">
-        <h5>Upcoming semester : <%= semesterAssignments[0].semesterAssigned.name %>
-        </h5>
-        <h5>Program : <%= semesterAssignments[0].programAssigned.degreeOffered.name %>
-                <%= semesterAssignments[0].programAssigned.branchOffered.name %>
-        </h5>
-    </div>
-    <section class="home-section">
-        <div class="table-container">
-            <form action="/semesterRegistration" method="post">
-                <ul class="table-responsive-lg">
-                    <li class="thead-dark">
-                        <div class="col col-1">SR No</div>
-                        <div class="col col-2">Course Code</div>
-                        <div class="col col-3">Course Name</div>
-                        <div class="col col-4">Course Credits</div>
-                        <div class="col col-5">Instructor</div>
-                        <div class="col col-6">Select</div>
-                    </li>
-
-                    <% for (var i=0; i <semesterAssignments.length; i++) { %>
-
-                        <li class="table-row">
-                            <div class="col col-1" data-label="#">
-                                <%= i+1 %>
-                            </div>
-                            <div class="col col-2" data-label="Student ID">
-                                <%= semesterAssignments[i].courseAssigned.code %>
-                            </div>
-                            <div class="col col-3" data-label="Name">
-                                <%= semesterAssignments[i].courseAssigned.name %>
-                            </div>
-                            <div class="col col-4" data-label="Batch">
-                                <%= semesterAssignments[i].courseAssigned.credits %>
-                            </div>
-                            <div class="col col-5" data-label="Branch">
-                                <% if (semesterAssignments[i].instructorAssigned.fullname) {%>
-                                    <%= semesterAssignments[i].instructorAssigned.fullname %>
-                                        <% } %>
-                            </div>
-                            <div class="col col-6" data-label="Branch">
-                                <input type="checkbox" name="register" value="<%= semesterAssignments[i].courseAssigned.id %>"><span
-                                        class="checkmark"></span>
-                            </div>
-                        </li>
-                        <% } %>
-                </ul>
-                <button type='submit' name="sem" value="<%= semesterAssignments[0].semesterAssigned.id %>"> Register </button>
-            </form>
+        <div class="header">
+            <h2>Semester Registration</h2>
         </div>
-    </section>
+        <div class="sub-header">
+            <% if (semesterAssignments.length==0) { %>
+                <h4>No semesters found</h4>
+                <% } else { %>
+                    <h5>Upcoming semester : <%= semesterAssignments[0].semesterAssigned.name %>
+                    </h5>
+                    <h5>Program : <%= semesterAssignments[0].programAssigned.degreeOffered.name %>
+                            <%= semesterAssignments[0].programAssigned.branchOffered.name %>
+                    </h5>
+                    <% } %>
+        </div>
+        <% if (semesterAssignments.length!=0) { %>
+            <section class="home-section">
+                <div class="table-container">
+                    <form action="/semesterRegistration" method="post">
+                        <ul class="table-responsive-lg">
+                            <li class="thead-dark">
+                                <div class="col col-1">SR No</div>
+                                <div class="col col-2">Course Code</div>
+                                <div class="col col-3">Course Name</div>
+                                <div class="col col-4">Course Credits</div>
+                                <div class="col col-5">Instructor</div>
+                                <div class="col col-6">Select</div>
+                            </li>
+
+                            <% for (var i=0; i <semesterAssignments.length; i++) { %>
+
+                                <li class="table-row">
+                                    <div class="col col-1" data-label="#">
+                                        <%= i+1 %>
+                                    </div>
+                                    <div class="col col-2" data-label="Student ID">
+                                        <%= semesterAssignments[i].courseAssigned.code %>
+                                    </div>
+                                    <div class="col col-3" data-label="Name">
+                                        <%= semesterAssignments[i].courseAssigned.name %>
+                                    </div>
+                                    <div class="col col-4" data-label="Batch">
+                                        <%= semesterAssignments[i].courseAssigned.credits %>
+                                    </div>
+                                    <div class="col col-5" data-label="Branch">
+                                        <% if (semesterAssignments[i].instructorAssigned.fullname) {%>
+                                            <%= semesterAssignments[i].instructorAssigned.fullname %>
+                                                <% } %>
+                                    </div>
+                                    <div class="col col-6" data-label="Branch">
+                                        <input type="checkbox" name="register"
+                                            value="<%= semesterAssignments[i].courseAssigned.id %>"><span
+                                            class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <% } %>
+                        </ul>
+                        <button type='submit' name="sem" value="<%= semesterAssignments[0].semesterAssigned.id %>">
+                            Register </button>
+                    </form>
+                </div>
+            </section>
+            <% } %>
 </body>
 
 </html>

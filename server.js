@@ -99,6 +99,7 @@ const programSchema = new mongoose.Schema({
 const semesterSchema = new mongoose.Schema({
     name: String,
     dateCreated: Date,
+    addDrop: Boolean,
     programsOffered: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }]
 })
 
@@ -144,11 +145,13 @@ const courseEnrollmentSchema = new mongoose.Schema({
     studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     semesterEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
     grade: Number,
-    attendance: Number
+    attendance: Number,
+    dateEnrolled: Date
 })
 
 const feeStatusSchema = new mongoose.Schema({
-    semester: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
+    semesterFee: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
+    programFee: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
     studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     status: Boolean
 })
@@ -552,8 +555,8 @@ app.post('/addSemester', checkAuthenticatedAdmin, (req, res) => {
     const newSemester = new Semester({
         name: req.body.name,
         dateCreated: new Date(),
-        programsOffered: req.body.program
-
+        programsOffered: req.body.program,
+        addDrop: false
     });
 
     newSemester.save()
@@ -1109,7 +1112,6 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                         .then((courseEnrollments) => {
                             if (courseEnrollments.length != 0) {
 
-
                                 const message = 'Latest semester already registered!';
                                 res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
 
@@ -1161,8 +1163,10 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
 app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
-    if (req.body.register.length > 6) {
-        res.redirect('/semesterRegistration');
+    if (req.body.register.length != 6) {
+
+        const message = 'Please select only 6 courses!';
+        res.send(`<script>alert('${message}'); window.location.href='/semesterRegistration'</script>`);
     }
 
     else {
@@ -1181,7 +1185,8 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                                     const newCourseEnrollment = new CourseEnrollment({
                                         semesterEnrolled: semester,
                                         studentEnrolled: student,
-                                        courseEnrolled: course
+                                        courseEnrolled: course,
+                                        dateEnrolled: new Date()
                                     })
                                     //console.log(newCourseEnrollment);
                                     newCourseEnrollment.save();
@@ -1409,7 +1414,7 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
         });
 })
 
-app.post('/addGrade', (req, res) => {
+app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
 
     console.log(req.body);
     for (var i = 0; i < req.body.grades.length; i++) {
@@ -1454,6 +1459,167 @@ app.post('/addGrade', (req, res) => {
     }
 
 })
+
+app.get('/addDropAdmin', checkAuthenticatedAdmin, (req, res) => {
+    Semester.find()
+        .sort({ dateCreated: -1 })
+        .limit(1)
+        .then((semester) => {
+            //console.log(semester);
+            res.render('addDrop.ejs', { semester })
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+})
+
+app.post('/addDropAdmin', checkAuthenticatedAdmin, (req, res) => {
+    var val = false;
+    if (req.body.addDrop == 'on')
+        val = true;
+    //console.log(val);
+    Semester.find()
+        .sort({ dateCreated: -1 })
+        .limit(1)
+        .then((semester) => {
+
+            Semester.findOneAndUpdate({ '_id': semester[0].id }, { addDrop: val }, { new: true })
+                .then((x) => {
+                    console.log(x);
+                    res.redirect('/adminHome');
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+})
+
+app.get('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
+    CourseEnrollment.find({ 'studentEnrolled': req.user })
+        .populate([
+            {
+                path: 'semesterEnrolled'
+            },
+            {
+                path: 'studentEnrolled',
+                populate: [
+                    { path: 'programRegistered', model: Program },
+                ]
+            }
+        ])
+        .sort({ 'dateEnrolled': -1 })
+        .limit(1)
+        .exec()
+        .then((x) => {
+            if (typeof(x[0])==='undefined')
+            {
+                const message = 'Register a semester first to add/drop!';
+                res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+            }
+            else if (x[0].semesterEnrolled.addDrop == false) {
+
+                const message = 'Add/Drop currently unavailable!';
+                res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+            }
+            else
+            {
+                CourseEnrollment.find({ 'studentEnrolled': req.user, 'semesterEnrolled': x[0].semesterEnrolled })
+                .populate('courseEnrolled')
+                .exec()
+                .then((courseEnrollments) => {
+
+                    CourseAssignment.find({ 'studentAssignment': req.user, 'semesterAssigned': x[0].semesterEnrolled, 'programAssigned': x[0].studentEnrolled.programRegistered })
+                        .populate([
+                            {
+                                path: 'programAssigned',
+                                populate: [
+                                    { path: 'degreeOffered', model: Degree },
+                                    { path: 'branchOffered', model: Branch }
+                                ]
+                            },
+                            {
+                                path: 'instructorAssigned'
+                            },
+                            {
+                                path: 'courseAssigned'
+                            },
+                            {
+                                path: 'semesterAssigned'
+                            }
+                        ])
+                        .exec()
+                        .then((courseAssignments) => {
+                            // console.log(courseAssignments.length);
+                            // console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                            // console.log(courseEnrollments.length);
+                            res.render('addDropStudent.ejs', { courseEnrollments, courseAssignments });
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            }
+            
+        })
+})
+
+app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
+    if (req.body.register.length != 6) {
+
+        const message = 'Please select only 6 courses!';
+        res.send(`<script>alert('${message}'); window.location.href='/addDropStudent'</script>`);
+    }
+
+    else {
+        CourseEnrollment.deleteMany({'studentEnrolled': req.user, 'semesterEnrolled':req.body.sem})
+            .then(()=>{
+                for (var i = 0; i < 6; i++) {
+
+                    const x = req.body.register[i]
+                    Student.findById(req.user)
+                        .then((student) => {
+                            Course.findById(x)
+                                .then((course) => {
+                                    Semester.findById(req.body.sem)
+                                        .then((semester) => {
+        
+                                            const newCourseEnrollment = new CourseEnrollment({
+                                                semesterEnrolled: semester,
+                                                studentEnrolled: student,
+                                                courseEnrolled: course,
+                                                dateEnrolled: new Date()
+                                            })
+                                            //console.log(newCourseEnrollment);
+                                            newCourseEnrollment.save();
+                                        })
+                                        .catch(err => {
+                                            console.error(err);
+                                        });
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                }
+                res.redirect('/studentHome');
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        //console.log(req.body.register);
+        
+    }
+})
+
 app.delete('/logoutStudent', (req, res) => {
     req.logOut(req.user, err => {
         if (err) return next(err);

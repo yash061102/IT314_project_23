@@ -2,13 +2,13 @@
 
 html { overflow-y: scroll; }
 
-.header h2,h1{
+.header h2,h1, input{
     font-family: 'Spartan', sans-serif;
     margin-left: 29%;
     margin-top: 5%;
     margin-bottom: 3%;
 }
-.sub-header h3,h5,p, button{
+.sub-header h3,h5,h4,p, button{
     margin-left: 29%;
     margin-bottom: 0.5%;
 }
