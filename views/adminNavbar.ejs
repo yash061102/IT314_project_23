@@ -67,37 +67,27 @@
                     <i class='bx bx-comment-error'></i>
                     <span class="link_name">Complain-box</span>
                 </a>
-                <!-- <ul class="sub-menu blank">
-               <li><a class="link_name" href="#">Chart</a></li>
-            </ul> -->
             </li>
             <li>
-                <div class="iocn-link">
-                    <a href="#">
-                        <i class='bx bx-cog' ></i>
-                        <span class="link_name">Account</span>
-                    </a>
-                    <i class='bx bxs-chevron-down arrow'></i>
-                </div>
-                <ul class="sub-menu">
-                    <!-- <li><a class="link_name" href="#">Profile</a></li> -->
-                    <li><a href="#">Account Settings</a></li>
-                    <li><a href="#">Reset Password</a></li>
-                    <form action="/logoutAdmin?_method=DELETE" method="POST">
-                        <button type="submit">Log Out</button>
-                    </form>
-                </ul>
+                <a href="/passwordAdmin">
+                    <i class='bx bx-cog'></i>
+                    <span class="link_name">Change Password</span>
+                </a>
             </li>
 
             <li>
                 <div class="profile-details">
                     <div class="profile-content">
-                        <img src="img/Profile.png" alt="profileImg">
+                        
                     </div>
                     <div class="name-job">
-                        <div class="profile_name"></div>
+                        <div class="profile_name">
+                            Admin name here
+                        </div>
                     </div>
-                    <i class='bx bx-log-out'></i>
+                    <form action="/logoutAdmin?_method=DELETE" method="POST">
+                        <button type="submit" class="logout"><i class='bx bx-log-out'></i></button>
+                    </form>
                 </div>
             </li>
         </ul>

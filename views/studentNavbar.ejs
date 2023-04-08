@@ -11,7 +11,7 @@
         </div>
         <ul class="nav-links">
             <li>
-                <a href="/studentHome" >
+                <a href="/studentHome">
                     <i class='bx bxs-home'></i>
                     <span class="link_name">Home</span>
                 </a>
@@ -19,7 +19,7 @@
             <li>
                 <div class="iocn-link">
                     <a href="#">
-                        <i class='bx bxs-user-detail' ></i>
+                        <i class='bx bxs-user-detail'></i>
                         <span class="link_name">Student Details</span>
                     </a>
                     <i class='bx bxs-chevron-down arrow'></i>
@@ -29,10 +29,10 @@
                     <li><a href="/updateStudent" class="sub-list">Update details</a></li>
                 </ul>
             </li>
-            
+
             <li>
                 <a href="/studentHome" class="attedance-logo">
-                    <i class='bx bx-money-withdraw' ></i>
+                    <i class='bx bx-money-withdraw'></i>
                     <span class="link_name">Fees</span>
                 </a>
                 <!-- <ul class="sub-menu blank">
@@ -62,38 +62,28 @@
                     <i class='bx bx-comment-error'></i>
                     <span class="link_name">Complain-box</span>
                 </a>
-                <!-- <ul class="sub-menu blank">
-               <li><a class="link_name" href="#">Chart</a></li>
-            </ul> -->
             </li>
             <li>
-                <div class="iocn-link">
-                    <a href="#">
-                        <i class='bx bx-cog' ></i>
-                        <span class="link_name">Account</span>
-                    </a>
-                    <i class='bx bxs-chevron-down arrow'></i>
-                </div>
-                <ul class="sub-menu">
-                    <!-- <li><a class="link_name" href="#">Profile</a></li> -->
-                    <li><a href="#">Account Settings</a></li>
-                    <li><a href="#">Reset Password</a></li>
-                    
-                </ul>
+                <a href="/passwordStudent">
+                    <i class='bx bx-cog'></i>
+                    <span class="link_name">Change Password</span>
+                </a>
             </li>
 
             <li>
                 <div class="profile-details">
                     <div class="profile-content">
-                        <% if (typeof(student.profilePicture)==='undefined') { %>
+                        <% if (typeof(student.profilePicture)==='undefined' ) { %>
                             <img src="img/dp.PNG" alt="">
-                        <% } else { %>
-                            <img src="data:<%= student.profilePicture.contentType %>;base64,<%= student.profilePicture.toString('base64') %>" alt="Profile Picture">
-                        <% } %>
+                            <% } else { %>
+                                <img src="data:<%= student.profilePicture.contentType %>;base64,<%= student.profilePicture.toString('base64') %>"
+                                    alt="Profile Picture">
+                                <% } %>
                     </div>
                     <div class="name-job">
                         <div class="profile_name">
-                            <%= student.firstname %> <%= student.lastname %>
+                            <%= student.firstname %>
+                                <%= student.lastname %>
                         </div>
                     </div>
                     <form action="/logoutStudent?_method=DELETE" method="POST">
@@ -107,22 +97,22 @@
 
 <!-- Javascript section -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-crossorigin="anonymous"></script>
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
 
 <script>
-let arrow = document.querySelectorAll(".arrow");
-for (var i = 0; i < arrow.length; i++) {
-    arrow[i].addEventListener("click", (e) => {
-        let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
-        arrowParent.classList.toggle("showMenu");
-    });
-}
-const menu_toggle = document.querySelector('.menu-toggle');
-const sidebar = document.querySelector('.sidebar');
+    let arrow = document.querySelectorAll(".arrow");
+    for (var i = 0; i < arrow.length; i++) {
+        arrow[i].addEventListener("click", (e) => {
+            let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+            arrowParent.classList.toggle("showMenu");
+        });
+    }
+    const menu_toggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
 
-menu_toggle.addEventListener('click', () => {
-    menu_toggle.classList.toggle('is-active');
-    sidebar.classList.toggle('is-active');
-});
+    menu_toggle.addEventListener('click', () => {
+        menu_toggle.classList.toggle('is-active');
+        sidebar.classList.toggle('is-active');
+    });
 </script>

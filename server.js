@@ -1756,25 +1756,25 @@ app.delete('/logoutAdmin', (req, res) => {
     })
 })
 
-app.post('/passwordStudent', (req, res) => {
+app.get('/passwordStudent', (req, res) => {
     Student.findOne({ '_id': req.user })
         .then((student) => {
             res.render('passwordStudent.ejs', { student });
         })
 })
-app.post('/passwordAdmin', (req, res) => {
+app.get('/passwordAdmin', (req, res) => {
     Admin.findOne({ '_id': req.user })
         .then((admin) => {
             res.render('passwordAdmin.ejs', { admin });
         })
 })
-app.post('/passwordInstructor', (req, res) => {
+app.get('/passwordInstructor', (req, res) => {
     Instructor.findOne({ '_id': req.user })
         .then((instructor) => {
             res.render('passwordInstructor.ejs', { instructor });
         })
 })
-app.get('/passwordStudent', (req, res) => {
+app.post('/passwordStudent', (req, res) => {
 
     if (req.body.password != req.body.repassword) {
 
@@ -1801,7 +1801,7 @@ app.get('/passwordStudent', (req, res) => {
             });
     }
 })
-app.get('/passwordAdmin', (req, res) => {
+app.post('/passwordAdmin', (req, res) => {
     
     if (req.body.password != req.body.repassword) {
 
@@ -1828,7 +1828,7 @@ app.get('/passwordAdmin', (req, res) => {
             });
     }
 })
-app.get('/passwordInstructor', (req, res) => {
+app.post('/passwordInstructor', (req, res) => {
     
     if (req.body.password != req.body.repassword) {
 
