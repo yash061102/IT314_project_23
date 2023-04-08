@@ -35,51 +35,54 @@
                             <% } %>
 
         </div>
-        <form action="/addGrade" method="post">
-            <input type="hidden" name="course" value="<%=gradeStudents[0].courseEnrolled.id %>">
-            <input type="hidden" name="semester" value="<%=gradeStudents[0].semesterEnrolled.id %>">
-            <table>
-                <section class="home-section">
-                    <div class="table-container">
 
-                        <ul class="table-responsive-lg">
-                            <li class="thead-dark">
-                                <div class="col col-1">SR No</div>
-                                <div class="col col-2">Student ID</div>
-                                <div class="col col-3">Student Name</div>
-                                <div class="col col-4">Grade</div>
-                            </li>
+        <% if (gradeStudents.length!=0) { %>
+            <form action="/addGrade" method="post">
+                <input type="hidden" name="course" value="<%=gradeStudents[0].courseEnrolled.id %>">
+                <input type="hidden" name="semester" value="<%=gradeStudents[0].semesterEnrolled.id %>">
+                <table>
+                    <section class="home-section">
+                        <div class="table-container">
 
-
-                            <% for (var i=0; i <gradeStudents.length; i++) { %>
-
-                                <li class="table-row">
-                                    <div class="col col-1" data-label="#">
-                                        <%= i+1 %>
-                                    </div>
-                                    <div class="col col-2" data-label="Student ID">
-                                        <%= gradeStudents[i].studentEnrolled.studentID %>
-                                    </div>
-                                    <div class="col col-3" data-label="Name">
-                                        <%= gradeStudents[i].studentEnrolled.firstname %>
-                                            <%= gradeStudents[i].studentEnrolled.middlename %>
-                                                <%= gradeStudents[i].studentEnrolled.lastname %>
-                                    </div>
-                                    <div class="col col-4" data-label="Name">
-                                        <input type="number" name="grades" max="10" min="0" step="1"
-                                            value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
-                                        <input type="hidden" name="student"
-                                            value="<%= gradeStudents[i].studentEnrolled.id %>">
-                                    </div>
+                            <ul class="table-responsive-lg">
+                                <li class="thead-dark">
+                                    <div class="col col-1">SR No</div>
+                                    <div class="col col-2">Student ID</div>
+                                    <div class="col col-3">Student Name</div>
+                                    <div class="col col-4">Grade</div>
                                 </li>
+
+
+                                <% for (var i=0; i <gradeStudents.length; i++) { %>
+
+                                    <li class="table-row">
+                                        <div class="col col-1" data-label="#">
+                                            <%= i+1 %>
+                                        </div>
+                                        <div class="col col-2" data-label="Student ID">
+                                            <%= gradeStudents[i].studentEnrolled.studentID %>
+                                        </div>
+                                        <div class="col col-3" data-label="Name">
+                                            <%= gradeStudents[i].studentEnrolled.firstname %>
+                                                <%= gradeStudents[i].studentEnrolled.middlename %>
+                                                    <%= gradeStudents[i].studentEnrolled.lastname %>
+                                        </div>
+                                        <div class="col col-4" data-label="Name">
+                                            <input type="number" name="grades" max="10" min="0" step="1"
+                                                value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
+                                            <input type="hidden" name="student"
+                                                value="<%= gradeStudents[i].studentEnrolled.id %>">
+                                        </div>
+                                    </li>
+                                    <% } %>
+                            </ul>
+                            <% if (gradeStudents.length!=0) { %>
+                                <button type="submit">Submit</button>
                                 <% } %>
-                        </ul>
-                        <% if (gradeStudents.length!=0) { %>
-                            <button type="submit">Submit</button>
-                            <% } %>
-                    </div>
-                </section>
-        </form>
+                        </div>
+                    </section>
+            </form>
+            <% } %>
 </body>
 
 </html>

@@ -2,74 +2,69 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="manifest" href="favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <title>VoteEra</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+
 </head>
 
 <body>
-    <form action="/assignCourse" method="post">
-        <h3>Step - 2</h3>
-        <hr>
-        <h4>
-            <%= populatedSemester.name %>
-        </h4>
-            <br>
-
-            <% for (var i=0; i <populatedSemester.programsOffered.length; i++) { %>
-                <h3>
-                    <%= i+1 %> <%= populatedSemester.programsOffered[i].degreeOffered.name %> <%= populatedSemester.programsOffered[i].branchOffered.name %>
-                </h3>
-                <table>
-                    <tr>
-                        <th>SR No</th>
-                        <th>Course name</th>
-                        <th>Course code</th>
-                        <th>Course credits</th>
-                        <th>Instructor</th>
-                    </tr>
-                    <% for (var j=0; j <populatedSemester.programsOffered[i].coursesOffered.length; j++) { %>
-                        <tr>
-                            <td>
-                                <%= j+1 %>
-                            </td>
-                            <td>
-                                <%= populatedSemester.programsOffered[i].coursesOffered[j].name %>
-                            </td>
-                            <td>
-                                <%= populatedSemester.programsOffered[i].coursesOffered[j].code %>
-                            </td>
-                            <td>
-                                <%= populatedSemester.programsOffered[i].coursesOffered[j].credits %>
-                            </td>
-                            <td>
-                                <select name="courseAssigned" id="">
-                                    <option value="Select" selected>Select</option>
-
-                                    <% for (var k=0; k <instructor.length; k++) { %>
-                                        
-                                        <% var w=populatedSemester.id ; %>
-                                        <% var x=populatedSemester.programsOffered[i].id ; %>
-                                        <% var y=populatedSemester.programsOffered[i].coursesOffered[j].id; %>
-                                        <% var z=instructor[k].id; %>
-
-                                        <option value="<%= w + " " + x + " " + y + " " + z %>">
-                                            <%= instructor[k].fullname %>
-                                        </option>
-                                    <% } %>
-
-                                </select>
-                            </td>
-                        </tr>
-                        <% } %>
-                </table>
-                <hr>
-                <% } %>
-                    <button type="submit">Submit</button>
-    </form>
-
+  <div class="cover">
+    <div class="right-half">
+      <div class="logo-area">
+        <img src="img/Logo1.png" />
+      </div>
+    </div>
+    <div class="left-half">
+      <h3 class="heading">Welcome to Student Information System</h3>
+      <hr>
+      <h5 class="sub-text">Making education easier</h5>
+      <section class="option" id="option">
+        <div class="container-box">
+        <a href="/studentLogin">
+        <div class="box">
+            <img src="/img/student.png" class="logbox" alt="">
+            <h2><br>Student Login</h2>
+        </div>
+        </a>
+         <a href="/instructorLogin">
+        <div class="box">
+            <img src="/img/faculty.png" class="logbox" alt="">
+            <h2><br>Faculty Login</h2>
+        </div>
+         </a>
+        <a href="/adminLogin">
+        <div class="box">
+            <img src="/img/administrator.png" class="logbox" alt="">
+            <h2><br>Admin Login</h2>
+        </div>
+        </a>
+    </div>
+    </section>
+    </div>
+  </div>
 </body>
 
 </html>

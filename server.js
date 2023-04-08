@@ -17,6 +17,10 @@ const fs = require('fs');
 const { type } = require("os");
 const nodemailer = require('nodemailer');
 const EmailTemplate = require('email-templates').EmailTemplate;
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const passportStudent = require('passport');
 const passportInstructor = require('passport');
@@ -115,7 +119,8 @@ const studentSchema = new mongoose.Schema({
     dob: Date,
     gender: String,
     parentEmail: String,
-    programRegistered: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' }
+    programRegistered: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
+    profilePicture: Buffer
 });
 
 const adminSchema = new mongoose.Schema({
@@ -156,6 +161,13 @@ const feeStatusSchema = new mongoose.Schema({
     status: Boolean
 })
 
+const complainBoxSchema = new mongoose.Schema({
+    studentComplained: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+    complain: String,
+    dateComplained: Date,
+    status: Boolean
+})
+
 
 const Branch = mongoose.model("Branch", branchSchema);
 const Degree = mongoose.model("Degree", degreeSchema);
@@ -170,6 +182,10 @@ const Instructor = mongoose.model("Instructor", instructorSchema);
 
 const CourseAssignment = mongoose.model("CourseAssignment", courseAssignmentSchema);
 const CourseEnrollment = mongoose.model("CourseEnrollment", courseEnrollmentSchema);
+const ComplainBox = mongoose.model("ComplainBox", complainBoxSchema);
+
+
+
 
 app.get('/', (req, res) => {
     res.render('index.ejs');
@@ -971,17 +987,21 @@ app.get('/studentHome', checkAuthenticatedStudent, (req, res) => {
         });
 })
 
-app.post('/studentDetails', checkAuthenticatedStudent, (req, res) => {
+app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'), (req, res) => {
 
     if (req.body.password != req.body.repassword) {
+
+        const message = 'Passwords do not match!';
+        res.send(`<script>alert('${message}'); window.location.href='/studentSetails'</script>`);
         // passwords do not match
-        res.redirect('/studentDetails');
     }
 
     else {
+        
+        console.log(req.file);
         bcrypt.hash(req.body.password, saltRounds)
             .then((hashedPassword) => {
-                Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, studentID: req.body.sid, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword })
+                Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, studentID: req.body.sid, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword, profilePicture: req.file.buffer })
                     .then(() => {
 
                         Student.findOne({ '_id': req.user })
@@ -1025,7 +1045,6 @@ app.get('/instructorHome', checkAuthenticatedInstructor, (req, res) => {
 
             else {
                 res.render('instructorHome.ejs', { instructor });
-
             }
         })
         .catch((err) => {
@@ -1141,7 +1160,7 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                                     .then((semesterAssignments) => {
 
                                         //console.log(semesterAssignments);
-                                        res.render('semesterRegistration.ejs', { semesterAssignments })
+                                        res.render('semesterRegistration.ejs', { semesterAssignments, student })
                                     })
                                     .catch(err => {
                                         console.error(err);
@@ -1217,8 +1236,15 @@ app.get('/semesterResults', checkAuthenticatedStudent, (req, res) => {
                 .in(enrollment)
                 .sort({ dateCreated: 1 })
                 .then((semester) => {
-                    res.render('semesterResults.ejs', { semester })
-                    //console.log(semester);
+
+                    Student.findOne({ '_id': req.user })
+                        .then((student) => {
+                            console.log(student)
+                            res.render('semesterResults.ejs', { semester, student })
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
                 })
                 .catch(err => {
                     console.error(err);
@@ -1237,7 +1263,15 @@ app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
         .populate(['courseEnrolled', 'semesterEnrolled', 'studentEnrolled'])
         .exec()
         .then((result) => {
-            res.render('gradeCard.ejs', { result, tuple })
+
+            Student.findOne({ '_id': req.user })
+                .then((student) => {
+                    res.render('gradeCard.ejs', { result, tuple, student })
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+
         })
         .catch(err => {
             console.error(err);
@@ -1339,7 +1373,13 @@ app.get('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
                 .in(assignment)
                 .sort({ dateCreated: -1 })
                 .then((semester) => {
-                    res.render('instructorSemester.ejs', { semester })
+                    Instructor.findOne({ '_id': req.user })
+                        .then((instructor) => {
+                            res.render('instructorSemester.ejs', { semester, instructor })
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
                     //console.log(semester);
                 })
                 .catch(err => {
@@ -1371,7 +1411,15 @@ app.post('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
         ])
         .exec()
         .then((courseAssignment) => {
-            res.render('gradeSemester.ejs', { courseAssignment })
+
+            Instructor.findOne({ '_id': req.user })
+                .then((instructor) => {
+                    res.render('gradeSemester.ejs', { courseAssignment, instructor })
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+
         })
         .catch(err => {
             console.error(err);
@@ -1402,8 +1450,15 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
                 .exec()
                 .then((gradeStudents) => {
 
+                    Instructor.findOne({ '_id': req.user })
+                        .then((instructor) => {
+                            res.render('addGrade.ejs', { gradeStudents, instructor });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
                     //console.log(gradeStudents);
-                    res.render('addGrade.ejs', { gradeStudents });
+
                 })
                 .catch(err => {
                     console.error(err);
@@ -1514,8 +1569,7 @@ app.get('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
         .limit(1)
         .exec()
         .then((x) => {
-            if (typeof(x[0])==='undefined')
-            {
+            if (typeof (x[0]) === 'undefined') {
                 const message = 'Register a semester first to add/drop!';
                 res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
             }
@@ -1524,48 +1578,53 @@ app.get('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
                 const message = 'Add/Drop currently unavailable!';
                 res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
             }
-            else
-            {
+            else {
                 CourseEnrollment.find({ 'studentEnrolled': req.user, 'semesterEnrolled': x[0].semesterEnrolled })
-                .populate('courseEnrolled')
-                .exec()
-                .then((courseEnrollments) => {
+                    .populate('courseEnrolled')
+                    .exec()
+                    .then((courseEnrollments) => {
 
-                    CourseAssignment.find({ 'studentAssignment': req.user, 'semesterAssigned': x[0].semesterEnrolled, 'programAssigned': x[0].studentEnrolled.programRegistered })
-                        .populate([
-                            {
-                                path: 'programAssigned',
-                                populate: [
-                                    { path: 'degreeOffered', model: Degree },
-                                    { path: 'branchOffered', model: Branch }
-                                ]
-                            },
-                            {
-                                path: 'instructorAssigned'
-                            },
-                            {
-                                path: 'courseAssigned'
-                            },
-                            {
-                                path: 'semesterAssigned'
-                            }
-                        ])
-                        .exec()
-                        .then((courseAssignments) => {
-                            // console.log(courseAssignments.length);
-                            // console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                            // console.log(courseEnrollments.length);
-                            res.render('addDropStudent.ejs', { courseEnrollments, courseAssignments });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        });
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+                        CourseAssignment.find({ 'studentAssignment': req.user, 'semesterAssigned': x[0].semesterEnrolled, 'programAssigned': x[0].studentEnrolled.programRegistered })
+                            .populate([
+                                {
+                                    path: 'programAssigned',
+                                    populate: [
+                                        { path: 'degreeOffered', model: Degree },
+                                        { path: 'branchOffered', model: Branch }
+                                    ]
+                                },
+                                {
+                                    path: 'instructorAssigned'
+                                },
+                                {
+                                    path: 'courseAssigned'
+                                },
+                                {
+                                    path: 'semesterAssigned'
+                                }
+                            ])
+                            .exec()
+                            .then((courseAssignments) => {
+
+                                Student.findOne({ '_id': req.user })
+                                    .then((student) => {
+                                        res.render('addDropStudent.ejs', { courseEnrollments, courseAssignments, student });
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                    });
+
+
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
             }
-            
+
         })
 })
 
@@ -1577,8 +1636,8 @@ app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
     }
 
     else {
-        CourseEnrollment.deleteMany({'studentEnrolled': req.user, 'semesterEnrolled':req.body.sem})
-            .then(()=>{
+        CourseEnrollment.deleteMany({ 'studentEnrolled': req.user, 'semesterEnrolled': req.body.sem })
+            .then(() => {
                 for (var i = 0; i < 6; i++) {
 
                     const x = req.body.register[i]
@@ -1588,7 +1647,7 @@ app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
                                 .then((course) => {
                                     Semester.findById(req.body.sem)
                                         .then((semester) => {
-        
+
                                             const newCourseEnrollment = new CourseEnrollment({
                                                 semesterEnrolled: semester,
                                                 studentEnrolled: student,
@@ -1616,8 +1675,21 @@ app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
                 console.error(err);
             });
         //console.log(req.body.register);
-        
+
     }
+})
+
+app.get('/myComplains', checkAuthenticatedStudent, (req, res) => {
+    Student.findOne({'_id':req.user})
+        .then((student) => {
+            ComplainBox.find({'studentComplained':student})
+                .then((complains) =>{
+                    res.render('myComplains.ejs', {student, complains})
+                })
+        })
+        .catch(err => {
+            console.error(err);
+        });
 })
 
 app.delete('/logoutStudent', (req, res) => {

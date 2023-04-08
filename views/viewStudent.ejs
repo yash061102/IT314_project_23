@@ -40,6 +40,13 @@
                 <h5> <b>Parent Email : </b>
                     <%= student.parentEmail %>
                 </h5>
+                <h5> <b>Profile picture : </b>
+                    <% if (typeof(student.profilePicture)==='undefined') { %>
+                        <img src="img/dp.PNG" alt="">
+                    <% } else { %>
+                        <img src="data:<%= student.profilePicture.contentType %>;base64,<%= student.profilePicture.toString('base64') %>" alt="Profile Picture">
+                    <% } %>
+                </h5>
         </div>
         <div class="header">
             <h2>Academic Details</h2>

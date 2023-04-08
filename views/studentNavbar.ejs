@@ -58,7 +58,7 @@
                 </a>
             </li>
             <li>
-                <a href="/studentHome">
+                <a href="/myComplains">
                     <i class='bx bx-comment-error'></i>
                     <span class="link_name">Complain-box</span>
                 </a>
@@ -78,21 +78,27 @@
                     <!-- <li><a class="link_name" href="#">Profile</a></li> -->
                     <li><a href="#">Account Settings</a></li>
                     <li><a href="#">Reset Password</a></li>
-                    <form action="/logoutStudent?_method=DELETE" method="POST">
-                        <button type="submit">Log Out</button>
-                    </form>
+                    
                 </ul>
             </li>
 
             <li>
                 <div class="profile-details">
                     <div class="profile-content">
-                        <img src="img/Profile.png" alt="profileImg">
+                        <% if (typeof(student.profilePicture)==='undefined') { %>
+                            <img src="img/dp.PNG" alt="">
+                        <% } else { %>
+                            <img src="data:<%= student.profilePicture.contentType %>;base64,<%= student.profilePicture.toString('base64') %>" alt="Profile Picture">
+                        <% } %>
                     </div>
                     <div class="name-job">
-                        <div class="profile_name"></div>
+                        <div class="profile_name">
+                            <%= student.firstname %> <%= student.lastname %>
+                        </div>
                     </div>
-                    <i class='bx bx-log-out'></i>
+                    <form action="/logoutStudent?_method=DELETE" method="POST">
+                        <button type="submit" class="logout"><i class='bx bx-log-out'></i></button>
+                    </form>
                 </div>
             </li>
         </ul>

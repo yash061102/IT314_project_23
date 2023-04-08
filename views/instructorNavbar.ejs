@@ -47,21 +47,22 @@
                     <!-- <li><a class="link_name" href="#">Profile</a></li> -->
                     <li><a href="#">Account Settings</a></li>
                     <li><a href="#">Reset Password</a></li>
-                    <form action="/logoutInstructor?_method=DELETE" method="POST">
-                        <button type="submit">Log Out</button>
-                    </form>
                 </ul>
             </li>
 
             <li>
                 <div class="profile-details">
                     <div class="profile-content">
-                        <img src="img/Profile.png" alt="profileImg">
+                        <img src="img/faculty.png" alt="profileImg">
                     </div>
                     <div class="name-job">
-                        <div class="profile_name"></div>
+                        <div class="profile_name">
+                            <%= instructor.fullname %> 
+                        </div>
                     </div>
-                    <i class='bx bx-log-out'></i>
+                    <form action="/logoutInstructor?_method=DELETE" method="POST">
+                        <button type="submit" class="logout"><i class='bx bx-log-out'></i></button>
+                    </form>
                 </div>
             </li>
         </ul>
