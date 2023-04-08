@@ -22,6 +22,8 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const swal = require('sweetalert');
+
 const passportStudent = require('passport');
 const passportInstructor = require('passport');
 const passportAdmin = require('passport');
@@ -992,13 +994,12 @@ app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'),
     if (req.body.password != req.body.repassword) {
 
         const message = 'Passwords do not match!';
-        res.send(`<script>alert('${message}'); window.location.href='/studentSetails'</script>`);
+        res.send(`<script>alert('${message}'); window.location.href='/studentDetails'</script>`);
         // passwords do not match
     }
 
     else {
-        
-        console.log(req.file);
+
         bcrypt.hash(req.body.password, saltRounds)
             .then((hashedPassword) => {
                 Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, studentID: req.body.sid, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword, profilePicture: req.file.buffer })
@@ -1680,16 +1681,58 @@ app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
 })
 
 app.get('/myComplains', checkAuthenticatedStudent, (req, res) => {
-    Student.findOne({'_id':req.user})
+    Student.findOne({ '_id': req.user })
         .then((student) => {
-            ComplainBox.find({'studentComplained':student})
-                .then((complains) =>{
-                    res.render('myComplains.ejs', {student, complains})
+            ComplainBox.find({ 'studentComplained': student })
+                .then((complains) => {
+                    res.render('myComplains.ejs', { student, complains })
                 })
         })
         .catch(err => {
             console.error(err);
         });
+})
+
+app.get('/addComplain', checkAuthenticatedStudent, (req, res) => {
+
+    Student.findOne({ '_id': req.user })
+        .then((student) => {
+            res.render('addComplain.ejs', { student });
+        })
+
+})
+
+app.post('/addComplain', checkAuthenticatedStudent, (req, res) => {
+
+    Student.findOne({ '_id': req.user })
+        .then((student) => {
+            const newComplainBox = new ComplainBox({
+                studentComplained: student,
+                complain: req.body.complain,
+                status: false,
+                dateComplained: new Date()
+            });
+
+            const message = 'Complain added!';
+            res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+            newComplainBox.save();
+
+            res.redirect('/studentHome');
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
+app.get('/viewComplains', checkAuthenticatedAdmin, (req, res) => {
+    ComplainBox.find({})
+        .populate('studentComplained')
+        .sort({ 'dateComplained': -1 })
+        .exec()
+        .then((complains) => {
+            res.render('viewComplains.ejs', { complains });
+        })
+
 })
 
 app.delete('/logoutStudent', (req, res) => {
@@ -1711,6 +1754,107 @@ app.delete('/logoutAdmin', (req, res) => {
         if (err) return next(err);
         res.redirect('/adminLogin');
     })
+})
+
+app.post('/passwordStudent', (req, res) => {
+    Student.findOne({ '_id': req.user })
+        .then((student) => {
+            res.render('passwordStudent.ejs', { student });
+        })
+})
+app.post('/passwordAdmin', (req, res) => {
+    Admin.findOne({ '_id': req.user })
+        .then((admin) => {
+            res.render('passwordAdmin.ejs', { admin });
+        })
+})
+app.post('/passwordInstructor', (req, res) => {
+    Instructor.findOne({ '_id': req.user })
+        .then((instructor) => {
+            res.render('passwordInstructor.ejs', { instructor });
+        })
+})
+app.get('/passwordStudent', (req, res) => {
+
+    if (req.body.password != req.body.repassword) {
+
+        const message = 'Failed! Passwords do not match.';
+        res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+        // passwords do not match
+    }
+
+    else {
+
+        bcrypt.hash(req.body.password, saltRounds)
+            .then((hashedPassword) => {
+                Student.updateOne({ '_id': req.user }, { password: hashedPassword })
+                    .then(() => {
+                        const message = 'Password updated!';
+                        res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+})
+app.get('/passwordAdmin', (req, res) => {
+    
+    if (req.body.password != req.body.repassword) {
+
+        const message = 'Failed! Passwords do not match.';
+        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+        // passwords do not match
+    }
+
+    else {
+
+        bcrypt.hash(req.body.password, saltRounds)
+            .then((hashedPassword) => {
+                Admin.updateOne({ '_id': req.user }, { password: hashedPassword })
+                    .then(() => {
+                        const message = 'Password updated!';
+                        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+})
+app.get('/passwordInstructor', (req, res) => {
+    
+    if (req.body.password != req.body.repassword) {
+
+        const message = 'Failed! Passwords do not match.';
+        res.send(`<script>alert('${message}'); window.location.href='/instructorHome'</script>`);
+        // passwords do not match
+    }
+
+    else {
+
+        bcrypt.hash(req.body.password, saltRounds)
+            .then((hashedPassword) => {
+                Instructor.updateOne({ '_id': req.user }, { password: hashedPassword })
+                    .then(() => {
+                        const message = 'Password updated!';
+                        res.send(`<script>alert('${message}'); window.location.href='/instructorHome'</script>`);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    
 })
 
 function checkAuthenticatedStudent(req, res, next) {
