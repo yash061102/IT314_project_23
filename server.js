@@ -159,7 +159,9 @@ const courseEnrollmentSchema = new mongoose.Schema({
 const feeHistorySchema = new mongoose.Schema({
     semesterFee: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
     studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-    feePaid: Map
+    feeStatus: Boolean,
+    feePaid: Map,
+    datePaid: Date
 })
 
 const feeSchema = new mongoose.Schema({
@@ -773,6 +775,10 @@ app.get('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 
 app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 
+    if (req.body.email.split('@')[1] != "daiict.ac.in") {
+        const message = 'Invalid email!';
+        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+    }
     function generateP() {
         var pass = '';
         var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
@@ -792,7 +798,8 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
         .then((student) => {
 
             if (student != null) {
-                res.redirect('/adminHome');
+                const message = 'Student email already exists!';
+                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
             }
 
             else {
@@ -808,32 +815,38 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
                         newStudent.save();
 
                         var transporter = nodemailer.createTransport({
-                            host: 'smtp.gmail.com',
-                            port: 465,
-                            secure: true,
+                            service: "Outlook365",
+                            host: "smtp.office365.com",
+                            port: "587",
+                            tls: {
+                                ciphers: "SSLv3",
+                                rejectUnauthorized: false,
+                            },
                             auth: {
-                                user: 'devarshnagrecha58@gmail.com',
+                                user: 'e-campus-daiict@outlook.com',
                                 pass: process.env.GMAILPASSWORD
                             }
                         });
 
                         var mailOptions = {
-                            from: 'devarshnagrecha58@gmail.com',
+                            from: 'e-campus-daiict@outlook.com',
                             to: req.body.email,
-                            subject: 'Student Information System',
-                            text: `Your account has been created! Your password is ${randomPass}`
+                            subject: 'Account created',
+                            text: `Student account has been created for you! Your password is ${randomPass}`
                         };
 
                         transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
+                                const message = 'Failed. Please try again!';
+                                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
                                 console.log(error);
                             } else {
-                                console.log(req.user + "\n" + req.body.email);
                                 console.log('Email sent: ' + info.response);
                             }
                         });
 
-                        res.redirect('/addStudent');
+                        const message = 'Student added successfully!';
+                        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
 
                     })
                     .catch(err => {
@@ -851,6 +864,11 @@ app.get('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
 })
 
 app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
+
+    if (req.body.email.split('@')[1] != "daiict.ac.in") {
+        const message = 'Invalid email!';
+        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+    }
 
     function generateP() {
         var pass = '';
@@ -871,7 +889,8 @@ app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
         .then((instructor) => {
 
             if (instructor != null) {
-                res.redirect('/adminHome');
+                const message = 'Instructor email already exits';
+                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
             }
 
             else {
@@ -888,30 +907,38 @@ app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
                         newInstructor.save();
 
                         var transporter = nodemailer.createTransport({
-                            service: 'gmail',
+                            service: "Outlook365",
+                            host: "smtp.office365.com",
+                            port: "587",
+                            tls: {
+                                ciphers: "SSLv3",
+                                rejectUnauthorized: false,
+                            },
                             auth: {
-                                user: 'devarshnagrecha58@gmail.com',
+                                user: 'e-campus-daiict@outlook.com',
                                 pass: process.env.GMAILPASSWORD
                             }
                         });
 
                         var mailOptions = {
-                            from: 'devarshnagrecha58@gmail.com',
+                            from: 'e-campus-daiict@outlook.com',
                             to: req.body.email,
-                            subject: 'Student Information System',
-                            text: `Your account has been created! Your password is ${randomPass}`
+                            subject: 'Account created',
+                            text: `Instructor account has been created for you! Your password is ${randomPass}`
                         };
 
                         transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
+                                const message = 'Failed. Please try again!';
+                                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
                                 console.log(error);
                             } else {
                                 console.log('Email sent: ' + info.response);
                             }
                         });
 
-                        res.redirect('/addInstructor');
-
+                        const message = 'Instructor added successfully';
+                        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
                     })
                     .catch(err => {
                         console.log('Error:', err);
@@ -1173,9 +1200,7 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                                     ])
                                     .exec()
                                     .then((semesterAssignments) => {
-
-                                        //console.log(semesterAssignments);
-                                        res.render('semesterRegistration.ejs', { semesterAssignments, student })
+                                        res.render('semesterRegistration.ejs', { semesterAssignments, student });
                                     })
                                     .catch(err => {
                                         console.error(err);
@@ -1224,6 +1249,21 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                                     })
                                     //console.log(newCourseEnrollment);
                                     newCourseEnrollment.save();
+
+                                    const newFeeHistory = new FeeHistory({
+                                        semesterFee: semester,
+                                        studentEnrolled: student,
+                                        feeStatus: false,
+                                        feePaid: new Map()
+                                    })
+
+                                    newFeeHistory.save()
+                                        .then(() => {
+                                            res.redirect('/studentHome');
+                                        })
+                                        .catch(err => {
+                                            console.error(err);
+                                        });
                                 })
                                 .catch(err => {
                                     console.error(err);
@@ -1237,7 +1277,6 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                     console.error(err);
                 });
         }
-        res.redirect('/studentHome');
     }
 })
 
@@ -1491,21 +1530,26 @@ app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
             .exec()
             .then((ans) => {
                 console.log(ans);
+
                 var transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 465,
-                    secure: true,
+                    service: "Outlook365",
+                    host: "smtp.office365.com",
+                    port: "587",
+                    tls: {
+                        ciphers: "SSLv3",
+                        rejectUnauthorized: false,
+                    },
                     auth: {
-                        user: 'devarshnagrecha58@gmail.com',
+                        user: 'e-campus-daiict@outlook.com',
                         pass: process.env.GMAILPASSWORD
                     }
                 });
 
 
                 var mailOptions = {
-                    from: 'devarshnagrecha58@gmail.com',
+                    from: 'e-campus-daiict@outlook.com',
                     to: ans.studentEnrolled.email,
-                    subject: 'Student Information System',
+                    subject: 'Grade Updates',
                     text: `${ans.semesterEnrolled.name} semester grades updated for the course ${ans.courseEnrolled.name}. Recieved grade: ${ans.grade}`
                 };
 
@@ -1513,18 +1557,17 @@ app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
                     if (error) {
                         console.log(error);
                     } else {
-                        console.log(req.user + "\n" + req.body.email);
+                        //console.log(req.user + "\n" + req.body.email);
                         console.log('Email sent: ' + info.response);
                     }
                 });
-
-                res.redirect('/instructorHome');
             })
             .catch((err) => {
                 console.error(err);
             });
 
     }
+    res.redirect('/instructorHome');
 
 })
 
@@ -1912,7 +1955,7 @@ app.post('/feeProgram', checkAuthenticatedAdmin, (req, res) => {
         });
 })
 
-app.post('/feeStructure', (req, res) => {
+app.post('/feeStructure', checkAuthenticatedAdmin, (req, res) => {
 
     const tuple = req.body.delete.split(",");
     //console.log(tuple);
@@ -1925,13 +1968,13 @@ app.post('/feeStructure', (req, res) => {
         });
 })
 
-app.post('/addFee', (req, res) => {
+app.post('/addFee', checkAuthenticatedAdmin, (req, res) => {
     //console.log(req.body);
     Program.findOne({ '_id': req.body.program })
         .populate(['branchOffered', 'degreeOffered'])
         .exec()
         .then((program) => {
-            //console.log(program);
+            console.log(program);
             res.render('addFee.ejs', { program })
         })
         .catch((err) => {
@@ -1939,14 +1982,16 @@ app.post('/addFee', (req, res) => {
         });
 })
 
-app.post('/addFeeData', (req, res) => {
+app.post('/addFeeData', checkAuthenticatedAdmin, (req, res) => {
 
+    console.log(req.body);
     const { charge, amount, program } = req.body;
 
-    Fee.findOneAndUpdate({ 'programFee': program })
+    Fee.findOne({ 'programFee': program })
         .populate('feeStructure')
         .exec()
         .then((result) => {
+            console.log(result);
             if (result === null) {
                 const newFee = new Fee();
                 newFee.feeStructure = new Map();
@@ -1955,7 +2000,7 @@ app.post('/addFeeData', (req, res) => {
 
                 newFee.save()
                     .then(() => {
-                        res.redirect
+                        res.redirect('/feeProgram');
                     })
             }
 
@@ -1972,18 +2017,105 @@ app.post('/addFeeData', (req, res) => {
         })
 })
 
-app.get('/feeProgramPayments', (req, res) => {
-    Program.find({})
-        .populate(['degreeOffered', 'branchOffered'])
-        .exec()
-        .then((program) => {
-            res.render('feeProgramPayments.ejs', { program });
+app.get('/feeSemesterPayments', checkAuthenticatedAdmin, (req, res) => {
+
+    Semester.find({})
+        .sort({ dateCreated: -1 })
+        .then((semester) => {
+            res.render('feeSemesterPayments.ejs', { semester });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
 })
 
+app.post('/feeSemesterPayments', checkAuthenticatedAdmin, (req, res) => {
+    Semester.findOne({ '_id': req.body.view })
+        .populate({
+            path: 'programsOffered',
+            populate: [
+                { path: 'degreeOffered', model: Degree },
+                { path: 'branchOffered', model: Branch }
+            ]
+        })
+        .exec()
+        .then((semester) => {
+            res.render('feeProgramPayments.ejs', { semester })
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+})
+
+app.post('/feeProgramPayments', checkAuthenticatedAdmin, (req, res) => {
+
+    // const tuple = req.body.x.split(" ");
+    // Student.find({ 'programRegistered': tuple[2] })
+    //     .then((students) => {
+    //         CourseEnrollment.find({ 'semesterEnrolled': tuple[0], 'courseEnrolled': tuple[1], 'studentEnrolled': { $in: students } })
+    //             .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
+    //             .exec()
+    //             .then((gradeStudents) => {
+    const tuple = req.body.view.split(" ");
+    //console.log(tuple[0] + " " + tuple[1]);
+    Student.find({ 'programRegistered': tuple[0] })
+        .then((students) => {
+            CourseEnrollment.find({ 'semesterEnrolled': tuple[1], 'studentEnrolled': { $in: students } })
+                .distinct('studentEnrolled')
+                .then((enrollments) => {
+
+                    FeeHistory.find({ 'studentEnrolled': { $in: students }, 'semesterFee': tuple[1] })
+                        .populate('studentEnrolled')
+                        .then((history) => {
+                            res.render('feeStudentPayments.ejs', { students, history, enrollments, semesterID: tuple[1], programID: tuple[0] })
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+})
+
+app.post('/feeStudentPayments', checkAuthenticatedAdmin, (req, res) => {
+
+    console.log(req.body);
+    if (req.body.add) {
+        const tuple = req.body.add.split(" ");
+
+        Fee.findOne({ 'programFee': tuple[2] })
+            .then((fee) => {
+                if (fee == null) {
+                    const message = 'Failed! Fee structure not added.';
+                    res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                }
+                else
+                {
+                    FeeHistory.findOneAndUpdate({ 'studentEnrolled': tuple[0], 'semesterFee': tuple[1] }, { feeStatus: true, datePaid: new Date(), feePaid: fee.feeStructure }, { new: true })
+                    .then((history) => {
+                        console.log(history);
+                        res.redirect('/adminHome');
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                }
+                
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+
+
+
+    }
+})
 function checkAuthenticatedStudent(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
