@@ -156,11 +156,15 @@ const courseEnrollmentSchema = new mongoose.Schema({
     dateEnrolled: Date
 })
 
-const feeStatusSchema = new mongoose.Schema({
+const feeHistorySchema = new mongoose.Schema({
     semesterFee: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
-    programFee: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
     studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-    status: Boolean
+    feePaid: Map
+})
+
+const feeSchema = new mongoose.Schema({
+    programFee: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
+    feeStructure: Map
 })
 
 const complainBoxSchema = new mongoose.Schema({
@@ -186,6 +190,8 @@ const CourseAssignment = mongoose.model("CourseAssignment", courseAssignmentSche
 const CourseEnrollment = mongoose.model("CourseEnrollment", courseEnrollmentSchema);
 const ComplainBox = mongoose.model("ComplainBox", complainBoxSchema);
 
+const Fee = mongoose.model("Fee", feeSchema);
+const FeeHistory = mongoose.model("FeeHistory", feeHistorySchema);
 
 
 
@@ -644,7 +650,15 @@ app.post('/assignCourse', checkAuthenticatedAdmin, (req, res) => {
                 console.error(err);
             });
     }
-    res.redirect('/generate-pdf');
+
+    const html = `
+        <script>
+        window.open('/generate-pdf', '_blank');
+        window.location.href='/adminHome';
+        </script>
+    `;
+
+    res.send(html);
 })
 
 app.get('/generate-pdf', checkAuthenticatedAdmin, (req, res) => {
@@ -1316,8 +1330,6 @@ app.post('/gradeCard', checkAuthenticatedStudent, (req, res) => {
                 .text(`SPI : ${spi}`, { align: 'center' })
 
             doc.end();
-
-
         })
         .catch(err => {
             console.error(err);
@@ -1802,7 +1814,7 @@ app.post('/passwordStudent', (req, res) => {
     }
 })
 app.post('/passwordAdmin', (req, res) => {
-    
+
     if (req.body.password != req.body.repassword) {
 
         const message = 'Failed! Passwords do not match.';
@@ -1829,7 +1841,7 @@ app.post('/passwordAdmin', (req, res) => {
     }
 })
 app.post('/passwordInstructor', (req, res) => {
-    
+
     if (req.body.password != req.body.repassword) {
 
         const message = 'Failed! Passwords do not match.';
@@ -1854,7 +1866,122 @@ app.post('/passwordInstructor', (req, res) => {
                 console.log(err);
             });
     }
-    
+
+})
+
+app.get('/feeProgram', checkAuthenticatedAdmin, (req, res) => {
+
+    Program.find({})
+        .populate(['degreeOffered', 'branchOffered'])
+        .exec()
+        .then((program) => {
+            res.render('feeProgram.ejs', { program });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+app.post('/feeProgram', checkAuthenticatedAdmin, (req, res) => {
+
+    Program.findOne({ '_id': req.body.view })
+        .populate(['branchOffered', 'degreeOffered'])
+        .exec()
+        .then((program) => {
+
+            Fee.findOne({ 'programFee': req.body.view })
+                .populate({
+                    path: 'programFee',
+                    populate: [
+                        { path: 'degreeOffered', model: Degree },
+                        { path: 'branchOffered', model: Branch }
+                    ]
+                })
+                .exec()
+                .then((structure) => {
+
+                    res.render('feeStructure.ejs', { structure, program })
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+})
+
+app.post('/feeStructure', (req, res) => {
+
+    const tuple = req.body.delete.split(",");
+    //console.log(tuple);
+    Fee.findOneAndUpdate({ 'programFee': tuple[0] }, { $unset: { [`feeStructure.${tuple[1]}`]: 1 } }, { new: true })
+        .then((x) => {
+            res.redirect('/feeProgram');
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+})
+
+app.post('/addFee', (req, res) => {
+    //console.log(req.body);
+    Program.findOne({ '_id': req.body.program })
+        .populate(['branchOffered', 'degreeOffered'])
+        .exec()
+        .then((program) => {
+            //console.log(program);
+            res.render('addFee.ejs', { program })
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+})
+
+app.post('/addFeeData', (req, res) => {
+
+    const { charge, amount, program } = req.body;
+
+    Fee.findOneAndUpdate({ 'programFee': program })
+        .populate('feeStructure')
+        .exec()
+        .then((result) => {
+            if (result === null) {
+                const newFee = new Fee();
+                newFee.feeStructure = new Map();
+                newFee.feeStructure.set(charge, amount);
+                newFee.programFee = program;
+
+                newFee.save()
+                    .then(() => {
+                        res.redirect
+                    })
+            }
+
+            else {
+
+                Fee.findOneAndUpdate({ 'programFee': program }, { $set: { [`feeStructure.${charge}`]: amount } }, { new: true })
+                    .then((x) => {
+                        res.redirect('/feeProgram');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        })
+})
+
+app.get('/feeProgramPayments', (req, res) => {
+    Program.find({})
+        .populate(['degreeOffered', 'branchOffered'])
+        .exec()
+        .then((program) => {
+            res.render('feeProgramPayments.ejs', { program });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 })
 
 function checkAuthenticatedStudent(req, res, next) {
