@@ -54,9 +54,9 @@
                                         <% var x=0 %>
                                         <% for (var j=0; j < history.length; j++) { %>
 
-                                            <% if (history[j].studentEnrolled.id==enrollments[i].toString()) { %>
+                                            <% if (history[j].studentEnrolled.id==enrollments[i].toString() && history[j].feeStatus==true) { %>
                                                 <% x=1 %>
-                                                <button type="submit" name="view" value="<%=enrollments[i].toString() + " " + semesterID + " " + programID %>"> View</button>
+                                                <button type="submit" name="view" value="<%=enrollments[i].toString() + " " + semesterID%>"> View</button>
                                                 <% break; %>
                                             <% } %>
                                         <% } %>

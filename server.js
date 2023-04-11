@@ -832,7 +832,7 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
                             from: 'e-campus-daiict@outlook.com',
                             to: req.body.email,
                             subject: 'Account created',
-                            text: `Student account has been created for you! Your password is ${randomPass}`
+                            html: `<h2> Student account has been created. </h2> <br /> <p> Your credentials are: </p>  <br/>  <p> <b> Email ID : </b> ${req.body.email} </p> <br/> <p> <b> Password : </b> ${randomPass} </p> <br/> <a href="https://e-campus-vugi.onrender.com/studentLogin" >Click here to login</a>`
                         };
 
                         transporter.sendMail(mailOptions, function (error, info) {
@@ -924,7 +924,7 @@ app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
                             from: 'e-campus-daiict@outlook.com',
                             to: req.body.email,
                             subject: 'Account created',
-                            text: `Instructor account has been created for you! Your password is ${randomPass}`
+                            html: `<h2> Faculty account has been created. </h2> <br /> <p> Your credentials are: </p>  <br/>  <p> <b> Email ID : </b> ${req.body.email} </p> <br/> <p> <b> Password : </b> ${randomPass} </p> <br/> <a href="https://e-campus-vugi.onrender.com/studentLogin" >Click here to login</a>`
                         };
 
                         transporter.sendMail(mailOptions, function (error, info) {
@@ -1230,6 +1230,25 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
     else {
 
+        Student.findById(req.user)
+            .then((student) => {
+                Semester.findById(req.body.sem)
+                    .then((semester) => {
+                        const newFeeHistory = new FeeHistory({
+                            semesterFee: semester,
+                            studentEnrolled: student,
+                            feeStatus: false,
+                            feePaid: new Map()
+                        })
+                        console.log(newFeeHistory);
+                        newFeeHistory.save()
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+
         //console.log(req.body.register);
         for (var i = 0; i < 6; i++) {
 
@@ -1248,22 +1267,8 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                                         dateEnrolled: new Date()
                                     })
                                     //console.log(newCourseEnrollment);
-                                    newCourseEnrollment.save();
+                                    newCourseEnrollment.save()
 
-                                    const newFeeHistory = new FeeHistory({
-                                        semesterFee: semester,
-                                        studentEnrolled: student,
-                                        feeStatus: false,
-                                        feePaid: new Map()
-                                    })
-
-                                    newFeeHistory.save()
-                                        .then(() => {
-                                            res.redirect('/studentHome');
-                                        })
-                                        .catch(err => {
-                                            console.error(err);
-                                        });
                                 })
                                 .catch(err => {
                                     console.error(err);
@@ -1276,7 +1281,10 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                 .catch(err => {
                     console.error(err);
                 });
+
         }
+
+        res.redirect('/studentHome');
     }
 })
 
@@ -2084,7 +2092,7 @@ app.post('/feeProgramPayments', checkAuthenticatedAdmin, (req, res) => {
 
 app.post('/feeStudentPayments', checkAuthenticatedAdmin, (req, res) => {
 
-    console.log(req.body);
+    //console.log(req.body);
     if (req.body.add) {
         const tuple = req.body.add.split(" ");
 
@@ -2094,28 +2102,132 @@ app.post('/feeStudentPayments', checkAuthenticatedAdmin, (req, res) => {
                     const message = 'Failed! Fee structure not added.';
                     res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
                 }
-                else
-                {
+                else {
                     FeeHistory.findOneAndUpdate({ 'studentEnrolled': tuple[0], 'semesterFee': tuple[1] }, { feeStatus: true, datePaid: new Date(), feePaid: fee.feeStructure }, { new: true })
-                    .then((history) => {
-                        console.log(history);
-                        res.redirect('/adminHome');
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
+                        .then((history) => {
+                            console.log(history);
+                            res.redirect('/adminHome');
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
                 }
-                
+
             })
             .catch((err) => {
                 console.error(err);
             });
+    }
 
+    else {
+        const tuple = req.body.view.split(" ");
 
-
-
+        FeeHistory.findOne({ 'studentEnrolled': tuple[0], 'semesterFee': tuple[1] })
+            .populate(['studentEnrolled', 'semesterFee'])
+            .exec()
+            .then((history) => {
+                res.render('viewRecieptAdmin.ejs', { history });
+            })
     }
 })
+
+app.get('/semesterFee', checkAuthenticatedStudent, (req, res) => {
+
+    CourseEnrollment.find({ 'studentEnrolled': req.user })
+        .distinct('semesterEnrolled')
+        .then((enrollment) => {
+            Semester.find()
+                .where('_id')
+                .in(enrollment)
+                .sort({ dateCreated: 1 })
+                .then((semester) => {
+
+                    Student.findOne({ '_id': req.user })
+                        .then((student) => {
+
+                            FeeHistory.find({ 'studentEnrolled': req.user })
+                                .populate('semesterFee')
+                                .then((history) => {
+                                    res.render('semesterFee.ejs', { semester, student, history })
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                });
+
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
+app.post('/semesterFee', checkAuthenticatedStudent, (req, res) => {
+
+    const tuple = req.body.view.split(" ");
+    FeeHistory.findOne({ 'studentEnrolled': req.user, 'semesterFee': tuple[0] })
+        .populate(['studentEnrolled', 'semesterFee'])
+        .exec()
+        .then((history) => {
+            Student.findOne({ '_id': req.user })
+                .then((student) => {
+                    //console.log(history);
+                    res.render('feeReciept.ejs', { history, sem: tuple[1], student });
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
+app.post('/pdf-reciept', checkAuthenticatedStudent, (req, res) => {
+    const tuple = req.body.download.split(" ");
+    const doc = new PDFDocument();
+    const writeStream = fs.createWriteStream('fee.pdf');
+    doc.pipe(res);
+
+    FeeHistory.findOne({ 'studentEnrolled': tuple[0], 'semesterFee': tuple[1] })
+        .populate(['studentEnrolled', 'semesterFee'])
+        .exec()
+        .then((history) => {
+
+            doc.fontSize(15)
+                .text(`Student ID : ${history.studentEnrolled.studentID}`, { align: 'center' })
+                .moveDown()
+                .text(`Full name : ${history.studentEnrolled.firstname} ${history.studentEnrolled.middlename} ${history.studentEnrolled.lastname}`, { align: 'center' })
+                .moveDown()
+                .text(`Semester number: ${tuple[2]}`, { align: 'center' })
+                .moveDown()
+                .text(`Date paid: ${history.datePaid}`, { align: 'center' })
+                .moveDown()
+                .text(`Reciept number: ${history.id}`, { align: 'center' })
+                .moveDown()
+
+            var totalAmount = 0;
+            for (let [key, value] of history.feePaid) {
+                totalAmount += parseInt(value);
+                doc.fontSize(10)
+                    .text(`${key} : ${value}`, { align: 'center' })
+                    .moveDown();
+            }
+
+            doc.fontSize(10)
+                .text(`Total amount : ${totalAmount}`, { align: 'center' })
+
+            doc.end();
+
+        })
+})
+
 function checkAuthenticatedStudent(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
