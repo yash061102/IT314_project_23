@@ -22,8 +22,6 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const swal = require('sweetalert');
-
 const passportStudent = require('passport');
 const passportInstructor = require('passport');
 const passportAdmin = require('passport');
@@ -988,6 +986,16 @@ app.post('/addAdmin', checkAuthenticatedAdmin, (req, res) => {
 })
 
 app.get('/studentLogin', checkNotAuthenticatedStudent, (req, res) => {
+    // const messages = req.flash('error');
+
+    // console.log(messages);
+    // if (messages=="No such email registered!")
+    //     res.status(400).json({ message: "No such email registered!" });
+    // else if (messages=="Incorrect password!")
+    //     res.status(400).json({ message: "Incorrect password!" });
+    // else if (messages=="Missing credentials")
+    //     res.status(400).json({ message: "Missing credentials" });
+    // else
     res.render('studentLogin.ejs')
 })
 
@@ -1007,7 +1015,7 @@ app.get('/studentHome', checkAuthenticatedStudent, (req, res) => {
                     .populate(['degreeOffered', 'branchOffered', 'coursesOffered'])
                     .exec()
                     .then((program) => {
-                        console.log(student + " " + req.user);
+                        // console.log(student + " " + req.user);
                         res.render('studentDetails.ejs', { program, student });
                     })
                     .catch((err) => {
@@ -1173,8 +1181,11 @@ app.get('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
                         .then((courseEnrollments) => {
                             if (courseEnrollments.length != 0) {
 
-                                const message = 'Latest semester already registered!';
-                                res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+                                const title = "ERROR";
+                                const message = "Latest semester already registered!";
+                                const icon = "error";
+                                const href = "/studentHome";
+                                res.render("alert.ejs", { title, message, icon, href });
 
                             }
 
@@ -1224,8 +1235,11 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
     if (req.body.register.length != 6) {
 
-        const message = 'Please select only 6 courses!';
-        res.send(`<script>alert('${message}'); window.location.href='/semesterRegistration'</script>`);
+        const title = "ERROR";
+        const message = "Please select only 6 courses!";
+        const icon = "error";
+        const href = "/semesterRegistration";
+        res.render("alert.ejs", { title, message, icon, href });
     }
 
     else {
@@ -1419,7 +1433,12 @@ app.get('/updateStudent', checkAuthenticatedStudent, (req, res) => {
 app.post('/updateStudent', checkAuthenticatedStudent, (req, res) => {
     Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, mobileNO: req.body.mobileNO, myemail: req.body.myemail, parentEmail: req.body.parentEmail, dob: req.body.dob, gender: req.body.gender })
         .then((student) => {
-            res.redirect('/studentHome');
+
+            const title = "SUCCESS";
+            const message = "Student details updated!";
+            const icon = "success";
+            const href = "/studentHome";
+            res.render("alert.ejs", { title, message, icon, href });
         })
 })
 
@@ -1558,7 +1577,7 @@ app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
                     from: 'e-campus-daiict@outlook.com',
                     to: ans.studentEnrolled.email,
                     subject: 'Grade Updates',
-                    text: `${ans.semesterEnrolled.name} semester grades updated for the course ${ans.courseEnrolled.name}. Recieved grade: ${ans.grade}`
+                    html: `<h2> Please note the following updates in grades of ${ans.semesterEnrolled.name}. </h2> <br /> <p> <b> Course : </b> ${ans.courseEnrolled.name} </p> <br/> <p> <b> Grade recieved : </b> ${ans.grade} </p>`
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {
@@ -1634,13 +1653,19 @@ app.get('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
         .exec()
         .then((x) => {
             if (typeof (x[0]) === 'undefined') {
-                const message = 'Register a semester first to add/drop!';
-                res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+
+                const title = "ERROR";
+                const message = "Register a semester first to add/drop!";
+                const icon = "error";
+                const href = "/studentHome";
             }
             else if (x[0].semesterEnrolled.addDrop == false) {
 
-                const message = 'Add/Drop currently unavailable!';
-                res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+                const title = "ERROR";
+                const message = "Add/Drop currently unavailable!";
+                const icon = "error";
+                const href = "/studentHome";
+                res.render("alert.ejs", { title, message, icon, href });
             }
             else {
                 CourseEnrollment.find({ 'studentEnrolled': req.user, 'semesterEnrolled': x[0].semesterEnrolled })
@@ -1695,8 +1720,11 @@ app.get('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
 app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
     if (req.body.register.length != 6) {
 
-        const message = 'Please select only 6 courses!';
-        res.send(`<script>alert('${message}'); window.location.href='/addDropStudent'</script>`);
+        const title = "ERROR";
+        const message = "Please select only 6 courses!";
+        const icon = "error";
+        const href = "/addDropStudent";
+        res.render("alert.ejs", { title, message, icon, href });
     }
 
     else {
@@ -1776,11 +1804,13 @@ app.post('/addComplain', checkAuthenticatedStudent, (req, res) => {
                 dateComplained: new Date()
             });
 
-            const message = 'Complain added!';
-            res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
             newComplainBox.save();
 
-            res.redirect('/studentHome');
+            const title = "SUCCESS";
+            const message = "Your Complain has been submitted!";
+            const icon = "success";
+            const href = "/studentHome";
+            res.render("alert.ejs", { title, message, icon, href });
         })
         .catch(err => {
             console.error(err);
@@ -1841,8 +1871,11 @@ app.post('/passwordStudent', (req, res) => {
 
     if (req.body.password != req.body.repassword) {
 
-        const message = 'Failed! Passwords do not match.';
-        res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+        const title = "ERROR";
+        const message = "Passwords do not match.";
+        const icon = "error";
+        const href = "/studentHome";
+        res.render("alert.ejs", { title, message, icon, href });
         // passwords do not match
     }
 
@@ -1852,8 +1885,11 @@ app.post('/passwordStudent', (req, res) => {
             .then((hashedPassword) => {
                 Student.updateOne({ '_id': req.user }, { password: hashedPassword })
                     .then(() => {
-                        const message = 'Password updated!';
-                        res.send(`<script>alert('${message}'); window.location.href='/studentHome'</script>`);
+                        const title = "SUCCESS";
+                        const message = "Password updated!";
+                        const icon = "success";
+                        const href = "/studentHome";
+                        res.render("alert.ejs", { title, message, icon, href });
                     })
                     .catch((err) => {
                         console.log(err);
@@ -1868,8 +1904,11 @@ app.post('/passwordAdmin', (req, res) => {
 
     if (req.body.password != req.body.repassword) {
 
-        const message = 'Failed! Passwords do not match.';
-        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+        const title = "ERROR";
+        const message = "Passwords do not match.";
+        const icon = "error";
+        const href = "/adminHome";
+        res.render("alert.ejs", { title, message, icon, href });
         // passwords do not match
     }
 
@@ -1879,8 +1918,11 @@ app.post('/passwordAdmin', (req, res) => {
             .then((hashedPassword) => {
                 Admin.updateOne({ '_id': req.user }, { password: hashedPassword })
                     .then(() => {
-                        const message = 'Password updated!';
-                        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                        const title = "SUCCESS";
+                        const message = "Password updated!";
+                        const icon = "success";
+                        const href = "/adminHome";
+                        res.render("alert.ejs", { title, message, icon, href });
                     })
                     .catch((err) => {
                         console.log(err);
@@ -1895,8 +1937,12 @@ app.post('/passwordInstructor', (req, res) => {
 
     if (req.body.password != req.body.repassword) {
 
-        const message = 'Failed! Passwords do not match.';
-        res.send(`<script>alert('${message}'); window.location.href='/instructorHome'</script>`);
+        const title = "ERROR";
+        const message = "Passwords do not match.";
+        const icon = "error";
+        const href = "/instructorHome";
+        res.render("alert.ejs", { title, message, icon, href });
+
         // passwords do not match
     }
 
@@ -1906,8 +1952,11 @@ app.post('/passwordInstructor', (req, res) => {
             .then((hashedPassword) => {
                 Instructor.updateOne({ '_id': req.user }, { password: hashedPassword })
                     .then(() => {
-                        const message = 'Password updated!';
-                        res.send(`<script>alert('${message}'); window.location.href='/instructorHome'</script>`);
+                        const title = "SUCCESS";
+                        const message = "Password updated!";
+                        const icon = "success";
+                        const href = "/instructorHome";
+                        res.render("alert.ejs", { title, message, icon, href });
                     })
                     .catch((err) => {
                         console.log(err);
@@ -2270,6 +2319,10 @@ function checkNotAuthenticatedAdmin(req, res, next) {
     next()
 }
 
-app.listen(3000, function () {
-    console.log("Server started on port 3000");
-});
+if (!module.parent) {
+    app.listen(3000, function () {
+        console.log("server is active");
+    });
+}
+
+module.exports = app;
