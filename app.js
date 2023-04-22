@@ -18,6 +18,9 @@ app.get('/', function (req, res) {
         greeting = 'Good Evening';
     res.render('adminhome',{greet:greeting});
 })
-app.listen(3000, function (req, res) {
+app.get('/studentregistration',function(req,res){
+    res.render('studentregistration');
+})
+app.listen(3001, function (req, res) {
     console.log("Server is running on port number 3000");
 });
