@@ -31,7 +31,12 @@
                             <div class="col col-3">Course Code</div>
                             <div class="col col-4">Course Name</div>
                             <div class="col col-5">Course Credits</div>
-                            <div class="col col-6">Assign Grades</div>
+                            <% if (signal=="1") { %>
+                                <div class="col col-6">Assign Grades</div>
+                            <% } else { %>
+                                <div class="col col-6">Enter Attendance</div>
+                                <% } %>
+                            
                         </li>
 
 
@@ -56,7 +61,7 @@
                                 </div>
                                 <div class="col col-6" data-label="Name">
                                     <button type='submit' name="x"
-                                        value="<%= courseAssignment[0].semesterAssigned.id + " " + courseAssignment[i].courseAssigned.id + " " + courseAssignment[i].programAssigned.id%>">Select</button>
+                                        value="<%= courseAssignment[0].semesterAssigned.id + " " + courseAssignment[i].courseAssigned.id + " " + courseAssignment[i].programAssigned.id + " " + signal%>">Select</button>
                                 </div>
                             </li>
                             <% } %>

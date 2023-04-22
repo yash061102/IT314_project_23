@@ -150,7 +150,7 @@ const courseEnrollmentSchema = new mongoose.Schema({
     studentEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     semesterEnrolled: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
     grade: Number,
-    attendance: Number,
+    attendance: { type: Number, min: 0, max: 100 },
     dateEnrolled: Date
 })
 
@@ -1411,7 +1411,7 @@ app.get('/semesterResults', checkAuthenticatedStudent, (req, res) => {
                     Student.findOne({ '_id': req.user })
                         .then((student) => {
                             console.log(student)
-                            res.render('semesterResults.ejs', { semester, student })
+                            res.render('semesterResults.ejs', { semester, student, signal:"1" })
                         })
                         .catch(err => {
                             console.error(err);
@@ -1437,7 +1437,7 @@ app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
 
             Student.findOne({ '_id': req.user })
                 .then((student) => {
-                    res.render('gradeCard.ejs', { result, tuple, student })
+                    res.render('gradeCard.ejs', { result, tuple, student, signal:req.body.signal })
                 })
                 .catch(err => {
                     console.error(err);
@@ -1447,6 +1447,36 @@ app.post('/semesterResults', checkAuthenticatedStudent, (req, res) => {
         .catch(err => {
             console.error(err);
         });
+})
+
+app.get('/semesterResultsAttendance', checkAuthenticatedStudent, (req, res) => {
+
+    CourseEnrollment.find({ 'studentEnrolled': req.user })
+        .distinct('semesterEnrolled')
+        .then((enrollment) => {
+            Semester.find()
+                .where('_id')
+                .in(enrollment)
+                .sort({ dateCreated: 1 })
+                .then((semester) => {
+
+                    Student.findOne({ '_id': req.user })
+                        .then((student) => {
+                            console.log(student)
+                            res.render('semesterResults.ejs', { semester, student, signal:"2" })
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
 })
 
 app.post('/gradeCard', checkAuthenticatedStudent, (req, res) => {
@@ -1549,7 +1579,7 @@ app.get('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
                 .then((semester) => {
                     Instructor.findOne({ '_id': req.user })
                         .then((instructor) => {
-                            res.render('instructorSemester.ejs', { semester, instructor })
+                            res.render('instructorSemester.ejs', { semester, instructor, signal: "1" })
                         })
                         .catch(err => {
                             console.error(err);
@@ -1588,7 +1618,7 @@ app.post('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
 
             Instructor.findOne({ '_id': req.user })
                 .then((instructor) => {
-                    res.render('gradeSemester.ejs', { courseAssignment, instructor })
+                    res.render('gradeSemester.ejs', { courseAssignment, instructor, signal: req.body.signal })
                 })
                 .catch(err => {
                     console.error(err);
@@ -1613,6 +1643,34 @@ app.post('/instructorSemester', checkAuthenticatedInstructor, (req, res) => {
     // })
 })
 
+app.get('/instructorSemesterAttendance', checkAuthenticatedInstructor, (req, res) => {
+
+    CourseAssignment.find({ 'instructorAssigned': req.user })
+        .distinct('semesterAssigned')
+        .then((assignment) => {
+            Semester.find()
+                .where('_id')
+                .in(assignment)
+                .sort({ dateCreated: -1 })
+                .then((semester) => {
+                    Instructor.findOne({ '_id': req.user })
+                        .then((instructor) => {
+                            res.render('instructorSemester.ejs', { semester, instructor, signal: "2" })
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                    //console.log(semester);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+})
+
 app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
 
     //console.log(req.body.x);
@@ -1626,7 +1684,7 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
 
                     Instructor.findOne({ '_id': req.user })
                         .then((instructor) => {
-                            res.render('addGrade.ejs', { gradeStudents, instructor });
+                            res.render('addGrade.ejs', { gradeStudents, instructor, signal: tuple[3] });
                         })
                         .catch(err => {
                             console.error(err);
@@ -1645,60 +1703,86 @@ app.post('/gradeAssign', checkAuthenticatedInstructor, (req, res) => {
 
 app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
 
-    console.log(req.body);
-    for (var i = 0; i < req.body.grades.length; i++) {
-        CourseEnrollment.findOneAndUpdate({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { grade: req.body.grades[i] }, { new: true })
-            .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
-            .exec()
-            .then((ans) => {
-                console.log(ans);
+    if (req.body.signal == "1") {
+        for (var i = 0; i < req.body.grades.length; i++) {
+            CourseEnrollment.findOneAndUpdate({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { grade: req.body.grades[i] }, { new: true })
+                .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
+                .exec()
+                .then((ans) => {
+                    console.log(ans);
 
-                var transporter = nodemailer.createTransport({
-                    service: "Outlook365",
-                    host: "smtp.office365.com",
-                    port: "587",
-                    tls: {
-                        ciphers: "SSLv3",
-                        rejectUnauthorized: false,
-                    },
-                    auth: {
-                        user: 'e-campus-daiict@outlook.com',
-                        pass: process.env.GMAILPASSWORD
-                    }
+                    var transporter = nodemailer.createTransport({
+                        service: "Outlook365",
+                        host: "smtp.office365.com",
+                        port: "587",
+                        tls: {
+                            ciphers: "SSLv3",
+                            rejectUnauthorized: false,
+                        },
+                        auth: {
+                            user: 'e-campus-daiict@outlook.com',
+                            pass: process.env.GMAILPASSWORD
+                        }
+                    });
+
+
+                    var mailOptions = {
+                        from: 'e-campus-daiict@outlook.com',
+                        to: ans.studentEnrolled.email,
+                        subject: 'Grade Updates',
+                        html: `
+                        <h2> Please note the following updates in grades of ${ans.semesterEnrolled.name}. </h2> <p> <b> Course : </b> ${ans.courseEnrolled.name} </p>
+                        <p> <b> Grade recieved : </b> ${ans.grade} </p>
+                        `
+                    };
+
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            const title = "ERROR";
+                            const message = "Unknown error occurred, please try again!";
+                            const icon = "error";
+                            const href = "/instructorHome";
+                            res.render("alert.ejs", { title, message, icon, href });
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.error(err);
                 });
 
+        }
 
-                var mailOptions = {
-                    from: 'e-campus-daiict@outlook.com',
-                    to: ans.studentEnrolled.email,
-                    subject: 'Grade Updates',
-                    html: `<h2> Please note the following updates in grades of ${ans.semesterEnrolled.name}. </h2> <br /> <p> <b> Course : </b> ${ans.courseEnrolled.name} </p> <br/> <p> <b> Grade recieved : </b> ${ans.grade} </p>`
-                };
-
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        const title = "ERROR";
-                        const message = "Unknown error occurred, please try again!";
-                        const icon = "error";
-                        const href = "/instructorHome";
-                        res.render("alert.ejs", { title, message, icon, href });
-                        console.log(error);
-                    } else {
-                        console.log('Email sent: ' + info.response);
-                    }
-                });
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
+        const title = "SUCCESS";
+        const message = "Grades updated!";
+        const icon = "success";
+        const href = "/instructorHome";
+        res.render("alert.ejs", { title, message, icon, href });
     }
 
-    const title = "SUCCESS";
-    const message = "Grades updated!";
-    const icon = "success";
-    const href = "/instructorHome";
-    res.render("alert.ejs", { title, message, icon, href });
+    else {
+        for (var i = 0; i < req.body.grades.length; i++) {
+            CourseEnrollment.findOneAndUpdate({ 'courseEnrolled': req.body.course, 'semesterEnrolled': req.body.semester, 'studentEnrolled': req.body.student[i] }, { attendance: req.body.grades[i] }, { new: true })
+                .populate(['courseEnrolled', 'studentEnrolled', 'semesterEnrolled'])
+                .exec()
+                .then((ans) => {
+                    
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+
+        }
+
+        const title = "SUCCESS";
+        const message = "Attendance updated!";
+        const icon = "success";
+        const href = "/instructorHome";
+        res.render("alert.ejs", { title, message, icon, href });
+    }
+
 
 })
 
@@ -2264,7 +2348,7 @@ app.post('/feeStudentPayments', checkAuthenticatedAdmin, (req, res) => {
                         .populate('studentEnrolled')
                         .exec()
                         .then((fees) => {
-                            
+
                             var transporter = nodemailer.createTransport({
                                 service: "Outlook365",
                                 host: "smtp.office365.com",
@@ -2309,7 +2393,7 @@ app.post('/feeStudentPayments', checkAuthenticatedAdmin, (req, res) => {
                             const href = "/adminHome";
                             res.render("alert.ejs", { title, message, icon, href });
                         })
-                            
+
                         .catch((err) => {
                             console.error(err);
                         });

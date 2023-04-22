@@ -12,13 +12,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/table.css" />
-    <title>Assign Grades</title>
+    <title>Assign</title>
 </head>
 
 <body>
     <%- include('instructorNavbar') %>
         <div class="header">
-            <h2>Assign Grades</h2>
+            <% if (signal=="1") { %>
+                <h2>Assign Grades</h2>
+            <% } else { %>
+                <h2>Enter Attendance</h2>
+            <% } %>
         </div>
         <div class="sub-header">
             <% if (gradeStudents.length==0) { %>
@@ -49,7 +53,12 @@
                                     <div class="col col-1">SR No</div>
                                     <div class="col col-2">Student ID</div>
                                     <div class="col col-3">Student Name</div>
-                                    <div class="col col-4">Grade</div>
+                                    <% if (signal=="1") { %>
+                                        <div class="col col-4">Grade</div>
+                                    <% } else { %>
+                                        <div class="col col-4">Attendance</div>
+                                    <% } %>
+                                    
                                 </li>
 
 
@@ -68,10 +77,18 @@
                                                     <%= gradeStudents[i].studentEnrolled.lastname %>
                                         </div>
                                         <div class="col col-4" data-label="Name">
-                                            <input type="number" name="grades" max="10" min="0" step="1"
+                                            <% if (signal=="1") { %>
+                                                <input type="number" name="grades" max="10" min="0" step="1"
                                                 value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
+                                            <% } else { %>
+                                                <input type="number" name="grades" max="100" min="0"
+                                                value="<%= gradeStudents[i].attendance %>" placeholder="Enter attendance">
+                                            <% } %>
+                                            
                                             <input type="hidden" name="student"
                                                 value="<%= gradeStudents[i].studentEnrolled.id %>">
+                                            <input type="hidden" name="signal"
+                                                value="<%= signal %>">
                                         </div>
                                     </li>
                                     <% } %>
