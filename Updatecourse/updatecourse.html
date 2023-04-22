@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
+
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="style.css" />
+  <title>Document</title>
+</head>
+
+<body>
+
+  <!-- Vertical navbar section  -->
+
+  <div class="menu-toggle">
+    <div class="hamburger">
+      <span></span>
+    </div>
+  </div>
+  <div class="sidebar close">
+    <div class="logo-details">
+      <span class="logo_name"><img src="photo/Logo.jfif" width="150px" alt=""></span>
+    </div>
+
+    <ul class="nav-links">
+      <li>
+        <a href="#">
+          <i class='bx bxs-home'></i>
+          <span class="link_name">Home</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#">Student</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="iocn-link">
+          <a href="#">
+            <i class='bx bxs-user'></i>
+            <span class="link_name">Student</span>
+          </a>
+          <i class='bx bxs-chevron-down arrow'></i>
+        </div>
+        <ul class="sub-menu">
+          <li><a class="link_name" href="#">Student</a></li>
+          <li><a href="#" class="sub-list">New Registration</a></li>
+          <li><a href="#" class="sub-list">Edit details</a></li>
+          <li><a href="#" class="sub-list">View Details</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">
+          <i class='bx bxs-user-plus bx-sm'></i>
+          <span class="link_name">Admin Registration</span>
+        </a>
+        <a href="#">
+          <i class='bx bxs-user-plus bx-sm'></i>
+          <span class="link_name">Faculty Registration</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="attedance-logo">
+          <i class='bx bxs-user-check bx-sm'></i>
+          <span class="link_name">Attendance</span>
+        </a>
+        <!-- <ul class="sub-menu blank">
+              <li><a class="link_name" href="#">Complain-box</a></li>
+           </ul> -->
+      </li>
+      <li>
+        <a href="#">
+          <i class='bx bx-folder-plus'></i>
+          <span class="link_name">Course</span>
+        </a>
+        <a href="#">
+          <i class='bx bxs-file-plus'></i>
+          <span class="link_name">Manage Program</span>
+        </a>
+        <a href="#">
+          <i class='bx bx-money'></i>
+          <span class="link_name">Fees</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class='bx bx-comment-error'></i>
+          <span class="link_name">Complain-box</span>
+        </a>
+        <!-- <ul class="sub-menu blank">
+              <li><a class="link_name" href="#">Chart</a></li>
+           </ul> -->
+      </li>
+      <li>
+        <div class="iocn-link">
+          <a href="#">
+            <i class='bx bxs-user-account'></i>
+            <span class="link_name">Account</span>
+          </a>
+          <i class='bx bxs-chevron-down arrow'></i>
+        </div>
+        <ul class="sub-menu">
+          <!-- <li><a class="link_name" href="#">Profile</a></li> -->
+          <li><a href="#">Account Settings</a></li>
+          <li><a href="#">Reset Password</a></li>
+          <li><a href="#">Log Out</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <div class="profile-details">
+          <div class="profile-content">
+            <img src="photo/Profile.png" alt="profileImg">
+          </div>
+          <div class="name-job">
+            <div class="profile_name">Vyom Patel</div>
+            <div class="job">202001216</div>
+          </div>
+          <i class='bx bx-log-out'></i>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- main body section -->
+  <div class="container">
+    <ul class="table-responsive-lg">
+      <li class="thead-dark">
+        <div class="col col-1">#</div>
+        <div class="col col-2">Name</div>
+        <div class="col col-3">Code</div>
+        <div class="col col-4">Credits</div>
+        <div class="col col-5">Description</div>
+        <div class="col col-6">Submit</div>
+      </li>
+      <li class="table-row">
+        <div class="col col-1" data-label="#">1</div>
+        <div class="col col-2" data-label="Student ID">201001111</div>
+        <div class="col col-3" data-label="Name">Joe Bidden</div>
+        <div class="col col-4" data-label="Batch">BTech</div>
+        <div class="col col-5" data-label="Branch">ICT</div>
+        <div class="col col-6" data-label="Imag">
+          <a href="#" class="button" role="button" aria-disabled="true">Submit</a>      
+        </div>
+      </li>
+      <li class="table-row">
+        <div class="col col-1" data-label="#">2</div>
+        <div class="col col-2" data-label="Student ID">201001222</div>
+        <div class="col col-3" data-label="Name">Barak Obama</div>
+        <div class="col col-4" data-label="Batch">MSc</div>
+        <div class="col col-5" data-label="Branch">Data Science</div>
+        <div class="col col-6" data-label="Image">
+          <a href="#" class="button" role="button" aria-disabled="true">Submit</a>    
+               
+        </div>
+      </li>
+      <li class="table-row">
+        <div class="col col-1" data-label="#">3</div>
+        <div class="col col-2" data-label="Student ID">201001333</div>
+        <div class="col col-3" data-label="Name">Narendra Modi</div>
+        <div class="col col-4" data-label="Batch">MTech</div>
+        <div class="col col-5" data-label="Branch">Machine Learning</div>
+        <div class="col col-6" data-label="Image">
+          <!-- <button type="button">Submit</button> -->
+          <a href="#" class="button" role="button" aria-disabled="true">Submit</a>          <!-- <img src="https://freepngdownload.com/image/thumb/number-1-png-free-download-3.png" class="img-thumbnail"
+            alt="profile" /> -->
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Javascript section -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+  <script>
+    let arrow = document.querySelectorAll(".arrow");
+    for (var i = 0; i < arrow.length; i++) {
+      arrow[i].addEventListener("click", (e) => {
+        let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+        arrowParent.classList.toggle("showMenu");
+      });
+    }
+    const menu_toggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    menu_toggle.addEventListener('click', () => {
+      menu_toggle.classList.toggle('is-active');
+      sidebar.classList.toggle('is-active');
+    });
+  </script>
+</body>
+
+</html>
