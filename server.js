@@ -135,7 +135,9 @@ const instructorSchema = new mongoose.Schema({
     mobileNO: String,
     dob: Date,
     gender: String,
-    password: String
+    password: String,
+    profilePicture: Buffer,
+    joiningDate: Date
 })
 
 const courseAssignmentSchema = new mongoose.Schema({
@@ -918,7 +920,8 @@ app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
                         const newInstructor = new Instructor({
                             email: req.body.email,
                             fullname: req.body.fullname,
-                            password: hashedPassword
+                            password: hashedPassword,
+                            joiningDate: new Date()
                         });
 
                         newInstructor.save();
@@ -1545,6 +1548,32 @@ app.get('/viewStudent', checkAuthenticatedStudent, (req, res) => {
                     res.render('viewStudent.ejs', { student, x });
                 })
 
+        })
+})
+
+app.get('/viewInstructor', checkAuthenticatedInstructor, (req,res) => {
+    Instructor.findOne({'_id':req.user})
+        .then((instructor) => {
+            res.render('viewInstructor.ejs', { instructor });
+        })
+})
+
+app.get('/updateInstructor', checkAuthenticatedInstructor, (req,res) => {
+    Instructor.findOne({'_id':req.user})
+        .then((instructor) => {
+            res.render('updateInstructor.ejs', { instructor });
+        })
+})
+
+app.post('/updateInstructor', checkAuthenticatedInstructor, (req, res) => {
+    Instructor.updateOne({ '_id': req.user }, { fullname: req.body.fullname, mobileNO: req.body.mobileNO, myemail: req.body.myemail, dob: req.body.dob, gender: req.body.gender })
+        .then((instructor) => {
+
+            const title = "SUCCESS";
+            const message = "Instructor details updated!";
+            const icon = "success";
+            const href = "/instructorHome";
+            res.render("alert.ejs", { title, message, icon, href });
         })
 })
 
