@@ -774,9 +774,13 @@ app.get('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 
     if (req.body.email.split('@')[1] != "daiict.ac.in") {
-        const message = 'Invalid email!';
-        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+        const title = "ERROR";
+        const message = "Invalid email!";
+        const icon = "error";
+        const href = "/adminHome";
+        res.render("alert.ejs", { title, message, icon, href });
     }
+
     function generateP() {
         var pass = '';
         var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
@@ -796,8 +800,12 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
         .then((student) => {
 
             if (student != null) {
-                const message = 'Student email already exists!';
-                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+
+                const title = "ERROR";
+                const message = "Student email already exists!";
+                const icon = "error";
+                const href = "/adminHome";
+                res.render("alert.ejs", { title, message, icon, href });
             }
 
             else {
@@ -835,16 +843,21 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 
                         transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
-                                const message = 'Failed. Please try again!';
-                                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
-                                console.log(error);
+                                const title = "ERROR";
+                                const message = "Unknown error occurred, please try again!";
+                                const icon = "error";
+                                const href = "/adminHome";
+                                res.render("alert.ejs", { title, message, icon, href });
                             } else {
                                 console.log('Email sent: ' + info.response);
                             }
                         });
 
-                        const message = 'Student added successfully!';
-                        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                        const title = "SUCCESS";
+                        const message = "Student added successfully!";
+                        const icon = "success";
+                        const href = "/admintHome";
+                        res.render("alert.ejs", { title, message, icon, href });
 
                     })
                     .catch(err => {
@@ -864,8 +877,11 @@ app.get('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
 app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
 
     if (req.body.email.split('@')[1] != "daiict.ac.in") {
-        const message = 'Invalid email!';
-        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+        const title = "ERROR";
+        const message = "Invalid email!";
+        const icon = "error";
+        const href = "/adminHome";
+        res.render("alert.ejs", { title, message, icon, href });
     }
 
     function generateP() {
@@ -887,8 +903,11 @@ app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
         .then((instructor) => {
 
             if (instructor != null) {
-                const message = 'Instructor email already exits';
-                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                const title = "ERROR";
+                const message = "Instructor email already exists!";
+                const icon = "error";
+                const href = "/adminHome";
+                res.render("alert.ejs", { title, message, icon, href });
             }
 
             else {
@@ -927,16 +946,22 @@ app.post('/addInstructor', checkAuthenticatedAdmin, (req, res) => {
 
                         transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
-                                const message = 'Failed. Please try again!';
-                                res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                                const title = "ERROR";
+                                const message = "Unknown error occurred, please try again!";
+                                const icon = "error";
+                                const href = "/adminHome";
+                                res.render("alert.ejs", { title, message, icon, href });
                                 console.log(error);
                             } else {
                                 console.log('Email sent: ' + info.response);
                             }
                         });
 
-                        const message = 'Instructor added successfully';
-                        res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+                        const title = "SUCCESS";
+                        const message = "Instructor added successfully!";
+                        const icon = "success";
+                        const href = "/admintHome";
+                        res.render("alert.ejs", { title, message, icon, href });
                     })
                     .catch(err => {
                         console.log('Error:', err);
@@ -1042,8 +1067,11 @@ app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'),
 
     if (req.body.password != req.body.repassword) {
 
-        const message = 'Passwords do not match!';
-        res.send(`<script>alert('${message}'); window.location.href='/studentDetails'</script>`);
+        const title = "ERROR";
+        const message = "Passwords do not match.";
+        const icon = "error";
+        const href = "/studentDetails";
+        res.render("alert.ejs", { title, message, icon, href });
         // passwords do not match
     }
 
@@ -1244,26 +1272,6 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
     else {
 
-        Student.findById(req.user)
-            .then((student) => {
-                Semester.findById(req.body.sem)
-                    .then((semester) => {
-                        const newFeeHistory = new FeeHistory({
-                            semesterFee: semester,
-                            studentEnrolled: student,
-                            feeStatus: false,
-                            feePaid: new Map()
-                        })
-                        console.log(newFeeHistory);
-                        newFeeHistory.save()
-                    })
-            })
-            .catch(err => {
-                console.error(err);
-            });
-
-
-        //console.log(req.body.register);
         for (var i = 0; i < 6; i++) {
 
             const x = req.body.register[i]
@@ -1298,7 +1306,94 @@ app.post('/semesterRegistration', checkAuthenticatedStudent, (req, res) => {
 
         }
 
-        res.redirect('/studentHome');
+        Student.findById(req.user)
+            .then((student) => {
+                Semester.findById(req.body.sem)
+                    .then((semester) => {
+                        Fee.findOne({ programFee: student.programRegistered })
+                            .then((fee) => {
+                                const newFeeHistory = new FeeHistory({
+                                    semesterFee: semester,
+                                    studentEnrolled: student,
+                                    feeStatus: false,
+                                    feePaid: new Map()
+                                })
+
+                                newFeeHistory.save();
+
+                                var transporter = nodemailer.createTransport({
+                                    service: "Outlook365",
+                                    host: "smtp.office365.com",
+                                    port: "587",
+                                    tls: {
+                                        ciphers: "SSLv3",
+                                        rejectUnauthorized: false,
+                                    },
+                                    auth: {
+                                        user: 'e-campus-daiict@outlook.com',
+                                        pass: process.env.GMAILPASSWORD
+                                    }
+                                });
+
+                                const feeStructureEntries = [...fee.feeStructure.entries()];
+
+                                const tableRows = feeStructureEntries.map(entry => `
+                                    <tr>
+                                        <td>${entry[0]}</td>
+                                        <td>${entry[1]}</td>
+                                    </tr>
+                                    `).join('');
+
+                                const totalFees = feeStructureEntries.reduce((acc, curr) => acc + Number(curr[1]), 0);
+
+                                const mailOptions = {
+                                    from: 'e-campus-daiict@outlook.com',
+                                    to: student.parentEmail,
+                                    subject: 'Fee Payment',
+                                    html: `
+                                            <h3>Dear Parent,</h3>
+                                            <p>${student.firstname} ${student.middlename} ${student.lastname} has registered for a new semester. Please make sure that the payment process is completed before the due date to avoid any late fees or cancellation of your child's enrollment.</p>
+                                            <h4>Fee Structure:</h4>
+                                            <table border="1">
+                                            <thead>
+                                                <tr>
+                                                <th>Fee Type</th>
+                                                <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${tableRows}
+                                            </tbody>
+                                            </table>
+                                            <p>Total fees: ${totalFees}</p>
+                                            <p>Regards</p>
+  `
+                                };
+
+                                transporter.sendMail(mailOptions, function (error, info) {
+                                    if (error) {
+                                        const title = "ERROR";
+                                        const message = "Unknown error occurred, please try again!";
+                                        const icon = "error";
+                                        const href = "/studentHome";
+                                        res.render("alert.ejs", { title, message, icon, href });
+                                        console.log(error);
+                                    } else {
+                                        console.log('Email sent: ' + info.response);
+                                    }
+                                })
+
+                                const title = "SUCCESS";
+                                const message = "Semester registration completed!";
+                                const icon = "success";
+                                const href = "/studentHome";
+                                res.render("alert.ejs", { title, message, icon, href });
+                            });
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 })
 
@@ -1582,9 +1677,13 @@ app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
 
                 transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
+                        const title = "ERROR";
+                        const message = "Unknown error occurred, please try again!";
+                        const icon = "error";
+                        const href = "/instructorHome";
+                        res.render("alert.ejs", { title, message, icon, href });
                         console.log(error);
                     } else {
-                        //console.log(req.user + "\n" + req.body.email);
                         console.log('Email sent: ' + info.response);
                     }
                 });
@@ -1594,7 +1693,12 @@ app.post('/addGrade', checkAuthenticatedInstructor, (req, res) => {
             });
 
     }
-    res.redirect('/instructorHome');
+
+    const title = "SUCCESS";
+    const message = "Grades updated!";
+    const icon = "success";
+    const href = "/instructorHome";
+    res.render("alert.ejs", { title, message, icon, href });
 
 })
 
@@ -2148,15 +2252,64 @@ app.post('/feeStudentPayments', checkAuthenticatedAdmin, (req, res) => {
         Fee.findOne({ 'programFee': tuple[2] })
             .then((fee) => {
                 if (fee == null) {
-                    const message = 'Failed! Fee structure not added.';
-                    res.send(`<script>alert('${message}'); window.location.href='/adminHome'</script>`);
+
+                    const title = "ERROR";
+                    const message = "Fee structure not added!";
+                    const icon = "error";
+                    const href = "/adminHome";
+                    res.render("alert.ejs", { title, message, icon, href });
                 }
                 else {
                     FeeHistory.findOneAndUpdate({ 'studentEnrolled': tuple[0], 'semesterFee': tuple[1] }, { feeStatus: true, datePaid: new Date(), feePaid: fee.feeStructure }, { new: true })
-                        .then((history) => {
-                            console.log(history);
-                            res.redirect('/adminHome');
+                        .populate('studentEnrolled')
+                        .exec()
+                        .then((fees) => {
+                            
+                            var transporter = nodemailer.createTransport({
+                                service: "Outlook365",
+                                host: "smtp.office365.com",
+                                port: "587",
+                                tls: {
+                                    ciphers: "SSLv3",
+                                    rejectUnauthorized: false,
+                                },
+                                auth: {
+                                    user: 'e-campus-daiict@outlook.com',
+                                    pass: process.env.GMAILPASSWORD
+                                }
+                            });
+
+                            const mailOptions = {
+                                from: 'e-campus-daiict@outlook.com',
+                                to: fees.studentEnrolled.parentEmail,
+                                subject: 'Fee Payment',
+                                html: `
+                                        <h3>Dear Parent,</h3>
+                                        <p>Fees for your child ${fees.studentEnrolled.firstname} ${fees.studentEnrolled.middlename} ${fees.studentEnrolled.lastname} has been recieved. </p> 
+                                        <p>Thank you!</p>   
+                                        `
+                            };
+
+                            transporter.sendMail(mailOptions, function (error, info) {
+                                if (error) {
+                                    const title = "ERROR";
+                                    const message = "Unknown error occurred, please try again!";
+                                    const icon = "error";
+                                    const href = "/adminHome";
+                                    res.render("alert.ejs", { title, message, icon, href });
+                                    console.log(error);
+                                } else {
+                                    console.log('Email sent: ' + info.response);
+                                }
+                            })
+
+                            const title = "SUCCESS";
+                            const message = "Fees marked as recieved!";
+                            const icon = "success";
+                            const href = "/adminHome";
+                            res.render("alert.ejs", { title, message, icon, href });
                         })
+                            
                         .catch((err) => {
                             console.error(err);
                         });
