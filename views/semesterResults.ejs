@@ -33,7 +33,11 @@
                         <li class="thead-dark">
                             <div class="col col-1">Semester Number</div>
                             <div class="col col-2">Semester Name</div>
-                            <div class="col col-3">Result</div>
+                            <% if (signal=="1") { %>
+                                <div class="col col-3">Result</div>
+                            <% } else { %>
+                                <div class="col col-3">Attendance</div>
+                            <% } %>
                         </li>
 
                         <% for (var i=1; i <=semester.length; i++) { %>
@@ -46,8 +50,15 @@
                                     <%= semester[i-1].name %>
                                 </div>
                                 <div class="col col-3" data-label="Name">
-                                    <button type='submit' name="x"
+                                    
+                                    <% if (signal=="1") { %>
+                                        <button type='submit' name="x"
                                         value="<%= semester[i-1].id + " " + i %>">Result</button>
+                                    <% } else { %>
+                                        <button type='submit' name="x"
+                                        value="<%= semester[i-1].id + " " + i %>">Attendance</button>
+                                    <% } %>
+                                    
                                 </div>
                             </li>
                             <% } %>

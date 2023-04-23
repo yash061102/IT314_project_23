@@ -24,6 +24,21 @@
             <input type="text" placeholder="Mobile number" name="mobileNO" value="<%= student.mobileNO %>"  required>
             <input type="email" placeholder="Personal email ID" name="myemail" value="<%= student.myemail%>" required>
             <input type="email" placeholder="Parent email ID" name="parentEmail" value="<%= student.parentEmail%>" required>
+            <input type="number" placeholder="height" name="height" value="<%= student.height %>" required>
+            <input type="number" placeholder="weight" name="weight" value="<%= student.weight %>" required>
+            <input type="text" placeholder="address" name="address" value="<%= student.address %>" required>
+            <label for="bloodGroup">Blood group :</label>
+            <select name="bloodGroup" id="bloodGroup">
+                <option selected disabled>select</option>
+                <option value="A Positive" > A Positive </option>
+                <option value="A Negative" >A Negative</option>
+                <option value="B Positive" >B Positive</option>
+                <option value="B Negative" >B Negative</option>
+                <option value="AB Positive" >AB Positive</option>
+                <option value="AB Negative" >AB Negative</option>
+                <option value="O Positive" >O Positive</option>
+                <option value="O Negative" >O Negative</option>
+            </select>
             <div class="radio-checkbox-container">
                 <p>Gender</p>
                 <label> <input type="radio" id="male" name="gender" value="Male" required> <span>Male</span></label>

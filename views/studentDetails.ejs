@@ -14,7 +14,8 @@
         <input type="text" placeholder="First Name" name="firstname" required>
         <input type="text" placeholder="Middle Name" name="middlename" required>
         <input type="text" placeholder="Last Name" name="lastname" required>
-        <input type="text" placeholder="Student ID" name="sid" required>
+        <input type="text" placeholder="Student ID" value="<%= student.studentID %>" name="studentID" required>
+        <input type="text" placeholder="Batch" value="<%= student.batch %>" name="batch" required>
         <select name="myProgram" required>
             <option value="Select" selected>Select</option>
 
@@ -42,6 +43,21 @@
         </div>
         <input type="password" name="password" placeholder="New password" required>
         <input type="password" name="repassword" placeholder="Confirm password" required>
+        <input type="number" name="height" placeholder="Height in centimeter" required>
+        <input type="number" name="weight" placeholder="Weight in kilograms" required>
+        <label for="bloodGroup">Blood group :</label>
+            <select name="bloodGroup" id="bloodGroup">
+                <option selected disabled>select</option>
+                <option value="A Positive" > A Positive </option>
+                <option value="A Negative" >A Negative</option>
+                <option value="B Positive" >B Positive</option>
+                <option value="B Negative" >B Negative</option>
+                <option value="AB Positive" >AB Positive</option>
+                <option value="AB Negative" >AB Negative</option>
+                <option value="O Positive" >O Positive</option>
+                <option value="O Negative" >O Negative</option>
+            </select>
+        <input type="text" name="address" placeholder="Residential address" required>
         <label for="picture">Select Picture:</label>
         <input type="file" name="picture" id="picture">
         <button type="submit">Submit</button>

@@ -120,7 +120,12 @@ const studentSchema = new mongoose.Schema({
     gender: String,
     parentEmail: String,
     programRegistered: { type: mongoose.Schema.Types.ObjectId, ref: 'Program' },
-    profilePicture: Buffer
+    profilePicture: Buffer,
+    weight: Number,
+    height: Number,
+    bloodGroup: String,
+    address: String,
+    batch: String,
 });
 
 const adminSchema = new mongoose.Schema({
@@ -532,12 +537,11 @@ app.get('/addProgram', checkAuthenticatedAdmin, (req, res) => {
 })
 
 app.post('/addProgram', checkAuthenticatedAdmin, (req, res) => {
-
+    
     Degree.findById(req.body.degree)
         .then((degree) => {
             Branch.findById(req.body.branch)
                 .then((branch) => {
-
                     Course.find({ '_id': { $in: req.body.course } })
                         .then((course) => {
                             const newProgram = new Program({
@@ -783,6 +787,9 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
         res.render("alert.ejs", { title, message, icon, href });
     }
 
+    const ID = req.body.email.split('@')[0];
+    const BT = req.body.email.substr(0, 4);
+
     function generateP() {
         var pass = '';
         var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
@@ -817,7 +824,9 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
 
                         const newStudent = new Student({
                             email: req.body.email,
-                            password: hashedPassword
+                            password: hashedPassword,
+                            studentID: ID,
+                            batch: BT
                         });
 
                         newStudent.save();
@@ -840,7 +849,14 @@ app.post('/addStudent', checkAuthenticatedAdmin, (req, res) => {
                             from: 'e-campus-daiict@outlook.com',
                             to: req.body.email,
                             subject: 'Account created',
-                            html: `<h2> Student account has been created. </h2> <br /> <p> Your credentials are: </p>  <br/>  <p> <b> Email ID : </b> ${req.body.email} </p> <br/> <p> <b> Password : </b> ${randomPass} </p> <br/> <a href="https://e-campus-vugi.onrender.com/studentLogin" >Click here to login</a>`
+                            html: 
+                            `
+                            <h2> Student account has been created. </h2>
+                            <p> Your credentials are: </p>
+                            <p> <b> Email ID : </b> ${req.body.email} </p>
+                            <p> <b> Password : </b> ${randomPass} </p> 
+                            <a href="https://e-campus-vugi.onrender.com/studentLogin" >Click here to login</a>
+                            `
                         };
 
                         transporter.sendMail(mailOptions, function (error, info) {
@@ -1082,7 +1098,7 @@ app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'),
 
         bcrypt.hash(req.body.password, saltRounds)
             .then((hashedPassword) => {
-                Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, studentID: req.body.sid, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword, profilePicture: req.file.buffer })
+                Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, programRegistered: req.body.myProgram, dob: req.body.dob, myemail: req.body.myemail, parentEmail: req.body.parentEmail, gender: req.body.gender, mobileNO: req.body.mobileNO, password: hashedPassword, profilePicture: req.file.buffer, weight: req.body.weight, height: req.body.height, address: req.body.address, bloodGroup: req.body.bloodGroup })
                     .then(() => {
 
                         Student.findOne({ '_id': req.user })
@@ -1585,7 +1601,7 @@ app.get('/updateStudent', checkAuthenticatedStudent, (req, res) => {
 })
 
 app.post('/updateStudent', checkAuthenticatedStudent, (req, res) => {
-    Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, mobileNO: req.body.mobileNO, myemail: req.body.myemail, parentEmail: req.body.parentEmail, dob: req.body.dob, gender: req.body.gender })
+    Student.updateOne({ '_id': req.user }, { firstname: req.body.firstname, middlename: req.body.middlename, lastname: req.body.lastname, mobileNO: req.body.mobileNO, myemail: req.body.myemail, parentEmail: req.body.parentEmail, dob: req.body.dob, gender: req.body.gender, weight: req.body.weight, height: req.body.height, address: req.body.address, bloodGroup: req.body.bloodGroup })
         .then((student) => {
 
             const title = "SUCCESS";

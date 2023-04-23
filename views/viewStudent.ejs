@@ -47,6 +47,18 @@
                         <img src="data:<%= student.profilePicture.contentType %>;base64,<%= student.profilePicture.toString('base64') %>" alt="Profile Picture">
                     <% } %>
                 </h5>
+                <h5> <b>Weight : </b>
+                    <%= student.weight %>
+                </h5>
+                <h5> <b>Height : </b>
+                    <%= student.height %>
+                </h5>
+                <h5> <b>Blood Group : </b>
+                    <%= student.bloodGroup %>
+                </h5>
+                <h5> <b>Address : </b>
+                    <%= student.address %>
+                </h5>
         </div>
         <div class="header">
             <h2>Academic Details</h2>
@@ -55,6 +67,9 @@
             <br>
             <h5> <b>Student ID : </b>
                 <%= student.studentID %>
+            </h5>
+            <h5> <b> Batch : </b>
+                <%= student.batch %>
             </h5>
             <h5> <b>College Email</b>
                 <%= student.email %>
