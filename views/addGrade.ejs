@@ -18,11 +18,11 @@
 <body>
     <%- include('instructorNavbar') %>
         <div class="header">
-            <% if (signal=="1") { %>
+            <% if (signal=="1" ) { %>
                 <h2>Assign Grades</h2>
-            <% } else { %>
-                <h2>Enter Attendance</h2>
-            <% } %>
+                <% } else { %>
+                    <h2>Enter Attendance</h2>
+                    <% } %>
         </div>
         <div class="sub-header">
             <% if (gradeStudents.length==0) { %>
@@ -42,6 +42,7 @@
 
         <% if (gradeStudents.length!=0) { %>
             <form action="/addGrade" method="post">
+                <input type="hidden" name="signal" value="<%= signal %>">
                 <input type="hidden" name="course" value="<%=gradeStudents[0].courseEnrolled.id %>">
                 <input type="hidden" name="semester" value="<%=gradeStudents[0].semesterEnrolled.id %>">
                 <table>
@@ -53,12 +54,12 @@
                                     <div class="col col-1">SR No</div>
                                     <div class="col col-2">Student ID</div>
                                     <div class="col col-3">Student Name</div>
-                                    <% if (signal=="1") { %>
+                                    <% if (signal=="1" ) { %>
                                         <div class="col col-4">Grade</div>
-                                    <% } else { %>
-                                        <div class="col col-4">Attendance</div>
-                                    <% } %>
-                                    
+                                        <% } else { %>
+                                            <div class="col col-4">Attendance</div>
+                                            <% } %>
+
                                 </li>
 
 
@@ -77,26 +78,27 @@
                                                     <%= gradeStudents[i].studentEnrolled.lastname %>
                                         </div>
                                         <div class="col col-4" data-label="Name">
-                                            <% if (signal=="1") { %>
+                                            <% if (signal=="1" ) { %>
                                                 <input type="number" name="grades" max="10" min="0" step="1"
-                                                value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
-                                            <% } else { %>
-                                                <input type="number" name="grades" max="100" min="0"
-                                                value="<%= gradeStudents[i].attendance %>" placeholder="Enter attendance">
-                                            <% } %>
-                                            
-                                            <input type="hidden" name="student"
-                                                value="<%= gradeStudents[i].studentEnrolled.id %>">
-                                            <input type="hidden" name="signal"
-                                                value="<%= signal %>">
+                                                    value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
+                                                <% } else { %>
+                                                    <input type="number" name="grades" max="100" min="0"
+                                                        value="<%= gradeStudents[i].attendance %>"
+                                                        placeholder="Enter attendance">
+                                                    <% } %>
+
+                                                        <input type="hidden" name="student"
+                                                            value="<%= gradeStudents[i].studentEnrolled.id %>">
                                         </div>
                                     </li>
                                     <% } %>
                             </ul>
                             <% if (gradeStudents.length!=0) { %>
-                                <button type="submit">Submit</button>
-                                <% } %>
+                                <div class="input-field"></div>
+                                <button class="submit" type="submit">Submit</button>
                         </div>
+                        <% } %>
+                            </div>
                     </section>
             </form>
             <% } %>
