@@ -22,7 +22,7 @@
         </div>
         <div class="sub-header">
             <% if (semesterAssignments.length==0) { %>
-                <h4>No semesters found</h4>
+                <h4>Sorry, your registered program is not being offered in the upcoming semester.</h4>
                 <% } else { %>
                     <h5>Upcoming semester : <%= semesterAssignments[0].semesterAssigned.name %>
                     </h5>
@@ -73,8 +73,10 @@
                                 </li>
                                 <% } %>
                         </ul>
-                        <button type='submit' name="sem" value="<%= semesterAssignments[0].semesterAssigned.id %>">
+                        <div class="input-field">
+                        <button type='submit' class="submit" name="sem" value="<%= semesterAssignments[0].semesterAssigned.id %>">
                             Register </button>
+                        </div>
                     </form>
                 </div>
             </section>

@@ -12,14 +12,16 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+
     <title>View Courses</title>
 </head>
 
 <body>
     <%- include('adminNavbar') %>
-        <div class="header">
-            <h2>Course Details</h2>
-        </div>
+    <div class="header">
+        <h2>Course Details</h2>
+    </div>
+    
         <section class="home-section">
             <div class="table-container">
                 <form action="/viewCourse" method="post">
@@ -48,26 +50,30 @@
                                 <div class="col col-4" data-label="Batch">
                                     <%= course[i].credits %>
                                 </div>
-                                <div class="col col-5" data-label="Branch">
-                                    <button type='submit' name="edit" value="<%= course[i].id %>">
-                                        <i class='far fa-edit'></i>
+                                <div class="col col-5 input-field" data-label="Branch">
+                                    <button type='submit' class="mybtn" name="edit" value="<%= course[i].id %>">
+                                        <i class='fa-solid fa-edit'></i>
                                     </button>
                                 </div>
-                                <div class="col col-6" data-label="Branch">
-                                    <button type='submit' name="delete" value="<%= course[i].id %>" class="delete-btn">
-                                        <i class='far fa-trash-alt'></i>
+                                <div class="col col-6 input-field" data-label="Branch">
+                                    <button type='submit' class="mybtn" name="delete" value="<%= course[i].id %>" class="delete-btn">
+                                        <i class='fa-solid fa-trash'></i>
                                     </button>
                                 </div>
                             </li>
                             <% } %>
                     </ul>
                 </form>
-
-
-                <button onclick="window.location.href = '/addCourse'"> Add course </button>
+               
                 <script src="https://kit.fontawesome.com/2bdd553bc7.js" crossorigin="anonymous"></script>
 
             </div>
+            <div class="button-container">
+                <button class="hover-button" onclick="window.location.href = '/addCourse'">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <div class="tooltip">Add Course</div>
+              </div>
         </section>
         
         <script>
