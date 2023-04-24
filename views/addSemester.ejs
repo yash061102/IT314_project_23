@@ -12,6 +12,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/table.css" />
+    <link rel="stylesheet" href="/css/form.css">
+    <style>
+        .form-control{
+            margin-left: 7%;
+        }
+        .col-form-label{
+            margin-left: 7%;
+        }
+    </style>
     <title>Add semester</title>
 </head>
 
@@ -28,8 +37,12 @@
         </div>
         <section class="home-section">
             <div class="table-container">
-                <form action="/addSemester" method="post">
-                    <input type="text" placeholder="Name" name="name">
+            <div></div>
+                <form action="/addSemester" method="post" class="form">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="semester" class="col-form-label">Semester</label>
+                    <input type="text" class="form-control" placeholder="Name" name="name" >
+                </div>
                     <ul class="table-responsive-lg">
                         <li class="thead-dark">
                             <div class="col col-1">SR No</div>
@@ -49,14 +62,16 @@
                                         <%= program[i].branchOffered.name %>
                                 </div>
                                 <div class="col col-3" data-label="Name">
-                                    <input type="checkbox" name="program" value="<%= program[i].id %>"><span
-                                        class="checkmark"></span>
+                                    <input style="accent-color: #434242;" type="checkbox" name="program" value="<%= program[i].id %>"><span
+                                        class="checkmark" ></span>
                                 </div>
                             </li>
                             <% } %>
                     </ul>
-                    <button type="submit">Next</button>
+                    <div class="input-field"></div>
+                    <button class="submit" type="submit">Next</button>
                 </form>
+     
             </div>
         </section>
 </body>
