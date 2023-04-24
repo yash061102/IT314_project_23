@@ -56,16 +56,18 @@
                                         </div>
                                         <div class="col col-5" data-label="Batch">
                                             <% if (complains[i].status==true) { %>
-                                                <input type="checkbox" name="status" id="status" checked>
+                                                <input style="accent-color: #434242;" type="checkbox" name="status" id="status" checked>
                                                 <% } else { %>
-                                                    <input type="checkbox" name="status" id="status">
+                                                    <input style="accent-color: #434242;" type="checkbox" name="status" id="status">
                                                     <% } %>
                                                         
                                         </div>
                                     </li>
                                     <% } %>
                             </ul>
-                            <button type="submit">Submit</button>
+                            <div class="input-field">
+                            <button class="submit" type="submit">Submit</button>
+                        </div>
                         </form>
                     </div>
 
