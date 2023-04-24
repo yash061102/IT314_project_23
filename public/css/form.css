@@ -6,6 +6,7 @@
 }
 .form-body{
     display: grid;
+    justify-content: space-around;
 }
 .lgbtn{
     align-items: center;
