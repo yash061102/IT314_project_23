@@ -206,6 +206,9 @@ app.get('/', (req, res) => {
     res.render('index.ejs');
 })
 
+app.get('/support', (req, res) => {
+    res.render('support.ejs');
+})
 app.get('/adminHome', checkAuthenticatedAdmin, (req, res) => {
 
     Admin.findOne({ '_id': req.user })
