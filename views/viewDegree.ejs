@@ -40,27 +40,30 @@
                                 <div class="col col-2" data-label="Student ID">
                                     <%= degree[i].name %>
                                 </div>
-                                <div class="col col-5" data-label="Name">
-                                    <button type='submit' name="edit" value="<%= degree[i].id %>"><i
-                                            class='far fa-edit'></i></button>
+                                <div class="col col-5 input-field" data-label="Name">
+                                    <button class="mybtn" type='submit' name="edit" value="<%= degree[i].id %>"><i
+                                            class='fa-solid fa-edit'></i></button>
                                 </div>
-                                <div class="col col-6" data-label="Batch">
-                                    <button type='submit' name="delete" value="<%= degree[i].id %>"
-                                        class="delete-btn"><i class='far fa-trash-alt'></i></button>
+                                <div class="col col-6 input-field" data-label="Batch">
+                                    <button type='submit' class="mybtn" name="delete" value="<%= degree[i].id %>"
+                                        class="delete-btn"><i class='fa-solid fa-trash'></i></button>
                                 </div>
                             </li>
                             <% } %>
                     </ul>
                 </form>
-
-                <button onclick="window.location.href = '/addDegree'"> Add degree </button>
+                <div class="button-container">
+                    <button class="hover-button" onclick="window.location.href = '/addDegree'">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="tooltip">Add Semester</div>
+                  </div>
 
             </div>
         </section>
 
 
         <script src="https://kit.fontawesome.com/2bdd553bc7.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             let btns = document.getElementsByClassName('delete-btn');
 
@@ -70,23 +73,6 @@
                         event.preventDefault();
                     }
                 });
-                // i.addEventListener('click', function () {
-                    
-                //     Swal.fire({
-                //         title: 'Are you sure?',
-                //         text: "You won't be able to revert this!",
-                //         icon: 'warning',
-                //         showCancelButton: true,
-                //         confirmButtonColor: '#3085d6',
-                //         cancelButtonColor: '#d33',
-                //         confirmButtonText: 'Yes, delete it!'
-                //     }).then((result) => {
-                //         if (!result.isConfirmed) {
-        
-                //             event.preventDefault();
-                //         }
-                //     })
-                // });
             }
         </script>
 </body>
