@@ -24,20 +24,37 @@
                     <h2>Enter Attendance</h2>
                     <% } %>
         </div>
-        <div class="sub-header">
-            <% if (gradeStudents.length==0) { %>
-                <h5>No students enrolled in this course</h5>
-                <% } else { %>
-                    <h5>Course Name: <%= gradeStudents[0].courseEnrolled.name %>
-                    </h5>
-                    <h5>Course Code: <%= gradeStudents[0].courseEnrolled.code %>
-                    </h5>
-                    <h5>Course Credits: <%= gradeStudents[0].courseEnrolled.credits %>
-                    </h5>
-                    <h5>Number of students Registered: <%= gradeStudents.length %>
-                            </h1>
-                            <% } %>
+        <div class="table-container" style="margin-left:19%;">
 
+            <ul class="table-responsive-lg">
+        <div class="data-container" >
+            <% if (gradeStudents.length==0) { %>
+                <p class="textfield">No students enrolled in this course</h5>
+                <% } else { %>
+            <table class="data-table">
+                
+                <tr>
+                    <th><strong>Course Name</strong></th>
+                    <td><%= gradeStudents[0].courseEnrolled.name %></td>
+                </tr>
+                <tr>
+                    <th><strong>Course Code</strong></th>
+                    <td><%= gradeStudents[0].courseEnrolled.code %></td>
+                </tr>
+                <tr>
+                    <th><strong>Course Credits</strong></th>
+                    <td><%= gradeStudents[0].courseEnrolled.credits %></td>
+                </tr>
+                <tr>
+                    <th><strong>Registered students</strong></th>
+                    <td><%= gradeStudents.length %></td>
+                </tr>
+                
+               
+            </table>
+            <% } %>
+        </div>
+        </ul>
         </div>
 
         <% if (gradeStudents.length!=0) { %>
@@ -50,6 +67,7 @@
                         <div class="table-container">
 
                             <ul class="table-responsive-lg">
+                               
                                 <li class="thead-dark">
                                     <div class="col col-1">SR No</div>
                                     <div class="col col-2">Student ID</div>
