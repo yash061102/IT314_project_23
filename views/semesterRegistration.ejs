@@ -20,22 +20,34 @@
         <div class="header">
             <h2>Semester Registration</h2>
         </div>
-        <div class="sub-header">
-            <% if (semesterAssignments.length==0) { %>
-                <h4>Sorry, your registered program is not being offered in the upcoming semester.</h4>
-                <% } else { %>
-                    <h5>Upcoming semester : <%= semesterAssignments[0].semesterAssigned.name %>
-                    </h5>
-                    <h5>Program : <%= semesterAssignments[0].programAssigned.degreeOffered.name %>
-                            <%= semesterAssignments[0].programAssigned.branchOffered.name %>
-                    </h5>
-                    <% } %>
-        </div>
+        
+
         <% if (semesterAssignments.length!=0) { %>
             <section class="home-section">
+                
                 <div class="table-container">
+                    
                     <form action="/semesterRegistration" method="post">
                         <ul class="table-responsive-lg">
+                            <div class="data-container">
+                                <% if (semesterAssignments.length==0) { %>
+                                    <p class="textfield"><strong>Sorry, your registered program is not being offered in the upcoming semester.</strong></p>
+                                    <% } else { %>
+                                <table class="data-table">
+                                    
+                                    <tr>
+                                        <th><strong>Upcoming semester</strong></th>
+                                        <td><%= semesterAssignments[0].semesterAssigned.name %></td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong>Program</strong></th>
+                                        <td><%= semesterAssignments[0].programAssigned.degreeOffered.name %>
+                                            <%= semesterAssignments[0].programAssigned.branchOffered.name %></td>
+                                    </tr>
+                                   
+                                </table>
+                                <% } %>
+                            </div>
                             <li class="thead-dark">
                                 <div class="col col-1">SR No</div>
                                 <div class="col col-2">Course Code</div>
@@ -66,7 +78,7 @@
                                                 <% } %>
                                     </div>
                                     <div class="col col-6" data-label="Branch">
-                                        <input type="checkbox" name="register"
+                                        <input type="checkbox" style="accent-color: #434242; transform: scale(1.5);" name="register"
                                             value="<%= semesterAssignments[i].courseAssigned.id %>"><span
                                             class="checkmark"></span>
                                     </div>
