@@ -22,8 +22,12 @@
             <h2>My Complains</h2>
         </div>
         <% if (complains.length==0) { %>
-            <div class="sub-header">
-                <h4>No complains found</h4>
+            <div class="table-container">
+                <ul class="table-responsive-lg">
+                    <div class="data-table">
+                        <p class="textfield"><strong>No complain records found.</strong></p>
+                    </div>
+                </ul>
             </div>
             <% } else { %>
                 <section class="home-section">
