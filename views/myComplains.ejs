@@ -11,6 +11,7 @@
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/2bdd553bc7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/style.css">
     <title>Complain Box</title>
 </head>
@@ -66,7 +67,12 @@
                 </section>
 
                 <% } %>
-                <button onclick="window.location.href = '/addComplain'"> Add Complain </button>
+                <div class="button-container">
+                    <button class="hover-button" onclick="window.location.href = '/addComplain'">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="tooltip">Add Course</div>
+                  </div>
 
                     
 </body>
