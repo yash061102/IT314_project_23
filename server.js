@@ -1093,7 +1093,7 @@ app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'),
         const message = "Passwords do not match.";
         const icon = "error";
         const href = "/studentDetails";
-        res.render("alert.ejs", { title, message, icon, href });
+        res.status(401).render("alert.ejs", { title, message, icon, href });
         // passwords do not match
     }
 
@@ -1106,7 +1106,12 @@ app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'),
 
                         Student.findOne({ '_id': req.user })
                             .then((student) => {
-                                res.render('studentHome.ejs', { student });
+                                const title = "SUCCESS";
+                                const message = "Registeration Successfull.";
+                                const icon = "error";
+                                const href = "/studentHome";
+                                res.status(200).render("alert.ejs", { title, message, icon, href });
+                                
                             })
                             .catch((err) => {
                                 console.log(err);
@@ -1123,7 +1128,6 @@ app.post('/studentDetails', checkAuthenticatedStudent, upload.single('picture'),
     }
 
 })
-
 app.get('/instructorLogin', checkNotAuthenticatedInstructor, (req, res) => {
     res.render('instructorLogin.ejs')
 })

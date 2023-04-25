@@ -85,6 +85,9 @@
                             <%= student.firstname %>
                                 <%= student.lastname %>
                         </div>
+                        <div class="job">
+                            <%= student.studentID %>
+                        </div>
                     </div>
                     <form action="/logoutStudent?_method=DELETE" method="POST">
                         <button type="submit" class="logout" onclick="event.preventDefault(); showConfirmation();"><i class='bx bx-log-out'></i></button>

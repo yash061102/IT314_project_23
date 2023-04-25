@@ -365,9 +365,8 @@ th {
   background-color: transparent; /* Blue background */
   border: none; /* Remove borders */
   color: white; /* White text */
-  font-size: 20px; /* Set a font size */
+  font-size: 24px; /* Set a font size */
   cursor: pointer; /* Mouse pointer on hover */
-
 }
 
 /* sidebar responsive */

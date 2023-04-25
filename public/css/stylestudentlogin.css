@@ -113,6 +113,10 @@ body {
   background: #3f7093;
   color: #fff;
 }
+.submit:focus {
+  background: #3f7093;
+  color: #fff;
+}
 .signin {
   text-align: center;
   font-size: small;
