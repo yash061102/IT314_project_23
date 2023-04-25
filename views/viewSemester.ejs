@@ -28,7 +28,6 @@
                             <div class="col col-1">SR No</div>
                             <div class="col col-2">Name</div>
                             <div class="col col-3">Date created</div>
-                            <div class="col col-5">Edit</div>
                             <div class="col col-6">Delete</div>
                         </li>
 
@@ -46,10 +45,7 @@
                                         }; %>
                                                 <%= semester[i].dateCreated.toLocaleDateString("en-US", options) %>
                                 </div>
-                                <div class="col col-5 input-field" data-label="Name">
-                                    <button class="mybtn" type='submit' name="edit" value="<%= semester[i].id %>"><i
-                                            class='fa-solid fa-edit'></i></button>
-                                </div>
+
                                 <div class="col col-6 input-field" data-label="Batch">
                                     <button class="mybtn" type='submit' name="delete" value="<%= semester[i].id %>"
                                         class="delete-btn"><i class='fa-solid fa-trash'></i></button>
