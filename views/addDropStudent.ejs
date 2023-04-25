@@ -20,25 +20,17 @@
     <div class="header">
         <h2>Add - Drop Courses</h2>
     </div>
-    
+    <div class="sub-header">
+        <h5>Registered semester : <%= courseAssignments[0].semesterAssigned.name %>
+        </h5>
+        <h5>Program : <%= courseAssignments[0].programAssigned.degreeOffered.name %>
+                <%= courseAssignments[0].programAssigned.branchOffered.name %>
+        </h5>
+    </div>
     <section class="home-section">
         <div class="table-container">
             <form action="/addDropStudent" method="post">
                 <ul class="table-responsive-lg">
-                    <div class="data-container">
-                        <table class="data-table">
-                            <tr>
-                                <th><strong>Registered semester</strong></th>
-                                <td><%= courseAssignments[0].semesterAssigned.name %></td>
-                            </tr>
-                            <tr>
-                                <th><strong>Program</strong></th>
-                                <td><%= courseAssignments[0].programAssigned.degreeOffered.name %>
-                                    <%= courseAssignments[0].programAssigned.branchOffered.name %></td>
-                            </tr>
-                           
-                        </table>
-                    </div>
                     <li class="thead-dark">
                         <div class="col col-1">SR No</div>
                         <div class="col col-2">Course Code</div>
@@ -73,14 +65,14 @@
                                 <% for (var j=0; j<courseEnrollments.length; j++) {%>
                                     <% if (courseAssignments[i].courseAssigned.id == courseEnrollments[j].courseEnrolled.id) { %>
                                     <% check = 1; %>
-                                        <input type="checkbox" style="accent-color: #434242; transform: scale(1.5);" name="register" value="<%= courseAssignments[i].courseAssigned.id %>" checked><span
-                                        class="checkmark" ></span>
+                                        <input type="checkbox" name="register" value="<%= courseAssignments[i].courseAssigned.id %>" checked><span
+                                        class="checkmark"></span>
                                         <% break; %>
                                     <% } %>
                                  <% } %>
                                 
                                 <% if (check == 0) {%>
-                                    <input type="checkbox" style="accent-color: #434242; transform: scale(1.5);" name="register" value="<%= courseAssignments[i].courseAssigned.id %>"><span
+                                    <input type="checkbox" name="register" value="<%= courseAssignments[i].courseAssigned.id %>"><span
                                         class="checkmark"></span>
                                 <% } %>
                                 
@@ -88,10 +80,10 @@
                         </li>
                         <% } %>
                 </ul>
-                <div class="input-field">
-                <button class="submit" type='submit' name="sem" value="<%= courseAssignments[0].semesterAssigned.id %>"> Update </button>
-                </div>
+                <button type='submit' class="submit" name="sem" value="<%= courseAssignments[0].semesterAssigned.id %>"> Update </button>
             </form>
+            <br>
+            <br>
         </div>
     </section>
 </body>

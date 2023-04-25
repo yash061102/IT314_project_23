@@ -40,22 +40,27 @@
                             <div class="col col-2" data-label="Student ID">
                                 <%= branch[i].name %>
                             </div>
-                            <div class="col col-5" data-label="Name">
-                                <button type='submit' name="edit" value="<%= branch[i].id %>"><i
-                                    class='far fa-edit'></i></button>
+                            <div class="col col-5 input-field" data-label="Name">
+                                <button type='submit' class="mybtn" name="edit" value="<%= branch[i].id %>"><i
+                                    class='fa-solid fa-edit'></i></button>
                             </div>
-                            <div class="col col-6" data-label="Batch">
-                                <button type='submit' name="delete" value="<%= branch[i].id %>"
-                                    class="delete-btn"><i class='far fa-trash-alt'></i></button>
+                            <div class="col col-6 input-field" data-label="Batch">
+                                <button type='submit' class="mybtn" name="delete" value="<%= branch[i].id %>"
+                                    class="delete-btn"><i class='fa-solid fa-trash'></i></button>
                             </div>
                         </li>
                         <% } %>
                 </ul>
             </form>
             <br>
-            <button onclick="window.location.href = '/addBranch'"> Add branch </button>
+            <div class="button-container">
+                <button class="hover-button" onclick="window.location.href = '/addBranch'">
+                  <i class="fas fa-plus"></i>
+                </button>
+            </div>
 
         </div>
+
     </section>
 
 
