@@ -20,28 +20,40 @@
         <div class="header">
             <h2>Fee Reciept</h2>
         </div>
-        <div class="sub-header">
-            <h4>
-                Name: <%= history.studentEnrolled.firstname %>
-                    <%= history.studentEnrolled.middlename %>
-                        <%= history.studentEnrolled.lastname %>
-                        <br>
-                            Student ID: <%= history.studentEnrolled.studentID %>
-                            <br>
-                                Semester: <%= history.semesterFee.name %>
-                                <br>
-                                    Semester number: <%= sem %>
-                                    <br>
-                                        Date paid: <%= history.datePaid %>
-                                        <br>
-                                            Reciept number: <%= history.id %>
-            </h4>
-        </div>
-
+      
         <section class="home-section">
             <div class="table-container">
                 <form action="/feeStructure" method="post">
                     <ul class="table-responsive-lg">
+                        <div class="data-container">
+                            <table class="data-table">
+                                
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <td><%= history.studentEnrolled.firstname %>
+                                        <%= history.studentEnrolled.middlename %>
+                                            <%= history.studentEnrolled.lastname %></td>
+                                </tr>
+                                <tr>
+                                    <th><strong>Student ID</strong></th>
+                                    <td><%= history.studentEnrolled.studentID %></td>
+                                </tr>
+                                <tr>
+                                    <th><strong>Semester number</strong></th>
+                                    <td><%= sem %></td>
+                                </tr>
+                                <tr>
+                                    <% var options={ weekday: 'long' , year: 'numeric' , month: 'long' , day: 'numeric' }; %>
+                                    <th><strong> Date paid</strong></th>
+                                    <td><%= history.datePaid.toLocaleDateString("en-US", options) %></td>
+                                </tr>
+                                <tr>
+                                    <th><strong>Reciept number</strong></th>
+                                    <td><%= history.id %>
+                                </tr>
+                               
+                            </table>
+                        </div>
                         <li class="thead-dark">
                             <div class="col col-2">Charges</div>
                             <div class="col col-3">Amount in Rs</div>
