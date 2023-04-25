@@ -24,21 +24,31 @@
             <h2>Attendance</h2>
             <% } %>
     </div>
-    <div class="sub-header">
-        <h5>
-            Semester number: <%= tuple[1] %>
-        </h5>
-        <h5>Name: <%= result[0].studentEnrolled.firstname %>
-                <%= result[0].studentEnrolled.middlename %>
-                    <%= result[0].studentEnrolled.lastname %>
-        </h5>
-        <h5>Student ID: <%= result[0].studentEnrolled.studentID %>
-        </h5>
-    </div>
+   
     <section class="home-section">
         <div class="table-container">
             <form action="/gradeCard" method="post">
                 <ul class="table-responsive-lg">
+                    <div class="data-container">
+                        <table class="data-table">
+                            
+                            <tr>
+                                <th><strong>Semester</strong></th>
+                                <td><%= tuple[1] %></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Name</strong></th>
+                                <td><%= result[0].studentEnrolled.firstname %>
+                                    <%= result[0].studentEnrolled.middlename %>
+                                        <%= result[0].studentEnrolled.lastname %></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Student ID</strong></th>
+                                <td><%= result[0].studentEnrolled.studentID %></td>
+                            </tr>
+                           
+                        </table>
+                    </div>
                     <li class="thead-dark">
                         <div class="col col-1">SR No</div>
                         <div class="col col-2">Course Code</div>
@@ -107,7 +117,6 @@
 
         </div>
     </section>
-
 
 </body>
 
