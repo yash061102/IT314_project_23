@@ -19,15 +19,36 @@
     <div class="header">
         <h2>Add - Drop courses</h2>
     </div>
-    <div class="sub-header">
-        <form action="/addDropAdmin" method="post">
-            <h3><label for="addDrop">Allow registered students of <%= semester[0].name %> to add and drop courses</label></h3>
-            <% if (semester[0].addDrop==true) { %>
-                <input type="checkbox" name="addDrop" id="addDrop" checked>
-            <% } else { %>
-                <input type="checkbox" name="addDrop" id="addDrop">
-            <% } %>
-            <button type="submit">Submit</button>
-        </form>
+    <section class="home-section">
+        <div class="table-container" style="margin:10%; margin-top: 0;">
+            <ul class="table-responsive-lg" >
+<form action="/addDropAdmin" method="post">
+
+    <div class="data-container" >
+            <p class="textfield"><strong>Allow registered students of <%= semester[0].name %> to add and drop courses</strong></p>
+                <% if (semester[0].addDrop==true) { %>
+                    <input style="accent-color: #242728; transform:scale(1.5); margin-left:8%; margin-right:10px;" type="checkbox" name="addDrop" id="addDrop" checked>
+                    <span>Uncheck the checkbox to close add-drop period.</span>
+                    <br>
+                    <br>
+                        <div style="display:flex; justify-content:center; " class="input-field">
+                            <button  style="width:30%;" class="submit" type="submit">Close Add-Drop Period</button>
+                        </div>
+                   
+                    <% } else { %>
+                        <input style="accent-color: #242728; transform:scale(1.5); margin-left:8%; margin-right:10px;" type="checkbox" name="addDrop" id="addDrop">
+                        <span>Check the checkbox to open add-drop period.</span>
+                        <br>
+                        <br>
+                        <div style="display:flex; justify-content:center; " class="input-field">
+                            <button  style="width:30%;" class="submit" type="submit">Open Add-Drop Period</button>
+                        </div>
+                        
+                    <% } %> 
     </div>
+    </form>
+    </ul>
+</div>
+</section>
+   
 </body>
