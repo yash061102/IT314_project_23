@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/table.css" />
+    <link rel="stylesheet" href="/css/form.css">
     <title>Add Program</title>
 </head>
 
@@ -20,73 +21,87 @@
         <div class="header">
             <h2>Add Programme</h2>
         </div>
-        <div class="sub-header">
-            <button onclick="location.href='/viewDegree';">View degrees</button>
-            <button onclick="location.href='/viewBranch';">View branches</button>
-        </div>
-        <form action="/addProgram" method="post">
-            <div class="main-body-top">
-                <br>
-                <select name="degree" id="degree" required>
-                    <option value="select" selected disabled>Select</option>
+      
+            <form action="/addProgram" method="post" class="form">
+                <div class="main-body-top">
+                    <div class="show">
+                    <div class="col-lg-9 form-group mb-3">
+                        <label for="program" class="col-form-label">Degree</label>
+                        <select class="custom-select form-control" name="degree" id="degree" required>
+                            <option class="form-control" value="select" selected disabled>Select</option>
 
-                    <% for (var i=0; i <degree.length; i++) { %>
-                        <option value="<%= degree[i].id %>">
-                            <%= degree[i].name %>
-                        </option>
-                        <% } %>
+                            <% for (var i=0; i <degree.length; i++) { %>
+                                <option class="form-control" value="<%= degree[i].id %>">
+                                    <%= degree[i].name %>
+                                </option>
+                                <% } %>
 
-                </select>
-                <br>
-                <select name="branch" id="branch" required>
-                    <option value="Select" selected disabled>Select</option>
+                        </select>
+                    </div>
+                    <div class="sub-header">
+                        <button type="button" class="head-button" onclick="window.location.href='/viewDegree';">View degrees</button>
+                    </div>
+                </div>
+                <div class="show">
+                    <div class="col-lg-9 form-group mb-3">
+                        <label for="program" class="col-form-label">Branch</label>
+                    <select class="custom-select form-control" name="branch" id="branch" required>
+                        <option class="form-control" value="Select" selected disabled>Select</option>
 
-                    <% for (var i=0; i <branch.length; i++) { %>
-                        <option value="<%= branch[i].id %>">
-                            <%= branch[i].name %>
-                        </option>
-                        <% } %>
-
-                </select>
-                <br>
-            </div>
-            <section class="home-section">
-                <div class="table-container">
-
-                    <ul class="table-responsive-lg">
-                        <li class="thead-dark">
-                            <div class="col col-1">SR No</div>
-                            <div class="col col-2">Name</div>
-                            <div class="col col-3">Code</div>
-                            <div class="col col-4">Credits</div>
-                            <div class="col col-5">Select</div>
-                        </li>
-
-                        <% for (var i=0; i <course.length; i++) { %>
-
-                            <li class="table-row">
-                                <div class="col col-1" data-label="#">
-                                    <%= i+1 %>
-                                </div>
-                                <div class="col col-2" data-label="Student ID">
-                                    <%= course[i].name %>
-                                </div>
-                                <div class="col col-3" data-label="Name">
-                                    <%= course[i].code %>
-                                </div>
-                                <div class="col col-4" data-label="Batch">
-                                    <%= course[i].credits %>
-                                </div>
-                                <div class="col col-5" data-label="Branch">
-                                    <input type="checkbox" id="" name="course" value="<%= course[i].id %>"><span
-                                        class="checkmark"></span>
-                                </div>
-                            </li>
+                        <% for (var i=0; i <branch.length; i++) { %>
+                            <option value="<%= branch[i].id %>">
+                                <%= branch[i].name %>
+                            </option>
                             <% } %>
-                    </ul>
-                    <button type="submit">Submit</button>
-            </section>
-        </form>
+
+                    </select>
+                    <br>
+                </div>
+                <div class="sub-header">
+                    <button type="button" class="head-button" onclick="window.location.href='/viewBranch';">View Branch</button>
+                </div>
+            </div>
+                </div>
+                <section class="home-section">
+                    <div class="table-container">
+
+                        <ul class="table-responsive-lg">
+                            <li class="thead-dark">
+                                <div class="col col-1">SR No</div>
+                                <div class="col col-2">Name</div>
+                                <div class="col col-3">Code</div>
+                                <div class="col col-4">Credits</div>
+                                <div class="col col-5">Select</div>
+                            </li>
+
+                            <% for (var i=0; i <course.length; i++) { %>
+
+                                <li class="table-row">
+                                    <div class="col col-1" data-label="#">
+                                        <%= i+1 %>
+                                    </div>
+                                    <div class="col col-2" data-label="Student ID">
+                                        <%= course[i].name %>
+                                    </div>
+                                    <div class="col col-3" data-label="Name">
+                                        <%= course[i].code %>
+                                    </div>
+                                    <div class="col col-4" data-label="Batch">
+                                        <%= course[i].credits %>
+                                    </div>
+                                    <div class="col col-5" data-label="Branch">
+                                        <input style="accent-color:black; transform:scale(1.5);" type="checkbox" id="" name="course" value="<%= course[i].id %>"><span
+                                            class="checkmark"></span>
+                                    </div>
+                                </li>
+                                <% } %>
+                        </ul>
+                        <div class="input-field">
+                            <button class="submit" type="submit">Submit</button>
+                        </div>
+                </section>
+            </form>
+  
 
 </body>
 

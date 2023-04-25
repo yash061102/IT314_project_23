@@ -201,7 +201,7 @@ const Fee = mongoose.model("Fee", feeSchema);
 const FeeHistory = mongoose.model("FeeHistory", feeHistorySchema);
 
 
-
+//done login page update password add new student ,semster registration for new student, student trie to access add drop course
 app.get('/', (req, res) => {
     res.render('index.ejs');
 })
@@ -1957,14 +1957,12 @@ app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
         const message = "Please select only 6 courses!";
         const icon = "error";
         const href = "/addDropStudent";
-        res.render("alert.ejs", { title, message, icon, href });
+        res.status(401).render("alert.ejs", { title, message, icon, href });
     }
-
     else {
         CourseEnrollment.deleteMany({ 'studentEnrolled': req.user, 'semesterEnrolled': req.body.sem })
             .then(() => {
                 for (var i = 0; i < 6; i++) {
-
                     const x = req.body.register[i]
                     Student.findById(req.user)
                         .then((student) => {
@@ -1994,7 +1992,7 @@ app.post('/addDropStudent', checkAuthenticatedStudent, (req, res) => {
                             console.error(err);
                         });
                 }
-                res.redirect('/studentHome');
+                res.status(200).redirect('/studentHome');
             })
             .catch(err => {
                 console.error(err);
