@@ -9,6 +9,7 @@
   .table-responsive-lg li {
     border-radius: 3px;
     padding: 25px 30px;
+    text-align: center;
     display: flex;
     justify-content: space-between;
     margin-bottom: 7px;

@@ -72,6 +72,7 @@
 
             <li>
                 <div class="profile-details">
+                    <a href="/viewStudent">
                     <div class="profile-content">
                         <% if (typeof(student.profilePicture)==='undefined' ) { %>
                             <img src="img/dp.PNG" alt="">
@@ -89,6 +90,7 @@
                             <%= student.studentID %>
                         </div>
                     </div>
+                </a>
                     <form action="/logoutStudent?_method=DELETE" method="POST">
                         <button type="submit" class="logout" onclick="event.preventDefault(); showConfirmation();"><i class='bx bx-log-out'></i></button>
                     </form>

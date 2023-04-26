@@ -317,13 +317,14 @@ th {
 }
 
 .sidebar .profile-details {
+  cursor: pointer;
     position: fixed;
     bottom: 0;
     width: 300px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #3b3b42;
+    background: #242728;
     padding: 12px 0;
     transition: all 0.5s ease;
 }
@@ -339,7 +340,7 @@ th {
     object-fit: cover;
     border-radius: 16px;
     margin: 0 14px 0 12px;
-    background: #3b3b42;
+    background: white;
     transition: all 0.5s ease;
 }
 
@@ -353,6 +354,11 @@ th {
 
 .sidebar .profile-details .job {
     font-size: 12px;
+}
+
+.bx-log-out{
+  font-size: 28px !important;
+  
 }
 
 .home-section {
@@ -372,11 +378,17 @@ th {
 }
 
 .logout{
-  background-color: transparent; /* Blue background */
-  border: none; /* Remove borders */
-  color: white; /* White text */
-  font-size: 24px; /* Set a font size */
-  cursor: pointer; /* Mouse pointer on hover */
+  background-color: transparent; 
+  border: none; 
+  color: white; 
+  font-size: 24px; 
+  cursor: pointer; 
+}
+.logout:hover{
+transform: scale(0.95);
+}
+.logout:focus{
+  transform: scale(0.95);;
 }
 
 /* sidebar responsive */
@@ -553,7 +565,7 @@ th {
     box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.2);
 }
 .profile{
-    position: fixed;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
