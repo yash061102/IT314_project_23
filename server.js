@@ -933,8 +933,14 @@ app.post("/addInstructor", checkAuthenticatedAdmin, (req, res) => {
               from: "e-campus-daiict@outlook.com",
               to: req.body.email,
               subject: "Account created",
-              html: `<h2> Faculty account has been created. </h2> <br /> <p> Your credentials are: </p>  <br/>  <p> <b> Email ID : </b> ${req.body.email} </p> <br/> <p> <b> Password : </b> ${randomPass} </p> <br/> <a href="https://e-campus-vugi.onrender.com/studentLogin" >Click here to login</a>`,
-            };
+              html: `
+                            <h2> Faculty account has been created. </h2>
+                            <p> Your credentials are: </p>
+                            <p> <b> Email ID : </b> ${req.body.email} </p>
+                            <p> <b> Password : </b> ${randomPass} </p> 
+                            <a href="https://e-campus-vugi.onrender.com/instructorLogin" >Click here to login</a>
+                            `,
+               };
 
             transporter.sendMail(mailOptions, function (error, info) {
               if (error) {
