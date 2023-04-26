@@ -22,13 +22,15 @@
             <h2>My Complains</h2>
         </div>
         <% if (complains.length==0) { %>
+            <div class="home-section">
             <div class="table-container">
                 <ul class="table-responsive-lg">
-                    <div class="data-table">
-                        <p class="textfield"><strong>No complain records found.</strong></p>
+                    <div class="data-container">
+                        <p class="textfield"><strong>No complain records found!!</strong></p>
                     </div>
                 </ul>
             </div>
+        </div>
             <% } else { %>
                 <section class="home-section">
                     <div class="table-container">
