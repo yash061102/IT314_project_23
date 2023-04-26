@@ -1059,7 +1059,7 @@ app.post(
       const title = "ERROR";
       const message = "Passwords do not match.";
       const icon = "error";
-      const href = "/studentDetails";
+      const href = "/studentHome";
       res.status(401).render("alert.ejs", { title, message, icon, href });
       // passwords do not match
     } else {
