@@ -27,21 +27,21 @@
                 <div class="col-md-12">
                     <div class="form h-100">
                         <h3> Student Registration Form</h3>
-                        <form action="/studentDetails" class="mb-5" method="post" id="contactForm" name="contactForm">
+                        <form action="/studentDetails" class="mb-5" method="post" id="contactForm" name="contactForm" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col-md-4 form-group mb-3">
                                     <label for="" class="col-form-label">First Name *</label>
-                                    <input type="text" class="form-control" name="name" id="name"
+                                    <input type="text" class="form-control" name="firstname" id="name"
                                         placeholder="First Name">
                                 </div>
                                 <div class="col-md-4 form-group mb-3">
                                     <label for="" class="col-form-label">Middle Name *</label>
-                                    <input type="text" class="form-control" name="email" id="email"
+                                    <input type="text" class="form-control" name="middlename" id="email"
                                         placeholder="Middle Name">
                                 </div>
                                 <div class="col-md-4 form-group mb-3">
                                     <label for="" class="col-form-label">Last Name *</label>
-                                    <input type="text" class="form-control" name="email" id="email"
+                                    <input type="text" class="form-control" name="lastname" id="email"
                                         placeholder="Last Name">
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                             <div class="row">
                                 <div class="col-md-12 form-group mb-3">
                                     <label for="program" class="col-form-label">Program</label>
-                                    <select class="form-control custom-select" id="budget" name="budget">
+                                    <select class="form-control custom-select" id="myProgram" name="myProgram">
                                         <option value="Select" selected disabled required>Select</option>
                                         <% for (var k=0; k <program.length; k++) { %>
 
@@ -129,7 +129,7 @@
 
                                 <div class="col-md-6 date">
                                     <label for="dob" class="col-form-label">Date of Birth *</label>
-                                    <input class="form-control input-dob" type="date" id="dob">
+                                    <input class="form-control input-dob" type="date" id="dob" name="dob">
                                 </div>
                             </div>
                             <br>
@@ -139,7 +139,7 @@
                             <div class="row">
                                 <div class="col-md-12 form-group mb-3">
                                     <label for="mobileno" class="col-form-label">Mobile No. *</label>
-                                    <input type="text" class="form-control" name="mobile-no" id="mobile-no"
+                                    <input type="text" class="form-control" name="mobileNO" id="mobileNO"
                                         placeholder="000-000-0000">
                                 </div>
                             </div>
@@ -152,12 +152,12 @@
                                 </div>
                                 <div class="col-md-6 form-group mb-3">
                                     <label for="pmail" class="col-form-label">Personal E-mail</label>
-                                    <input type="email" class="form-control" name="p-mail" id="p-mail"
+                                    <input type="email" class="form-control" name="myemail" id="myemail"
                                         placeholder="Personal E-mail">
                                 </div>
                                 <div class="col-md-12 form-group mb-3">
                                     <label for="ppmail" class="col-form-label">Parent E-mail *</label>
-                                    <input type="email" class="form-control" name="pp-mail" id="pp-mail"
+                                    <input type="email" class="form-control" name="parentEmail" id="parentEmail"
                                         placeholder="Parent E-mail">
                                 </div>
                                 <div class="col-md-12 form-group mb-3">

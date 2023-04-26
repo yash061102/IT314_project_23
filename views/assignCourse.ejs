@@ -21,30 +21,39 @@
         <div class="header">
             <h2>Add Semester</h2>
         </div>
-        <div class="sub-header">
-            <h5>
-                Step - 2
-            </h5>
-            <br>
-            <h5>
-                <%= populatedSemester.name %>
-            </h5>
-        </div>
         <form action="/assignCourse" method="post">
 
-            <% for (var i=0; i <populatedSemester.programsOffered.length; i++) { %>
-                <div class="sub-header">
-                    <h5>
-                        <%= i+1 %>
-                            <%= populatedSemester.programsOffered[i].degreeOffered.name %>
-                                <%= populatedSemester.programsOffered[i].branchOffered.name %>
-                    </h5>
-                </div>
+            <section class="home-section">
+                <div class="table-container">
 
-                <section class="home-section">
+                    <ul class="table-responsive-lg">
+                <div class="row">
+                    <div class="col-md-4 form-group mb-3">
+                    <div class="data-container">
+                        <p class="textfield" style="font-size:22px"><strong>Step2 </strong></p>
+                    </div>
+                     </div>
+                    
+                </div>
+                </ul>
+                </div>
+                    <% for (var i=0; i <populatedSemester.programsOffered.length; i++) { %>
                     <div class="table-container">
 
                         <ul class="table-responsive-lg">
+                            <div class="data-container">
+                                <table class="data-table">                         
+                                    <tr>
+                                        <th><strong>Semester</strong></th>
+                                        <td><%= populatedSemester.name %></td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong>Batch<%= i+1 %></strong></th>
+                                        <td><%= populatedSemester.programsOffered[i].degreeOffered.name %>
+                                            <%= populatedSemester.programsOffered[i].branchOffered.name %></td>
+                                    </tr>
+                                </table>
+                            </div>
                             <li class="thead-dark">
                                 <div class="col col-1">SR No</div>
                                 <div class="col col-2">Course name</div>
@@ -92,14 +101,19 @@
                                 <% } %>
                         </ul>
                     </div>
-                    <div class="input-field">
-                        <button class="submit" type="submit">Submit</button>
+                    <br>
+                    <br>
+                    <% } %>
+                    
+                    <div class="table-container">
+                        <div class="input-field">
+                            <button class="submit" type="submit">Submit</button>
+                        </div>
                     </div>
                 </section>
-                <% } %>
-
-              
-                    
+               
+                
+                 
         </form>
 
 </body>
