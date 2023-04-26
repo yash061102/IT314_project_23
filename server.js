@@ -1119,6 +1119,21 @@ app.post(
   })
 );
 
+app.post('/viewComplains', checkAuthenticatedAdmin, (req, res) => {
+
+    for (var i = 0; i < req.body.complain.length; i++) {
+        ComplainBox.findOneAndUpdate({ '_id': req.body.complain[i] }, { status: true })
+            .then((complain) => {
+
+            })
+    }
+    const title = "SUCCESS";
+    const message = "Complains marked as resolved!";
+    const icon = "success";
+    const href = "/adminHome";
+    res.render("alert.ejs", { title, message, icon, href });
+})
+
 app.get("/instructorHome", checkAuthenticatedInstructor, (req, res) => {
   Instructor.findOne({ _id: req.user })
     .then((instructor) => {
