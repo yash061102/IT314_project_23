@@ -952,7 +952,7 @@ app.post("/addInstructor", checkAuthenticatedAdmin, (req, res) => {
             const title = "SUCCESS";
             const message = "Instructor added successfully!";
             const icon = "success";
-            const href = "/admintHome";
+            const href = "/adminHome";
             res.render("alert.ejs", { title, message, icon, href });
           })
           .catch((err) => {
