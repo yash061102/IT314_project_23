@@ -27,7 +27,7 @@
         <div class="table-container" style="margin-left:19%;">
 
             <ul class="table-responsive-lg">
-        <div class="data-container" >
+        <div class="data-container" style="width:106%; margin-left:-28px;">
             <% if (gradeStudents.length==0) { %>
                 <p class="textfield">No students enrolled in this course</h5>
                 <% } else { %>
@@ -98,23 +98,24 @@
                                         <div class="col col-4" data-label="Name">
                                             <% if (signal=="1" ) { %>
                                                 <input type="number" name="grades" max="10" min="0" step="1"
-                                                    value="<%= gradeStudents[i].grade %>" placeholder="Enter grade">
+                                                    value="<%= gradeStudents[i].grade %>" placeholder="0" style="font-size:15px; height:25px;">
                                                 <% } else { %>
                                                     <input type="number" name="grades" max="100" min="0"
                                                         value="<%= gradeStudents[i].attendance %>"
-                                                        placeholder="Enter attendance">
+                                                        placeholder="00" style="font-size:15px; height:25px;">
                                                     <% } %>
 
                                                         <input type="hidden" name="student"
-                                                            value="<%= gradeStudents[i].studentEnrolled.id %>">
+                                                            value="<%= gradeStudents[i].studentEnrolled.id %>" style="font-size:15px; height:25px;">
                                         </div>
                                     </li>
                                     <% } %>
                             </ul>
                             <% if (gradeStudents.length!=0) { %>
-                                <div class="input-field"></div>
-                                <button class="submit" type="submit">Submit</button>
-                        </div>
+                                <div class="input-field">
+                                     <button class="submit" type="submit">Submit</button>
+                                    </div>
+                                </div>
                         <% } %>
                             </div>
                     </section>

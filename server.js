@@ -1089,13 +1089,8 @@ app.post(
             .then(() => {
               Student.findOne({ _id: req.user })
                 .then((student) => {
-                  const title = "SUCCESS";
-                  const message = "Registeration Successfull.";
-                  const icon = "error";
-                  const href = "/studentHome";
-                  res
-                    .status(200)
-                    .render("alert.ejs", { title, message, icon, href });
+                  
+                    res.render("studentHome.ejs",{ student });
                 })
                 .catch((err) => {
                   console.log(err);
