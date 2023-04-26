@@ -1542,9 +1542,10 @@ app.post("/gradeCard", checkAuthenticatedStudent, (req, res) => {
         })
         .moveDown();
 
-      var spi = 0;
+      var spi = 0,tot_cred=0;
       for (var i = 0; i < grades.length; i++) {
-        spi += grades[i].grade;
+        spi += grades[i].grade*grades[i].courseEnrolled.credits;
+        tot_cred+=grades[i].courseEnrolled.credits;
         doc
           .fontSize(10)
           .text(
@@ -1555,7 +1556,7 @@ app.post("/gradeCard", checkAuthenticatedStudent, (req, res) => {
           )
           .moveDown();
       }
-      spi /= 6;
+      spi /= tot_cred;
       spi = Math.round(spi * 100) / 100;
       doc.fontSize(10).text(`SPI : ${spi}`, { align: "center" });
 

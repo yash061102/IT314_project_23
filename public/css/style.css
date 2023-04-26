@@ -44,7 +44,8 @@ html { overflow-y: scroll; }
     outline: none;
     position: relative;
     text-align: center;
-    margin-bottom: 5%;;
+    margin-bottom: 5%;
+    margin-top: 2%;
     height: 45px;
     width: 40%;
     border: 2px solid #242728;
@@ -63,7 +64,6 @@ html { overflow-y: scroll; }
     /* display: flex;
     justify-content: space-evenly;
     padding: 10px; */
-    padding-top: 2%;
     display: flex;
     justify-content: space-around;
   }
