@@ -20,9 +20,6 @@
         <div class="header">
             <h2>Fee Payment</h2>
         </div>
-        <div class="sub-header">
-
-        </div>
 
         <% if (enrollments.length != 0) { %>
             <form action="/feeStudentPayments" method="post">
@@ -56,12 +53,12 @@
 
                                             <% if (history[j].studentEnrolled.id==enrollments[i].toString() && history[j].feeStatus==true) { %>
                                                 <% x=1 %>
-                                                <button class="view-btn"  style="color: rgb(0, 255, 0);" type="submit" name="view" value="<%=enrollments[i].toString() + " " + semesterID%>"> View</button>
+                                                <button class="view-btn"  style="color: rgb(0, 255, 0);" type="submit" name="view" value="<%=enrollments[i].toString() + " " + semesterID%>">View Reciept</button>
                                                 <% break; %>
                                             <% } %>
                                         <% } %>
                                         <% if (x==0) { %>
-                                            <button class="view-btn"  style="color: red;" type="submit" name="add" value="<%=enrollments[i].toString() + " " + semesterID + " " + programID %>">Add</button> 
+                                            <button class="view-btn"  style="color: red;" type="submit" name="add" value="<%=enrollments[i].toString() + " " + semesterID + " " + programID %>">Add Reciept</button> 
                                         <% } %>
                                     </div>
                                 </li>

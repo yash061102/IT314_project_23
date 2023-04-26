@@ -46,7 +46,7 @@
                                             <% if (history[j].semesterFee.id==semester[i-1].id) { %>
 
                                                 <% if (history[j].feeStatus==true) { %>
-                                                    <button type="submit" name="view" value="<%=semester[i-1].id + " " + i%>"> View</button>
+                                                    <button class="view-btn" type="submit" name="view" value="<%=semester[i-1].id + " " + i%>"> View</button>
                                                     <% } else { %>
                                                         <p style="color:red" >pending</p>
                                                         <% } %>
