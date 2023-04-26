@@ -44,7 +44,7 @@
                         
                         <div class="col-md-7 form-group mb-3">
                             <label for="semester" class="col-form-label" style="font-size: 20px;">Semester</label>
-                        <input type="text" class="form-control" placeholder="Name" name="name" >
+                        <input type="text" class="form-control" placeholder="Name" name="name" required>
                     </div>
                      </div>
                      </ul>
@@ -67,7 +67,7 @@
                                         <%= program[i].branchOffered.name %>
                                 </div>
                                 <div class="col col-3" data-label="Name">
-                                    <input style="accent-color: #242728; transform:scale(1.5);" type="checkbox" name="program" value="<%= program[i].id %>"><span
+                                    <input style="accent-color: #242728; transform:scale(1.5);" type="checkbox" name="program" value="<%= program[i].id %>" required><span
                                         class="checkmark" ></span>
                                 </div>
                             </li>

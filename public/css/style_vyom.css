@@ -1,9 +1,10 @@
+
 body {
     background: #ececec;
-    overflow-y: hidden;
   }
   
   .option {
+    overflow-y: visible;
     height: 10vh;
     padding-top: 5%;
     align-items: center;

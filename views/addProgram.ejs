@@ -28,7 +28,7 @@
                     <div class="col-lg-9 form-group mb-3">
                         <label for="program" class="col-form-label" style="font-size:20px">Degree</label>
                         <select class="custom-select form-control" name="degree" id="degree" required>
-                            <option class="form-control" value="select" selected disabled>Select</option>
+                            <option class="form-control" value="select" selected disabled required>Select</option>
 
                             <% for (var i=0; i <degree.length; i++) { %>
                                 <option class="form-control" value="<%= degree[i].id %>">
@@ -46,7 +46,7 @@
                     <div class="col-lg-9 form-group mb-3">
                         <label for="program" class="col-form-label" style="font-size:20px">Branch</label>
                     <select class="custom-select form-control" name="branch" id="branch" required>
-                        <option class="form-control" value="Select" selected disabled>Select</option>
+                        <option class="form-control" value="Select" selected disabled required>Select</option>
 
                         <% for (var i=0; i <branch.length; i++) { %>
                             <option value="<%= branch[i].id %>">
@@ -90,7 +90,7 @@
                                         <%= course[i].credits %>
                                     </div>
                                     <div class="col col-5" data-label="Branch">
-                                        <input style="accent-color:black; transform:scale(1.5);" type="checkbox" id="" name="course" value="<%= course[i].id %>"><span
+                                        <input style="accent-color:black; transform:scale(1.5);" type="checkbox" id="" name="course" value="<%= course[i].id %>" required><span
                                             class="checkmark"></span>
                                     </div>
                                 </li>
