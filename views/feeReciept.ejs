@@ -82,7 +82,9 @@
 
                 <br>
                 <form action="/pdf-reciept" method="post">
-                    <button type="submit" name="download" value="<%= history.studentEnrolled.id + " " +  history.semesterFee.id + " " + sem%>"> Download </button>
+                    <div class="input-field">
+                    <button class="submit" type="submit" name="download" value="<%= history.studentEnrolled.id + " " +  history.semesterFee.id + " " + sem%>"> Download </button>
+                    </div>
                 </form>
             </div>
         </section>

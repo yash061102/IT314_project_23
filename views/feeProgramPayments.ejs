@@ -47,7 +47,7 @@
                                     <%= semester.programsOffered[i].branchOffered.name %>
                                 </div>
                                 <div class="col col-4" data-label="Batch">
-                                    <button type='submit' name="view" value="<%= semester.programsOffered[i].id + " " + semester.id %>">View</button>
+                                    <button class="view-btn" type='submit' name="view" value="<%= semester.programsOffered[i].id + " " + semester.id %>">View</button>
                                 </div>
                             </li>
                             <% } %>

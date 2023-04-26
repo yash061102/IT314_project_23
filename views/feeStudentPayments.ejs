@@ -56,12 +56,12 @@
 
                                             <% if (history[j].studentEnrolled.id==enrollments[i].toString() && history[j].feeStatus==true) { %>
                                                 <% x=1 %>
-                                                <button style="background-color: green;" type="submit" name="view" value="<%=enrollments[i].toString() + " " + semesterID%>"> View</button>
+                                                <button class="view-btn"  style="color: rgb(0, 255, 0);" type="submit" name="view" value="<%=enrollments[i].toString() + " " + semesterID%>"> View</button>
                                                 <% break; %>
                                             <% } %>
                                         <% } %>
                                         <% if (x==0) { %>
-                                            <button style="background-color: red;" type="submit" name="add" value="<%=enrollments[i].toString() + " " + semesterID + " " + programID %>">Add</button> 
+                                            <button class="view-btn"  style="color: red;" type="submit" name="add" value="<%=enrollments[i].toString() + " " + semesterID + " " + programID %>">Add</button> 
                                         <% } %>
                                     </div>
                                 </li>
