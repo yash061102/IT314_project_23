@@ -1138,39 +1138,79 @@ app.post(
       bcrypt
         .hash(req.body.password, saltRounds)
         .then((hashedPassword) => {
-          Student.updateOne(
-            { _id: req.user },
-            {
-              firstname: req.body.firstname,
-              middlename: req.body.middlename,
-              lastname: req.body.lastname,
-              programRegistered: req.body.myProgram,
-              dob: req.body.dob,
-              myemail: req.body.myemail,
-              parentEmail: req.body.parentEmail,
-              gender: req.body.gender,
-              mobileNO: req.body.mobileNO,
-              password: hashedPassword,
-              profilePicture: req.file.buffer,
-              weight: req.body.weight,
-              height: req.body.height,
-              address: req.body.address,
-              bloodGroup: req.body.bloodGroup,
-            }
-          )
-            .then(() => {
-              Student.findOne({ _id: req.user })
-                .then((student) => {
 
-                  res.render("studentHome.ejs", { student });
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          if (req.file)
+          {
+            Student.updateOne(
+              { _id: req.user },
+              {
+                firstname: req.body.firstname,
+                middlename: req.body.middlename,
+                lastname: req.body.lastname,
+                programRegistered: req.body.myProgram,
+                dob: req.body.dob,
+                myemail: req.body.myemail,
+                parentEmail: req.body.parentEmail,
+                gender: req.body.gender,
+                mobileNO: req.body.mobileNO,
+                password: hashedPassword,
+                profilePicture: req.file.buffer,
+                weight: req.body.weight,
+                height: req.body.height,
+                address: req.body.address,
+                bloodGroup: req.body.bloodGroup,
+              }
+            )
+              .then(() => {
+                Student.findOne({ _id: req.user })
+                  .then((student) => {
+  
+                    res.render("studentHome.ejs", { student });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+
+          else
+          {
+            Student.updateOne(
+              { _id: req.user },
+              {
+                firstname: req.body.firstname,
+                middlename: req.body.middlename,
+                lastname: req.body.lastname,
+                programRegistered: req.body.myProgram,
+                dob: req.body.dob,
+                myemail: req.body.myemail,
+                parentEmail: req.body.parentEmail,
+                gender: req.body.gender,
+                mobileNO: req.body.mobileNO,
+                password: hashedPassword,
+                weight: req.body.weight,
+                height: req.body.height,
+                address: req.body.address,
+                bloodGroup: req.body.bloodGroup,
+              }
+            )
+              .then(() => {
+                Student.findOne({ _id: req.user })
+                  .then((student) => {
+  
+                    res.render("studentHome.ejs", { student });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -1221,7 +1261,8 @@ app.get("/instructorHome", checkAuthenticatedInstructor, (req, res) => {
     });
 });
 
-app.post("/instructorDetails", checkAuthenticatedInstructor, (req, res) => {
+app.post("/instructorDetails", upload.single("picture"), checkAuthenticatedInstructor, (req, res) => {
+  //console.log(req.body.mobileNO);
   if (req.body.mobileNO.length != 10) {
     const title = "ERROR";
     const message = "Enter valid Mobile no.";
@@ -1248,28 +1289,59 @@ app.post("/instructorDetails", checkAuthenticatedInstructor, (req, res) => {
     bcrypt
       .hash(req.body.password, saltRounds)
       .then((hashedPassword) => {
-        Instructor.updateOne(
-          { _id: req.user },
-          {
-            dob: req.body.dob,
-            myemail: req.body.myemail,
-            gender: req.body.gender,
-            mobileNO: req.body.mobileNO,
-            password: hashedPassword,
-          }
-        )
-          .then(() => {
-            Instructor.findOne({ _id: req.user })
-              .then((instructor) => {
-                res.render("instructorHome.ejs", { instructor });
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+
+        if (req.file)
+        {
+          Instructor.updateOne(
+            { _id: req.user },
+            {
+              dob: req.body.dob,
+              myemail: req.body.myemail,
+              gender: req.body.gender,
+              mobileNO: req.body.mobileNO,
+              password: hashedPassword,
+              profilePicture: req.file.buffer
+            }
+          )
+            .then(() => {
+              Instructor.findOne({ _id: req.user })
+                .then((instructor) => {
+                  res.render("instructorHome.ejs", { instructor });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        else
+        {
+          Instructor.updateOne(
+            { _id: req.user },
+            {
+              dob: req.body.dob,
+              myemail: req.body.myemail,
+              gender: req.body.gender,
+              mobileNO: req.body.mobileNO,
+              password: hashedPassword
+            }
+          )
+            .then(() => {
+              Instructor.findOne({ _id: req.user })
+                .then((instructor) => {
+                  res.render("instructorHome.ejs", { instructor });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       })
       .catch((err) => {
         console.log(err);

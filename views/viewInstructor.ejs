@@ -34,9 +34,8 @@
                 </div>
                 <div class="left-body">
                     <p class="field"><strong>College Email:</strong> <%= instructor.email %></p>
-                    <p class="field"><strong>Date of joining:</strong><% if (!typeof(instructor.profilePicture)==='undefined') { %>
+                    <p class="field"><strong>Date of joining:</strong>
                         <%= instructor.joiningDate.toLocaleDateString("en-US", options) %>
-                        <% } %> </p>
                 </div>
             </div>
             <div class="st-right">
