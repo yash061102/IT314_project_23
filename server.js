@@ -940,7 +940,7 @@ app.post("/addInstructor", checkAuthenticatedAdmin, (req, res) => {
                             <p> <b> Password : </b> ${randomPass} </p> 
                             <a href="https://e-campus-vugi.onrender.com/instructorLogin" >Click here to login</a>
                             `,
-               };
+            };
 
             transporter.sendMail(mailOptions, function (error, info) {
               if (error) {
@@ -1055,20 +1055,86 @@ app.get("/studentHome", checkAuthenticatedStudent, (req, res) => {
       console.log(err);
     });
 });
+isValidPassword = (password) => {
+  // for checking if password length is between 8 and 15
+  if (!(password.length >= 8 && password.length <= 15)) {
+    return false;
+  }
 
+  // to check space
+  if (password.indexOf(" ") !== -1) {
+    return false;
+  }
+
+  // for digits from 0 to 9
+  let count = 0;
+  for (let i = 0; i <= 9; i++) {
+    if (password.indexOf(i) !== -1) {
+      count = 1;
+    }
+  }
+  if (count === 0) {
+    return false;
+  }
+
+  // for special characters
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    return false;
+  }
+
+  // for capital letters
+  count = 0;
+  for (let i = 65; i <= 90; i++) {
+    if (password.indexOf(String.fromCharCode(i)) !== -1) {
+      count = 1;
+    }
+  }
+  if (count === 0) {
+    return false;
+  }
+
+  // for small letters
+  count = 0;
+  for (let i = 97; i <= 122; i++) {
+    if (password.indexOf(String.fromCharCode(i)) !== -1) {
+      count = 1;
+    }
+  }
+  if (count === 0) {
+    return false;
+  }
+
+  // if all conditions fail
+  return true;
+}
 app.post(
   "/studentDetails",
   checkAuthenticatedStudent,
   upload.single("picture"),
   (req, res) => {
-    if (req.body.password != req.body.repassword) {
+    if (req.body.mobileNO.length != 10) {
+      const title = "ERROR";
+      const message = "Enter valid Mobile no.";
+      const icon = "error";
+      const href = "/studentHome";
+      res.status(401).render("alert.ejs", { title, message, icon, href });
+    }
+    else if (req.body.password != req.body.repassword) {
       const title = "ERROR";
       const message = "Passwords do not match.";
       const icon = "error";
       const href = "/studentHome";
       res.status(401).render("alert.ejs", { title, message, icon, href });
       // passwords do not match
-    } else {
+    }
+    else if (!isValidPassword(req.body.password)) {
+      const title = "ERROR";
+      const message = "Password should contain 8 to 15 characters with atleast 1 special character, 1 capital letter, 1 small letter and 1 number with zero spaces.";
+      const icon = "error";
+      const href = "/studentHome";
+      res.status(401).render("alert.ejs", { title, message, icon, href });
+    }
+    else {
       bcrypt
         .hash(req.body.password, saltRounds)
         .then((hashedPassword) => {
@@ -1095,8 +1161,8 @@ app.post(
             .then(() => {
               Student.findOne({ _id: req.user })
                 .then((student) => {
-                  
-                    res.render("studentHome.ejs",{ student });
+
+                  res.render("studentHome.ejs", { student });
                 })
                 .catch((err) => {
                   console.log(err);
@@ -1127,17 +1193,17 @@ app.post(
 
 app.post('/viewComplains', checkAuthenticatedAdmin, (req, res) => {
 
-    for (var i = 0; i < req.body.complain.length; i++) {
-        ComplainBox.findOneAndUpdate({ '_id': req.body.complain[i] }, { status: true })
-            .then((complain) => {
+  for (var i = 0; i < req.body.complain.length; i++) {
+    ComplainBox.findOneAndUpdate({ '_id': req.body.complain[i] }, { status: true })
+      .then((complain) => {
 
-            })
-    }
-    const title = "SUCCESS";
-    const message = "Complains marked as resolved!";
-    const icon = "success";
-    const href = "/adminHome";
-    res.render("alert.ejs", { title, message, icon, href });
+      })
+  }
+  const title = "SUCCESS";
+  const message = "Complains marked as resolved!";
+  const icon = "success";
+  const href = "/adminHome";
+  res.render("alert.ejs", { title, message, icon, href });
 })
 
 app.get("/instructorHome", checkAuthenticatedInstructor, (req, res) => {
@@ -1156,10 +1222,29 @@ app.get("/instructorHome", checkAuthenticatedInstructor, (req, res) => {
 });
 
 app.post("/instructorDetails", checkAuthenticatedInstructor, (req, res) => {
-  if (req.body.password != req.body.repassword) {
+  if (req.body.mobileNO.length != 10) {
+    const title = "ERROR";
+    const message = "Enter valid Mobile no.";
+    const icon = "error";
+    const href = "/instructorHome";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else if (req.body.password != req.body.repassword) {
+    const title = "ERROR";
+    const message = "Passwords do not match.";
+    const icon = "error";
+    const href = "/instructorHome";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
     // passwords do not match
-    res.redirect("/instructorDetails");
-  } else {
+  }
+  else if (!isValidPassword(req.body.password)) {
+    const title = "ERROR";
+    const message = "Password should contain 8 to 15 characters with atleast 1 special character, 1 capital letter, 1 small letter and 1 number with zero spaces.";
+    const icon = "error";
+    const href = "/instructorHome";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else {
     bcrypt
       .hash(req.body.password, saltRounds)
       .then((hashedPassword) => {
@@ -1548,15 +1633,14 @@ app.post("/gradeCard", checkAuthenticatedStudent, (req, res) => {
         })
         .moveDown();
 
-      var spi = 0,tot_cred=0;
+      var spi = 0, tot_cred = 0;
       for (var i = 0; i < grades.length; i++) {
-        spi += grades[i].grade*grades[i].courseEnrolled.credits;
-        tot_cred+=grades[i].courseEnrolled.credits;
+        spi += grades[i].grade * grades[i].courseEnrolled.credits;
+        tot_cred += grades[i].courseEnrolled.credits;
         doc
           .fontSize(10)
           .text(
-            `${i + 1} - ${grades[i].courseEnrolled.code} - ${
-              grades[i].courseEnrolled.name
+            `${i + 1} - ${grades[i].courseEnrolled.code} - ${grades[i].courseEnrolled.name
             } - ${grades[i].courseEnrolled.credits} - ${grades[i].grade}`,
             { align: "center" }
           )
@@ -1608,22 +1692,31 @@ app.get("/updateInstructor", checkAuthenticatedInstructor, (req, res) => {
 });
 
 app.post("/updateInstructor", checkAuthenticatedInstructor, (req, res) => {
-  Instructor.updateOne(
-    { _id: req.user },
-    {
-      fullname: req.body.fullname,
-      mobileNO: req.body.mobileNO,
-      myemail: req.body.myemail,
-      dob: req.body.dob,
-      gender: req.body.gender,
-    }
-  ).then((instructor) => {
-    const title = "SUCCESS";
-    const message = "Instructor details updated!";
-    const icon = "success";
-    const href = "/instructorHome";
-    res.render("alert.ejs", { title, message, icon, href });
-  });
+  if (req.body.mobileNO.length != 10) {
+    const title = "ERROR";
+    const message = "Enter valid Mobile no.";
+    const icon = "error";
+    const href = "/updateInstructor";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else {
+    Instructor.updateOne(
+      { _id: req.user },
+      {
+        fullname: req.body.fullname,
+        mobileNO: req.body.mobileNO,
+        myemail: req.body.myemail,
+        dob: req.body.dob,
+        gender: req.body.gender,
+      }
+    ).then((instructor) => {
+      const title = "SUCCESS";
+      const message = "Instructor details updated!";
+      const icon = "success";
+      const href = "/instructorHome";
+      res.render("alert.ejs", { title, message, icon, href });
+    });
+  }
 });
 
 app.get("/updateStudent", checkAuthenticatedStudent, (req, res) => {
@@ -1633,29 +1726,39 @@ app.get("/updateStudent", checkAuthenticatedStudent, (req, res) => {
 });
 
 app.post("/updateStudent", checkAuthenticatedStudent, (req, res) => {
-  Student.updateOne(
-    { _id: req.user },
-    {
-      firstname: req.body.firstname,
-      middlename: req.body.middlename,
-      lastname: req.body.lastname,
-      mobileNO: req.body.mobileNO,
-      myemail: req.body.myemail,
-      parentEmail: req.body.parentEmail,
-      dob: req.body.dob,
-      gender: req.body.gender,
-      weight: req.body.weight,
-      height: req.body.height,
-      address: req.body.address,
-      bloodGroup: req.body.bloodGroup,
-    }
-  ).then((student) => {
-    const title = "SUCCESS";
-    const message = "Student details updated!";
-    const icon = "success";
-    const href = "/studentHome";
-    res.render("alert.ejs", { title, message, icon, href });
-  });
+  if (req.body.mobileNO.length != 10) {
+    const title = "ERROR";
+    const message = "Enter valid Mobile no.";
+    const icon = "error";
+    const href = "/updateStudent";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else {
+
+    Student.updateOne(
+      { _id: req.user },
+      {
+        firstname: req.body.firstname,
+        middlename: req.body.middlename,
+        lastname: req.body.lastname,
+        mobileNO: req.body.mobileNO,
+        myemail: req.body.myemail,
+        parentEmail: req.body.parentEmail,
+        dob: req.body.dob,
+        gender: req.body.gender,
+        weight: req.body.weight,
+        height: req.body.height,
+        address: req.body.address,
+        bloodGroup: req.body.bloodGroup,
+      }
+    ).then((student) => {
+      const title = "SUCCESS";
+      const message = "Student details updated!";
+      const icon = "success";
+      const href = "/studentHome";
+      res.render("alert.ejs", { title, message, icon, href });
+    });
+  }
 });
 
 app.get("/instructorSemester", checkAuthenticatedInstructor, (req, res) => {
@@ -1947,7 +2050,7 @@ app.post("/addGrade", checkAuthenticatedInstructor, (req, res) => {
       )
         .populate(["courseEnrolled", "studentEnrolled", "semesterEnrolled"])
         .exec()
-        .then((ans) => {})
+        .then((ans) => { })
         .catch((err) => {
           console.error(err);
         });
@@ -1964,7 +2067,7 @@ app.post("/addGrade", checkAuthenticatedInstructor, (req, res) => {
         )
           .populate(["courseEnrolled", "studentEnrolled", "semesterEnrolled"])
           .exec()
-          .then((ans) => {})
+          .then((ans) => { })
           .catch((err) => {
             console.error(err);
           });
@@ -2246,7 +2349,16 @@ app.post("/passwordStudent", (req, res) => {
     const href = "/studentHome";
     res.render("alert.ejs", { title, message, icon, href });
     // passwords do not match
-  } else {
+  }
+  // password not matching the format
+  else if (!isValidPassword(req.body.password)) {
+    const title = "ERROR";
+    const message = "Password should contain 8 to 15 characters with atleast 1 special character, 1 capital letter, 1 small letter and 1 number with zero spaces.";
+    const icon = "error";
+    const href = "/studentHome";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else {
     bcrypt
       .hash(req.body.password, saltRounds)
       .then((hashedPassword) => {
@@ -2268,14 +2380,23 @@ app.post("/passwordStudent", (req, res) => {
   }
 });
 app.post("/passwordAdmin", (req, res) => {
+  // passwords do not match
   if (req.body.password != req.body.repassword) {
     const title = "ERROR";
     const message = "Passwords do not match.";
     const icon = "error";
     const href = "/adminHome";
     res.render("alert.ejs", { title, message, icon, href });
-    // passwords do not match
-  } else {
+  }
+  //
+  else if (!isValidPassword(req.body.password)) {
+    const title = "ERROR";
+    const message = "Password should contain 8 to 15 characters with atleast 1 special character, 1 capital letter, 1 small letter and 1 number with zero spaces.";
+    const icon = "error";
+    const href = "/adminHome";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else {
     bcrypt
       .hash(req.body.password, saltRounds)
       .then((hashedPassword) => {
@@ -2297,6 +2418,8 @@ app.post("/passwordAdmin", (req, res) => {
   }
 });
 app.post("/passwordInstructor", (req, res) => {
+
+  // passwords do not match
   if (req.body.password != req.body.repassword) {
     const title = "ERROR";
     const message = "Passwords do not match.";
@@ -2304,8 +2427,17 @@ app.post("/passwordInstructor", (req, res) => {
     const href = "/instructorHome";
     res.render("alert.ejs", { title, message, icon, href });
 
-    // passwords do not match
-  } else {
+  }
+
+  //
+  else if (!isValidPassword(req.body.password)) {
+    const title = "ERROR";
+    const message = "Password should contain 8 to 15 characters with atleast 1 special character, 1 capital letter, 1 small letter and 1 number with zero spaces.";
+    const icon = "error";
+    const href = "/instructorHome";
+    res.status(401).render("alert.ejs", { title, message, icon, href });
+  }
+  else {
     bcrypt
       .hash(req.body.password, saltRounds)
       .then((hashedPassword) => {
@@ -2706,8 +2838,7 @@ app.get("/forgotPasswordAdmin", (req, res) => {
 
 app.post("/forgotPasswordStudent", (req, res) => {
   Student.findOne({ email: req.body.email }).then((student) => {
-    if (student == null) 
-    {
+    if (student == null) {
       const title = "ERROR";
       const message = "No such student email exist";
       const icon = "error";
@@ -2715,255 +2846,250 @@ app.post("/forgotPasswordStudent", (req, res) => {
       res.render("alert.ejs", { title, message, icon, href });
     }
 
-    else
-    {
-        function generateP() {
-            var pass = "";
-            var str =
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz0123456789@#$";
-        
-            for (let i = 1; i <= 10; i++) {
-              var char = Math.floor(Math.random() * str.length + 1);
-        
-              pass += str.charAt(char);
-            }
-        
-            return pass;
-          }
+    else {
+      function generateP() {
+        var pass = "";
+        var str =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz0123456789@#$";
 
-        const randomPass = generateP();
-        bcrypt
-          .hash(randomPass, saltRounds)
-          .then((hashedPassword) => {
+        for (let i = 1; i <= 10; i++) {
+          var char = Math.floor(Math.random() * str.length + 1);
 
-            Student.findOneAndUpdate({'email':req.body.email}, {'password':hashedPassword}, {new:true})
+          pass += str.charAt(char);
+        }
+
+        return pass;
+      }
+
+      const randomPass = generateP();
+      bcrypt
+        .hash(randomPass, saltRounds)
+        .then((hashedPassword) => {
+
+          Student.findOneAndUpdate({ 'email': req.body.email }, { 'password': hashedPassword }, { new: true })
             .then((student) => {
-                var transporter = nodemailer.createTransport({
-                    service: "Outlook365",
-                    host: "smtp.office365.com",
-                    port: "587",
-                    tls: {
-                      ciphers: "SSLv3",
-                      rejectUnauthorized: false,
-                    },
-                    auth: {
-                      user: "e-campus-daiict@outlook.com",
-                      pass: process.env.GMAILPASSWORD,
-                    },
-                  });
-      
-                  var mailOptions = {
-                    from: "e-campus-daiict@outlook.com",
-                    to: req.body.email,
-                    subject: "Password reset",
-                    html: `
+              var transporter = nodemailer.createTransport({
+                service: "Outlook365",
+                host: "smtp.office365.com",
+                port: "587",
+                tls: {
+                  ciphers: "SSLv3",
+                  rejectUnauthorized: false,
+                },
+                auth: {
+                  user: "e-campus-daiict@outlook.com",
+                  pass: process.env.GMAILPASSWORD,
+                },
+              });
+
+              var mailOptions = {
+                from: "e-campus-daiict@outlook.com",
+                to: req.body.email,
+                subject: "Password reset",
+                html: `
                                   <h2> Your password is rest. </h2>
                                   <p> Your credentials are: </p>
                                   <p> <b> Email ID : </b> ${req.body.email} </p>
                                   <p> <b> New Password : </b> ${randomPass} </p> 
                                   <a href="https://e-campus-vugi.onrender.com/studentLogin" >Click here to login</a>
                                   `,
-                  };
-      
-                  transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                      const title = "ERROR";
-                      const message = "Unknown error occurred, please try again!";
-                      const icon = "error";
-                      const href = "/studentLogin";
-                      res.render("alert.ejs", { title, message, icon, href });
-                    } else {
-                      console.log("Email sent: " + info.response);
-                    }
-                  });
-      
-                  const title = "SUCCESS";
-                  const message = "Check your mail to access your new password";
-                  const icon = "success";
+              };
+
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  const title = "ERROR";
+                  const message = "Unknown error occurred, please try again!";
+                  const icon = "error";
                   const href = "/studentLogin";
                   res.render("alert.ejs", { title, message, icon, href });
+                } else {
+                  console.log("Email sent: " + info.response);
+                }
+              });
+
+              const title = "SUCCESS";
+              const message = "Check your mail to access your new password";
+              const icon = "success";
+              const href = "/studentLogin";
+              res.render("alert.ejs", { title, message, icon, href });
             })
-          })
-          .catch((err) => {
-            console.log("Error:", err);
-          });
-      }
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    }
   });
 });
 
 app.post("/forgotPasswordInstructor", (req, res) => {
-    Instructor.findOne({ email: req.body.email }).then((instructor) => {
-      if (instructor == null) 
-      {
-        const title = "ERROR";
-        const message = "No such instructor email exist";
-        const icon = "error";
-        const href = "/instructorLogin";
-        res.render("alert.ejs", { title, message, icon, href });
+  Instructor.findOne({ email: req.body.email }).then((instructor) => {
+    if (instructor == null) {
+      const title = "ERROR";
+      const message = "No such instructor email exist";
+      const icon = "error";
+      const href = "/instructorLogin";
+      res.render("alert.ejs", { title, message, icon, href });
+    }
+
+    else {
+      function generateP() {
+        var pass = "";
+        var str =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz0123456789@#$";
+
+        for (let i = 1; i <= 10; i++) {
+          var char = Math.floor(Math.random() * str.length + 1);
+
+          pass += str.charAt(char);
+        }
+
+        return pass;
       }
-  
-      else
-      {
-          function generateP() {
-              var pass = "";
-              var str =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz0123456789@#$";
-          
-              for (let i = 1; i <= 10; i++) {
-                var char = Math.floor(Math.random() * str.length + 1);
-          
-                pass += str.charAt(char);
-              }
-          
-              return pass;
-            }
-  
-          const randomPass = generateP();
-          bcrypt
-            .hash(randomPass, saltRounds)
-            .then((hashedPassword) => {
-  
-              Instructor.findOneAndUpdate({'email':req.body.email}, {'password':hashedPassword}, {new:true})
-              .then((instructor) => {
-                  var transporter = nodemailer.createTransport({
-                      service: "Outlook365",
-                      host: "smtp.office365.com",
-                      port: "587",
-                      tls: {
-                        ciphers: "SSLv3",
-                        rejectUnauthorized: false,
-                      },
-                      auth: {
-                        user: "e-campus-daiict@outlook.com",
-                        pass: process.env.GMAILPASSWORD,
-                      },
-                    });
-        
-                    var mailOptions = {
-                      from: "e-campus-daiict@outlook.com",
-                      to: req.body.email,
-                      subject: "Password reset",
-                      html: `
+
+      const randomPass = generateP();
+      bcrypt
+        .hash(randomPass, saltRounds)
+        .then((hashedPassword) => {
+
+          Instructor.findOneAndUpdate({ 'email': req.body.email }, { 'password': hashedPassword }, { new: true })
+            .then((instructor) => {
+              var transporter = nodemailer.createTransport({
+                service: "Outlook365",
+                host: "smtp.office365.com",
+                port: "587",
+                tls: {
+                  ciphers: "SSLv3",
+                  rejectUnauthorized: false,
+                },
+                auth: {
+                  user: "e-campus-daiict@outlook.com",
+                  pass: process.env.GMAILPASSWORD,
+                },
+              });
+
+              var mailOptions = {
+                from: "e-campus-daiict@outlook.com",
+                to: req.body.email,
+                subject: "Password reset",
+                html: `
                                     <h2> Your password is rest. </h2>
                                     <p> Your credentials are: </p>
                                     <p> <b> Email ID : </b> ${req.body.email} </p>
                                     <p> <b> New Password : </b> ${randomPass} </p> 
                                     <a href="https://e-campus-vugi.onrender.com/instructorLogin" >Click here to login</a>
                                     `,
-                    };
-        
-                    transporter.sendMail(mailOptions, function (error, info) {
-                      if (error) {
-                        const title = "ERROR";
-                        const message = "Unknown error occurred, please try again!";
-                        const icon = "error";
-                        const href = "/instructorLogin";
-                        res.render("alert.ejs", { title, message, icon, href });
-                      } else {
-                        console.log("Email sent: " + info.response);
-                      }
-                    });
-        
-                    const title = "SUCCESS";
-                    const message = "Check your mail to access your new password";
-                    const icon = "success";
-                    const href = "/instructorLogin";
-                    res.render("alert.ejs", { title, message, icon, href });
-              })
-            })
-            .catch((err) => {
-              console.log("Error:", err);
-            });
-        }
-    });
-  });
+              };
 
-  app.post("/forgotPasswordAdmin", (req, res) => {
-    Admin.findOne({ email: req.body.email }).then((admin) => {
-      if (admin == null) 
-      {
-        const title = "ERROR";
-        const message = "No such admin email exist";
-        const icon = "error";
-        const href = "/adminLogin";
-        res.render("alert.ejs", { title, message, icon, href });
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  const title = "ERROR";
+                  const message = "Unknown error occurred, please try again!";
+                  const icon = "error";
+                  const href = "/instructorLogin";
+                  res.render("alert.ejs", { title, message, icon, href });
+                } else {
+                  console.log("Email sent: " + info.response);
+                }
+              });
+
+              const title = "SUCCESS";
+              const message = "Check your mail to access your new password";
+              const icon = "success";
+              const href = "/instructorLogin";
+              res.render("alert.ejs", { title, message, icon, href });
+            })
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    }
+  });
+});
+
+app.post("/forgotPasswordAdmin", (req, res) => {
+  Admin.findOne({ email: req.body.email }).then((admin) => {
+    if (admin == null) {
+      const title = "ERROR";
+      const message = "No such admin email exist";
+      const icon = "error";
+      const href = "/adminLogin";
+      res.render("alert.ejs", { title, message, icon, href });
+    }
+
+    else {
+      function generateP() {
+        var pass = "";
+        var str =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz0123456789@#$";
+
+        for (let i = 1; i <= 10; i++) {
+          var char = Math.floor(Math.random() * str.length + 1);
+
+          pass += str.charAt(char);
+        }
+
+        return pass;
       }
-  
-      else
-      {
-          function generateP() {
-              var pass = "";
-              var str =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz0123456789@#$";
-          
-              for (let i = 1; i <= 10; i++) {
-                var char = Math.floor(Math.random() * str.length + 1);
-          
-                pass += str.charAt(char);
-              }
-          
-              return pass;
-            }
-  
-          const randomPass = generateP();
-          bcrypt
-            .hash(randomPass, saltRounds)
-            .then((hashedPassword) => {
-  
-              Admin.findOneAndUpdate({'email':req.body.email}, {'password':hashedPassword}, {new:true})
-              .then((admin) => {
-                  var transporter = nodemailer.createTransport({
-                      service: "Outlook365",
-                      host: "smtp.office365.com",
-                      port: "587",
-                      tls: {
-                        ciphers: "SSLv3",
-                        rejectUnauthorized: false,
-                      },
-                      auth: {
-                        user: "e-campus-daiict@outlook.com",
-                        pass: process.env.GMAILPASSWORD,
-                      },
-                    });
-        
-                    var mailOptions = {
-                      from: "e-campus-daiict@outlook.com",
-                      to: req.body.email,
-                      subject: "Password reset",
-                      html: `
+
+      const randomPass = generateP();
+      bcrypt
+        .hash(randomPass, saltRounds)
+        .then((hashedPassword) => {
+
+          Admin.findOneAndUpdate({ 'email': req.body.email }, { 'password': hashedPassword }, { new: true })
+            .then((admin) => {
+              var transporter = nodemailer.createTransport({
+                service: "Outlook365",
+                host: "smtp.office365.com",
+                port: "587",
+                tls: {
+                  ciphers: "SSLv3",
+                  rejectUnauthorized: false,
+                },
+                auth: {
+                  user: "e-campus-daiict@outlook.com",
+                  pass: process.env.GMAILPASSWORD,
+                },
+              });
+
+              var mailOptions = {
+                from: "e-campus-daiict@outlook.com",
+                to: req.body.email,
+                subject: "Password reset",
+                html: `
                                     <h2> Your password is rest. </h2>
                                     <p> Your credentials are: </p>
                                     <p> <b> Email ID : </b> ${req.body.email} </p>
                                     <p> <b> New Password : </b> ${randomPass} </p> 
                                     <a href="https://e-campus-vugi.onrender.com/adminLogin" >Click here to login</a>
                                     `,
-                    };
-        
-                    transporter.sendMail(mailOptions, function (error, info) {
-                      if (error) {
-                        const title = "ERROR";
-                        const message = "Unknown error occurred, please try again!";
-                        const icon = "error";
-                        const href = "/adminLogin";
-                        res.render("alert.ejs", { title, message, icon, href });
-                      } else {
-                        console.log("Email sent: " + info.response);
-                      }
-                    });
-        
-                    const title = "SUCCESS";
-                    const message = "Check your mail to access your new password";
-                    const icon = "success";
-                    const href = "/adminLogin";
-                    res.render("alert.ejs", { title, message, icon, href });
-              })
+              };
+
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  const title = "ERROR";
+                  const message = "Unknown error occurred, please try again!";
+                  const icon = "error";
+                  const href = "/adminLogin";
+                  res.render("alert.ejs", { title, message, icon, href });
+                } else {
+                  console.log("Email sent: " + info.response);
+                }
+              });
+
+              const title = "SUCCESS";
+              const message = "Check your mail to access your new password";
+              const icon = "success";
+              const href = "/adminLogin";
+              res.render("alert.ejs", { title, message, icon, href });
             })
-            .catch((err) => {
-              console.log("Error:", err);
-            });
-        }
-    });
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    }
   });
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
