@@ -96,11 +96,13 @@
                                     <label for="New-Password" class="col-form-label">New Password *</label>
                                     <input type="password" class="form-control" name="password" id="password"
                                         placeholder="Enter Password" required>
+                                        <div id="pssd"></div>
                                 </div>
                                 <div class="col-md-6 form-group mb-3">
                                     <label for="Confirm-Password" class="col-form-label">Confirm Password *</label>
                                     <input type="password" class="form-control" name="repassword" id="repassword"
                                         placeholder="Enter password" required>
+                                        <div id="repssd"></div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -140,6 +142,87 @@
                 }
             })
         }
+
+        const passwordInput = document.getElementById('password');
+
+        passwordInput.addEventListener('keyup', () => {
+            const password = passwordInput.value;
+
+            if (isValidPassword(password)) {
+                document.getElementById('pssd').innerHTML = "<p style='color:green;' >Valid<p>";
+            }
+            else{
+                document.getElementById('pssd').innerHTML = "<p style='color:red;' >Invalid<p>";
+            }
+        });
+
+        function isValidPassword (password) {
+            // for checking if password length is between 8 and 15
+            if (!(password.length >= 8 && password.length <= 15)) {
+                return false;
+            }
+
+            // to check space
+            if (password.indexOf(" ") !== -1) {
+                return false;
+            }
+
+            // for digits from 0 to 9
+            let count = 0;
+            for (let i = 0; i <= 9; i++) {
+                if (password.indexOf(i) !== -1) {
+                    count = 1;
+                }
+            }
+            if (count === 0) {
+                return false;
+            }
+
+            // for special characters
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+                return false;
+            }
+
+            // for capital letters
+            count = 0;
+            for (let i = 65; i <= 90; i++) {
+                if (password.indexOf(String.fromCharCode(i)) !== -1) {
+                    count = 1;
+                }
+            }
+            if (count === 0) {
+                return false;
+            }
+
+            // for small letters
+            count = 0;
+            for (let i = 97; i <= 122; i++) {
+                if (password.indexOf(String.fromCharCode(i)) !== -1) {
+                    count = 1;
+                }
+            }
+            if (count === 0) {
+                return false;
+            }
+
+            // if all conditions fail
+            return true;
+        }
+
+        const passwordConfirm = document.getElementById('repassword');
+
+        passwordConfirm.addEventListener('keyup', () => {
+            const password = passwordInput.value;
+            const repassword = passwordConfirm.value;
+
+            if (password === repassword) {
+                document.getElementById('repssd').innerHTML = "<p style='color:green;' >Password matching<p>";
+            }
+            else{
+                document.getElementById('repssd').innerHTML = "<p style='color:red;' >Password does not match<p>";
+            }
+        });
+
     </script>
 </body>
 
