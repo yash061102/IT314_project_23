@@ -10,6 +10,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/form.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.png">
 
     <title>Fee Structure</title>
@@ -25,13 +26,38 @@
                 <%= program.branchOffered.name %>
         </h4>
     </div>
-    <div class="main-body-top">
-        <form action="/addFeeData" method="post">
-            <input type="text" placeholder="Charge" name="charge">
-            <input type="text" placeholder="Amount in Rs" name="amount">
-            <button type="submit" name="program" value="<%= program.id %>">Submit</button>
-        </form>
-    </div>
+    <section class="form-body">
+
+        <div class="form-container1">
+            <div class="row align-items-stretch no-gutters contact-wrap">
+                <div class="col-md-12">
+                    <div class="form h-100">
+                        <h3>Add Fees Structure</h3>
+                        <form action="/addFeeData" method="post" class="mb-5" id="contactForm" name="contactForm">                       
+                                <div class="col-lg-12 form-group mb-3">
+
+                                    <label for="charge" class="col-form-label">Charge</label>
+                                    <input type="text" class="form-control" name="charge" placeholder="Charge" required>
+                                </div>
+                                <div class="col-lg-12 form-group mb-3">
+
+                                    <label for="amount" class="col-form-label">Amount</label>
+                                    <input type="text" class="form-control" name="amount" placeholder="Amount in Rs" required>
+                                </div>
+                                
+                         
+                                <div class="input-field">
+                                    <button class="submit" name="program" type="submit" value="<%= program.id %>">Submit</button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+    
     
     
 </body>
